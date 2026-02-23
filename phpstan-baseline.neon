@@ -1,0 +1,13 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method CPSIT\\Typo3HandlebarsForms\\DataProcessing\\ProcessFormProcessor\:\:__construct\(\) has parameter \$renderableProcessors with generic interface CPSIT\\Typo3HandlebarsForms\\DataProcessing\\Renderable\\RenderableProcessor but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/DataProcessing/ProcessFormProcessor.php
+
+		-
+			message: '#^Parameter \#1 \$navigationElements of method CPSIT\\Typo3HandlebarsForms\\DataProcessing\\ProcessFormProcessor\:\:processNavigation\(\) expects list\<CPSIT\\Typo3HandlebarsForms\\DataProcessing\\Value\\NavigationElement\>, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/DataProcessing/ProcessFormProcessor.php

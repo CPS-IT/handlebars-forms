@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS extension "handlebars_forms".
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
+
+use CPSIT\Typo3HandlebarsForms\DataProcessing;
+use TYPO3\CMS\Form;
+
+/**
+ * AttributeValueProcessor
+ *
+ * @author Elias Häußler <e.haeussler@familie-redlich.de>
+ * @license GPL-2.0-or-later
+ */
+final readonly class AttributeValueProcessor implements ValueProcessor
+{
+    public function process(
+        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        DataProcessing\Renderable\ProcessedRenderable $processedRenderable,
+        array $configuration = [],
+    ): ?string {
+        $name = $configuration['name'] ?? null;
+
+        if (!is_string($name)) {
+            return null;
+        }
+
+        return $processedRenderable->tag->getAttribute($name);
+    }
+
+    public static function getName(): string
+    {
+        return 'ATTRIBUTE';
+    }
+}

@@ -1,0 +1,16 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"local>CPS-IT/renovate-config",
+		"local>CPS-IT/renovate-config:typo3-extension"
+	],
+	"assignees": [
+		"eliashaeussler"
+	],
+	"baseBranchPatterns": [
+		"main"
+	],
+	"constraints": {
+		"php": "8.2.*"
+	}
+}

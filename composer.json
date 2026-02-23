@@ -1,0 +1,118 @@
+{
+	"name": "cpsit/typo3-handlebars-forms",
+	"description": "Handlebars rendering of forms built with EXT:form for projects with TYPO3 CMS",
+	"license": "GPL-2.0-or-later",
+	"type": "typo3-cms-extension",
+	"authors": [
+		{
+			"name": "Elias Häußler",
+			"email": "e.haeussler@familie-redlich.de",
+			"homepage": "https://www.cps-it.de",
+			"role": "Maintainer"
+		}
+	],
+	"require": {
+		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+		"ext-json": "*",
+		"cpsit/typo3-handlebars": "^1.0",
+		"psr/http-message": "^1.0 || ^2.0",
+		"psr/log": "^3.0",
+		"symfony/dependency-injection": "^7.0",
+		"typo3/cms-core": "~13.4.0",
+		"typo3/cms-extbase": "~13.4.0",
+		"typo3/cms-fluid": "~13.4.0",
+		"typo3/cms-form": "~13.4.0",
+		"typo3/cms-frontend": "~13.4.0",
+		"typo3fluid/fluid": "^4.0"
+	},
+	"require-dev": {
+		"armin/editorconfig-cli": "^2.0",
+		"eliashaeussler/version-bumper": "^3.1",
+		"ergebnis/composer-normalize": "^2.50",
+		"friendsofphp/php-cs-fixer": "^3.94",
+		"phpstan/extension-installer": "^1.4",
+		"phpstan/phpstan": "^2.1",
+		"phpstan/phpstan-phpunit": "^2.0",
+		"phpunit/phpcov": "^9.0 || ^10.0 || ^11.0",
+		"phpunit/phpunit": "^11.5 || ^12.5",
+		"saschaegerer/phpstan-typo3": "^2.1",
+		"shipmonk/composer-dependency-analyser": "^1.8",
+		"ssch/typo3-rector": "^3.11",
+		"typo3/coding-standards": "^0.8.0",
+		"typo3/testing-framework": "^9.3.0"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"autoload": {
+		"psr-4": {
+			"CPSIT\\Typo3HandlebarsForms\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"CPSIT\\Typo3HandlebarsForms\\Tests\\": "Tests/"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"eliashaeussler/version-bumper": true,
+			"ergebnis/composer-normalize": true,
+			"phpstan/extension-installer": true,
+			"typo3/class-alias-loader": true,
+			"typo3/cms-composer-installers": true
+		},
+		"bin-dir": ".Build/bin",
+		"sort-packages": true,
+		"vendor-dir": ".Build/vendor"
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "handlebars_forms",
+			"web-dir": ".Build/web"
+		}
+	},
+	"scripts": {
+		"analyze": [
+			"@analyze:dependencies"
+		],
+		"analyze:dependencies": "composer-dependency-analyser",
+		"fix": [
+			"@fix:composer",
+			"@fix:editorconfig",
+			"@fix:php"
+		],
+		"fix:composer": "@composer normalize",
+		"fix:editorconfig": "@lint:editorconfig --fix",
+		"fix:php": "php-cs-fixer fix",
+		"lint": [
+			"@lint:composer",
+			"@lint:editorconfig",
+			"@lint:php"
+		],
+		"lint:composer": "@fix:composer --dry-run",
+		"lint:editorconfig": "ec -e .Build",
+		"lint:php": "@fix:php --dry-run",
+		"migration": [
+			"@migration:rector"
+		],
+		"migration:rector": "rector process -c rector.php",
+		"sca": [
+			"@sca:php"
+		],
+		"sca:php": "phpstan analyse -c phpstan.neon",
+		"test": [
+			"@test:functional",
+			"@test:unit"
+		],
+		"test:coverage": [
+			"@test:coverage:functional",
+			"@test:coverage:unit",
+			"@test:coverage:merge"
+		],
+		"test:coverage:functional": "phpunit -c phpunit.functional.xml",
+		"test:coverage:merge": "phpcov merge --html .Build/coverage/html/_merged --clover .Build/coverage/clover.xml --text php://stdout .Build/coverage/php",
+		"test:coverage:unit": "phpunit -c phpunit.unit.xml",
+		"test:functional": "@test:coverage:functional --no-coverage",
+		"test:unit": "@test:coverage:unit --no-coverage"
+	}
+}

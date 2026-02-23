@@ -1,0 +1,5 @@
+name: cpsit/handlebars-forms
+label: 'Handlebars form rendering'
+dependencies:
+  - cpsit/handlebars-content-element
+  - typo3/form
