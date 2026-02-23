@@ -7,9 +7,6 @@
 	"assignees": [
 		"eliashaeussler"
 	],
-	"baseBranchPatterns": [
-		"main"
-	],
 	"constraints": {
 		"php": "8.2.*"
 	}
