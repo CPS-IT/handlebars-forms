@@ -260,7 +260,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $navigationElement->configuration,
                 $navigationElement->renderable,
                 $cObj,
-                $processedRenderable,
+                $navigationElement->processedRenderable,
             );
 
             if ($processedElement !== null) {
