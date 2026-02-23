@@ -3,14 +3,14 @@ plugin.tx_form {
     FormFrontend {
       templateName = Render
       templateRootPaths {
-        20 = EXT:handlebars/Resources/Private/Templates/Form
+        20 = EXT:handlebars_forms/Resources/Private/Templates/Form
       }
     }
   }
 
   handlebarsForms {
     default {
-      templateName = {$plugin.tx_handlebars.form.view.templateName}
+      templateName = {$plugin.tx_handlebarsforms.view.templateName}
     }
   }
 }

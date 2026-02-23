@@ -1,13 +1,13 @@
 categories:
-  hbs:
-    label: Handlebars
-  hbs.form:
-    label: Handlebars form rendering
-    parent: hbs
+  handlebars_forms:
+    label: Handlebars Forms
+  handlebars_forms.view:
+    label: View
+    parent: handlebars_forms
 
 settings:
-  plugin.tx_handlebars.form.view.templateName:
+  plugin.tx_handlebarsforms.form.view.templateName:
     label: Default form template name
     type: string
     default: 'Form'
-    category: hbs.form
+    category: handlebars_forms.view

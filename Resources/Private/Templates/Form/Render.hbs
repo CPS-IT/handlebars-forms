@@ -1,0 +1,9 @@
+{{viewHelperNamespace 'formvh' 'http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers'}}
+
+{{#if formConfiguration}}
+    {{{viewHelper 'formvh:render' overrideConfiguration=(merge formConfiguration
+        rendererClassName='CPSIT\Typo3HandlebarsForms\Renderer\HandlebarsFormRenderer'
+    )}}}
+{{/if}}
+
+{{{viewHelper 'f:flashMessages'}}}
