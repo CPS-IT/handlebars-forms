@@ -10,7 +10,7 @@ plugin.tx_form {
 
   handlebarsForms {
     default {
-      templateName = {$plugin.tx_handlebarsforms.view.templateName}
+      templateName = {$handlebars_forms.view.templateName}
     }
   }
 }

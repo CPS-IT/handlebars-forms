@@ -6,7 +6,7 @@ categories:
     parent: handlebars_forms
 
 settings:
-  plugin.tx_handlebarsforms.form.view.templateName:
+  handlebars_forms.view.templateName:
     label: Default form template name
     type: string
     default: 'Form'
