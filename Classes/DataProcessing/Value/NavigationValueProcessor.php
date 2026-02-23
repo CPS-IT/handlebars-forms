@@ -93,8 +93,8 @@ final readonly class NavigationValueProcessor implements ValueProcessor
                     $pageOrForm,
                     new DataProcessing\Renderable\ProcessedRenderable(
                         $processedRenderable->renderingContext,
-                        $buttonResult->tag,
                         $buttonResult->content,
+                        $buttonResult->tag,
                     ),
                     $stepConfiguration,
                 );
