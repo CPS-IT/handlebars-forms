@@ -43,6 +43,8 @@ jobs:
         run: composer lint:editorconfig
       - name: Lint PHP
         run: composer lint:php -- --format checkstyle | cs2pr
+      - name: Lint TypoScript
+        run: composer lint:typoscript -- --fail-on-warnings
 
       # SCA
       - name: SCA PHP

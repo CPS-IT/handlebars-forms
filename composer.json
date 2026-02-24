@@ -30,6 +30,7 @@
 		"eliashaeussler/version-bumper": "^3.1",
 		"ergebnis/composer-normalize": "^2.50",
 		"friendsofphp/php-cs-fixer": "^3.94",
+		"helmich/typo3-typoscript-lint": "^3.3",
 		"phpstan/extension-installer": "^1.4",
 		"phpstan/phpstan": "^2.1",
 		"phpstan/phpstan-phpunit": "^2.0",
@@ -87,11 +88,13 @@
 		"lint": [
 			"@lint:composer",
 			"@lint:editorconfig",
-			"@lint:php"
+			"@lint:php",
+			"@lint:typoscript"
 		],
 		"lint:composer": "@fix:composer --dry-run",
 		"lint:editorconfig": "ec -e .Build",
 		"lint:php": "@fix:php --dry-run",
+		"lint:typoscript": "typoscript-lint -c typoscript-lint.yml",
 		"migration": [
 			"@migration:rector"
 		],

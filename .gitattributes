@@ -12,4 +12,5 @@
 /phpunit.unit.xml           export-ignore
 /rector.php                 export-ignore
 /renovate.json              export-ignore
+/typoscript-lint.yml        export-ignore
 /version-bumper.yaml        export-ignore
