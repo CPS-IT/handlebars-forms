@@ -31,8 +31,12 @@ use TYPO3\CMS\Form;
 final class TextfieldRenderableProcessor extends AbstractRenderableProcessor
 {
     protected array $supportedTypes = [
-        // @todo add missing types
+        'Date',
         'Email',
+        'Number',
+        'Telephone',
+        'Text',
+        'Url',
     ];
 
     public function process(
@@ -44,10 +48,17 @@ final class TextfieldRenderableProcessor extends AbstractRenderableProcessor
             $renderingContext,
             Fluid\ViewHelpers\Form\TextfieldViewHelper::class,
             [
+                'type' => match ($renderable->getType()) {
+                    'Date' => 'date',
+                    'Email' => 'email',
+                    'Number' => 'number',
+                    'Telephone' => 'tel',
+                    'Url' => 'url',
+                    default => 'text',
+                },
                 'property' => $renderable->getIdentifier(),
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
-                'value' => $renderable->getProperties()['value'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
                 'additionalAttributes' => $additionalAttributes,
             ],
