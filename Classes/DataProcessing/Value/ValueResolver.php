@@ -18,26 +18,26 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Form;
 
 /**
- * ContentValueProcessor
+ * ValueProcessor
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class ContentValueProcessor implements ValueProcessor
+#[DependencyInjection\Attribute\AutoconfigureTag('handlebars_forms.value_resolver')]
+interface ValueResolver
 {
-    public function process(
+    public function resolve(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ProcessingContext $context = new ProcessingContext(),
-    ): ?string {
-        return $viewModel->tag->getContent();
-    }
+        ValueResolutionContext $context = new ValueResolutionContext(),
+    ): mixed;
 
-    public static function getName(): string
-    {
-        return 'CONTENT';
-    }
+    /**
+     * @return non-empty-string
+     */
+    public static function getName(): string;
 }

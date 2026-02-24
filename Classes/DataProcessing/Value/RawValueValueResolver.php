@@ -18,33 +18,26 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
-use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Form;
 
 /**
- * PropertyValueProcessor
+ * RawValueValueProcessor
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class PropertyValueProcessor implements ValueProcessor
+final readonly class RawValueValueResolver implements ValueResolver
 {
-    public function process(
+    public function resolve(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ProcessingContext $context = new ProcessingContext(),
+        ValueResolutionContext $context = new ValueResolutionContext(),
     ): mixed {
-        $path = $context['path'];
-
-        if (!is_string($path)) {
-            return null;
-        }
-
-        return Extbase\Reflection\ObjectAccess::getProperty($renderable, $path);
+        return $context['value'];
     }
 
     public static function getName(): string
     {
-        return 'PROPERTY';
+        return 'RAW_VALUE';
     }
 }

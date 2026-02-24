@@ -29,7 +29,7 @@ use TYPO3\CMS\Form;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class NavigationValueProcessor implements ValueProcessor
+final readonly class NavigationValueResolver implements ValueResolver
 {
     private const PREVIOUS_PAGE = 'previousPage';
     private const NEXT_PAGE = 'nextPage';
@@ -42,10 +42,10 @@ final readonly class NavigationValueProcessor implements ValueProcessor
     /**
      * @return list<mixed>
      */
-    public function process(
+    public function resolve(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ProcessingContext $context = new ProcessingContext(),
+        ValueResolutionContext $context = new ValueResolutionContext(),
     ): array {
         $elements = [];
 
@@ -79,7 +79,7 @@ final readonly class NavigationValueProcessor implements ValueProcessor
      */
     private function processElements(
         array $renderables,
-        ProcessingContext $context,
+        ValueResolutionContext $context,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
         Form\Domain\Runtime\FormRuntime $formRuntime,
     ): array {

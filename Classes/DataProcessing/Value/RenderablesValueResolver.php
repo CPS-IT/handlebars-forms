@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
-use CPSIT\Typo3HandlebarsForms\DataProcessing;
+use CPSIT\Typo3HandlebarsForms\Domain;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
@@ -28,23 +28,23 @@ use TYPO3\CMS\Form;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class RenderablesValueProcessor implements ValueProcessor
+final readonly class RenderablesValueResolver implements ValueResolver
 {
     /**
-     * @param iterable<DataProcessing\Renderable\RenderableProcessor<Form\Domain\Model\Renderable\RootRenderableInterface>> $renderableProcessors
+     * @param iterable<Domain\Renderable\ViewModel\ViewModelBuilder<Form\Domain\Model\Renderable\RootRenderableInterface>> $viewModelBuilders
      */
     public function __construct(
-        #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.renderable_processor')]
-        private iterable $renderableProcessors,
+        #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.view_model_builder')]
+        private iterable $viewModelBuilders,
     ) {}
 
     /**
      * @return list<mixed>
      */
-    public function process(
+    public function resolve(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\RenderableViewModel $viewModel,
-        ProcessingContext $context = new ProcessingContext(),
+        Domain\Renderable\ViewModel\ViewModel $viewModel,
+        ValueResolutionContext $context = new ValueResolutionContext(),
     ): array {
         $processedRenderables = [];
 
@@ -61,10 +61,10 @@ final readonly class RenderablesValueProcessor implements ValueProcessor
             $childConfiguration = $context[$child->getType() . '.'];
 
             if (is_array($childConfiguration)) {
-                $childViewModel = $this->buildFormProperties($child, $viewModel->renderingContext);
+                $childViewModel = $this->buildViewModel($child, $viewModel->renderingContext);
             } else {
                 $childConfiguration = [];
-                $childViewModel = new DataProcessing\Renderable\RenderableViewModel($viewModel->renderingContext, null);
+                $childViewModel = new Domain\Renderable\ViewModel\ViewModel($viewModel->renderingContext, null);
             }
 
             $processedChild = $context->process($childConfiguration, $child, $childViewModel);
@@ -77,17 +77,17 @@ final readonly class RenderablesValueProcessor implements ValueProcessor
         return $processedRenderables;
     }
 
-    private function buildFormProperties(
+    private function buildViewModel(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): DataProcessing\Renderable\RenderableViewModel {
-        foreach ($this->renderableProcessors as $renderableProcessor) {
-            if ($renderableProcessor->supports($renderable)) {
-                return $renderableProcessor->process($renderable, $renderingContext);
+    ): Domain\Renderable\ViewModel\ViewModel {
+        foreach ($this->viewModelBuilders as $viewModelBuilder) {
+            if ($viewModelBuilder->supports($renderable)) {
+                return $viewModelBuilder->build($renderable, $renderingContext);
             }
         }
 
-        return new DataProcessing\Renderable\RenderableViewModel($renderingContext, null);
+        return new Domain\Renderable\ViewModel\ViewModel($renderingContext, null);
     }
 
     public static function getName(): string

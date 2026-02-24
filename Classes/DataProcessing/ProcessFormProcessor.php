@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use Psr\Http\Message;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
@@ -37,14 +38,14 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     private const CONTENT_PLACEHOLDER = '###FORM_CONTENT###';
 
     /**
-     * @param DependencyInjection\ServiceLocator<Value\ValueProcessor> $valueProcessors
+     * @param DependencyInjection\ServiceLocator<Value\ValueResolver> $valueResolvers
      */
     public function __construct(
         private Log\LoggerInterface $logger,
         private Fluid\Core\Rendering\RenderingContextFactory $renderingContextFactory,
-        private Renderable\FormRenderableProcessor $formRenderableProcessor,
-        #[DependencyInjection\Attribute\AutowireLocator('handlebars_forms.value_processor', defaultIndexMethod: 'getName')]
-        private DependencyInjection\ServiceLocator $valueProcessors,
+        private Domain\Renderable\ViewModel\FormViewModelBuilder $formRenderableProcessor,
+        #[DependencyInjection\Attribute\AutowireLocator('handlebars_forms.value_resolver', defaultIndexMethod: 'getName')]
+        private DependencyInjection\ServiceLocator $valueResolvers,
     ) {}
 
     /**
@@ -83,7 +84,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         // Since the final rendered form content (which especially contains all relevant hidden fields)
         // is not yet available when processing renderables, we temporarily pass a content placeholder
         // for all configured CONTENT values and replace them with the real content value later.
-        $this->formRenderableProcessor->process(
+        $this->formRenderableProcessor->build(
             $formRuntime,
             $renderingContext,
             function (FluidStandalone\Core\ViewHelper\TagBuilder $tagBuilder) use (
@@ -97,7 +98,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $tag = $tagBuilder;
                 $tag->setContent(self::CONTENT_PLACEHOLDER);
 
-                $viewModel = new Renderable\RenderableViewModel($renderingContext, null, $tag);
+                $viewModel = new Domain\Renderable\ViewModel\ViewModel($renderingContext, null, $tag);
                 $processedData = $this->processRenderable($formRuntime, $processorConfiguration, $cObj, $viewModel) ?? [];
 
                 return '';
@@ -126,7 +127,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         array $configuration,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Renderable\RenderableViewModel $viewModel,
+        Domain\Renderable\ViewModel\ViewModel $viewModel,
     ): ?array {
         $processedData = [];
 
@@ -140,10 +141,10 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $keyWithDot = $keyWithoutDot . '.';
 
             if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
-                $processedValue = $this->processRenderable($renderable, $value, $cObj, $viewModel);
+                $resolvedValue = $this->processRenderable($renderable, $value, $cObj, $viewModel);
 
-                if (is_array($processedValue)) {
-                    $processedData[$keyWithoutDot] = $processedValue;
+                if (is_array($resolvedValue)) {
+                    $processedData[$keyWithoutDot] = $resolvedValue;
                 }
             }
 
@@ -153,17 +154,17 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
 
             $valueConfiguration = $configuration[$keyWithDot] ?? [];
 
-            // Process configured value
-            if ($this->valueProcessors->has($value)) {
-                $processedValue = $this->valueProcessors->get($value)->process(
+            // Resolve configured value
+            if ($this->valueResolvers->has($value)) {
+                $resolvedValue = $this->valueResolvers->get($value)->resolve(
                     $renderable,
                     $viewModel,
-                    new Value\ProcessingContext(
+                    new Value\ValueResolutionContext(
                         $valueConfiguration,
                         fn(
                             array $contextConfiguration,
                             ?Form\Domain\Model\Renderable\RootRenderableInterface $contextRenderable = null,
-                            ?Renderable\RenderableViewModel $contextViewModel = null,
+                            ?Domain\Renderable\ViewModel\ViewModel $contextViewModel = null,
                         ) => $this->processRenderable(
                             $contextRenderable ?? $renderable,
                             $contextConfiguration,
@@ -173,30 +174,30 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                     ),
                 );
             } else {
-                $processedValue = $value;
+                $resolvedValue = $value;
             }
 
             // Skip further processing if processed value is not a string (all COR related methods require a string value)
-            if (!is_string($processedValue)) {
-                $processedData[$keyWithoutDot] = $processedValue;
+            if (!is_string($resolvedValue)) {
+                $processedData[$keyWithoutDot] = $resolvedValue;
                 continue;
             }
 
             // Process value with stdWrap
             if (is_array($valueConfiguration['stdWrap.'] ?? null)) {
-                $processedValue = $cObj->stdWrap($processedValue, $valueConfiguration['stdWrap.']);
+                $resolvedValue = $cObj->stdWrap($resolvedValue, $valueConfiguration['stdWrap.']);
             }
 
             // Skip value if a configured "if" evaluates to false
             if (is_array($valueConfiguration['if.'] ?? null)) {
-                $valueConfiguration['if.']['value'] ??= $processedValue;
+                $valueConfiguration['if.']['value'] ??= $resolvedValue;
 
                 if (!$cObj->checkIf($valueConfiguration['if.'])) {
                     continue;
                 }
             }
 
-            $processedData[$keyWithoutDot] = $processedValue;
+            $processedData[$keyWithoutDot] = $resolvedValue;
         }
 
         return $processedData;
@@ -209,7 +210,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         array &$configuration,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Renderable\RenderableViewModel $viewModel,
+        Domain\Renderable\ViewModel\ViewModel $viewModel,
     ): bool {
         if (!is_array($configuration['if.'] ?? null)) {
             return true;

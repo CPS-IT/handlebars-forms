@@ -18,26 +18,32 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
-use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Form;
 
 /**
- * ValueProcessor
+ * AttributeValueProcessor
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AutoconfigureTag('handlebars_forms.value_processor')]
-interface ValueProcessor
+final readonly class AttributeValueResolver implements ValueResolver
 {
-    public function process(
+    public function resolve(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ProcessingContext $context = new ProcessingContext(),
-    ): mixed;
+        ValueResolutionContext $context = new ValueResolutionContext(),
+    ): ?string {
+        $name = $context['name'];
 
-    /**
-     * @return non-empty-string
-     */
-    public static function getName(): string;
+        if (!is_string($name)) {
+            return null;
+        }
+
+        return $viewModel->tag->getAttribute($name);
+    }
+
+    public static function getName(): string
+    {
+        return 'ATTRIBUTE';
+    }
 }

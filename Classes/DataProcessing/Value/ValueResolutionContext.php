@@ -21,7 +21,7 @@ use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Form;
 
 /**
- * ProcessingContext
+ * ValueResolutionContext
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
@@ -34,15 +34,15 @@ use TYPO3\CMS\Form;
  *     Domain\Renderable\ViewModel\ViewModel|null,
  * ): mixed
  */
-final readonly class ProcessingContext implements \ArrayAccess
+final readonly class ValueResolutionContext implements \ArrayAccess
 {
     /**
      * @param array<string, mixed> $configuration
-     * @param ProcessorClosure|null $processRenderableClosure
+     * @param ProcessorClosure|null $renderableProcessor
      */
     public function __construct(
         public array $configuration = [],
-        private ?\Closure $processRenderableClosure = null,
+        private ?\Closure $renderableProcessor = null,
     ) {}
 
     /**
@@ -53,11 +53,11 @@ final readonly class ProcessingContext implements \ArrayAccess
         ?Form\Domain\Model\Renderable\RootRenderableInterface $renderable = null,
         ?Domain\Renderable\ViewModel\ViewModel $viewModel = null,
     ): mixed {
-        if ($this->processRenderableClosure === null) {
+        if ($this->renderableProcessor === null) {
             return null;
         }
 
-        return ($this->processRenderableClosure)($configuration, $renderable, $viewModel);
+        return ($this->renderableProcessor)($configuration, $renderable, $viewModel);
     }
 
     public function offsetExists(mixed $offset): bool

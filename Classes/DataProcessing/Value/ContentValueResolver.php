@@ -21,29 +21,23 @@ use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Form;
 
 /**
- * AttributeValueProcessor
+ * ContentValueProcessor
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class AttributeValueProcessor implements ValueProcessor
+final readonly class ContentValueResolver implements ValueResolver
 {
-    public function process(
+    public function resolve(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ProcessingContext $context = new ProcessingContext(),
+        ValueResolutionContext $context = new ValueResolutionContext(),
     ): ?string {
-        $name = $context['name'];
-
-        if (!is_string($name)) {
-            return null;
-        }
-
-        return $viewModel->tag->getAttribute($name);
+        return $viewModel->tag->getContent();
     }
 
     public static function getName(): string
     {
-        return 'ATTRIBUTE';
+        return 'CONTENT';
     }
 }
