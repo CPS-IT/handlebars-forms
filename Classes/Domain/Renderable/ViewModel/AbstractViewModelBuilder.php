@@ -41,6 +41,38 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
         protected readonly ViewHelperInvoker $viewHelperInvoker,
     ) {}
 
+    public function build(
+        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+    ): ViewModel {
+        $result = $this->viewHelperInvoker->invoke(
+            $renderingContext,
+            Form\ViewHelpers\RenderRenderableViewHelper::class,
+            ['renderable' => $renderable],
+            function () use ($renderable, $renderingContext, &$viewModel) {
+                $viewModel = $this->renderRenderable($renderable, $renderingContext);
+
+                return '';
+            },
+        );
+
+        if ($viewModel instanceof ViewModel) {
+            return $viewModel;
+        }
+
+        return new ViewModel($renderingContext, $result->content, $result->tag);
+    }
+
+    /**
+     * @param T $renderable
+     */
+    protected function renderRenderable(
+        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+    ): ?ViewModel {
+        return null;
+    }
+
     public function supports(Form\Domain\Model\Renderable\RootRenderableInterface $renderable): bool
     {
         return in_array($renderable->getType(), $this->supportedTypes, true);

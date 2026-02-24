@@ -39,7 +39,7 @@ final class TextfieldViewModelBuilder extends AbstractViewModelBuilder
         'Url',
     ];
 
-    public function build(
+    public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {

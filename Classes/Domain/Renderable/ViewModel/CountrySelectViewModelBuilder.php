@@ -34,7 +34,7 @@ final class CountrySelectViewModelBuilder extends AbstractViewModelBuilder
         'CountrySelect',
     ];
 
-    public function build(
+    public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
