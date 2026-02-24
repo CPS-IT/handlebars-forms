@@ -15,46 +15,52 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Renderable;
+namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
 
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * HiddenRenderableProcessor
+ * FormViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
- * @extends AbstractRenderableProcessor<Form\Domain\Model\FormElements\FormElementInterface>
+ * @extends AbstractViewModelBuilder<Form\Domain\Runtime\FormRuntime>
  */
-final class HiddenRenderableProcessor extends AbstractRenderableProcessor
+final class FormViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
-        'Hidden',
-        'Honeypot',
+        'Form',
     ];
 
-    public function process(
+    public function build(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): RenderableViewModel {
+        ?\Closure $viewHelperClosure = null,
+    ): ViewModel {
         $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
-            Fluid\ViewHelpers\Form\HiddenViewHelper::class,
+            Form\ViewHelpers\FormViewHelper::class,
             [
-                'property' => $renderable->getIdentifier(),
-                'id' => $renderable->getUniqueIdentifier(),
-                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+                'object' => $renderable,
+                'action' => $renderable->getRenderingOptions()['controllerAction'] ?? null,
+                'method' => $renderable->getRenderingOptions()['httpMethod'] ?? null,
+                'id' => $renderable->getIdentifier(),
+                'section' => $renderable->getIdentifier(),
+                'addQueryString' => $renderable->getRenderingOptions()['addQueryString'] ?? null,
+                'argumentsToBeExcludedFromQueryString' => $renderable->getRenderingOptions()['argumentsToBeExcludedFromQueryString'] ?? null,
+                'additionalParams' => $renderable->getRenderingOptions()['additionalParams'] ?? null,
                 'additionalAttributes' => $additionalAttributes,
             ],
+            $viewHelperClosure,
         );
 
         foreach ($additionalAttributes as $name => $value) {
             $result->tag->addAttribute($name, $value);
         }
 
-        return new RenderableViewModel($renderingContext, $result->content, $result->tag);
+        return new ViewModel($renderingContext, $result->content, $result->tag);
     }
 }

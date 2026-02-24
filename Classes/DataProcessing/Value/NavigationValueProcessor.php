@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
-use CPSIT\Typo3HandlebarsForms\DataProcessing;
+use CPSIT\Typo3HandlebarsForms\Domain;
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvocationResult;
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
 use TYPO3\CMS\Fluid;
@@ -44,7 +44,7 @@ final readonly class NavigationValueProcessor implements ValueProcessor
      */
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        Domain\Renderable\ViewModel\ViewModel $viewModel,
         ProcessingContext $context = new ProcessingContext(),
     ): array {
         $elements = [];
@@ -90,14 +90,14 @@ final readonly class NavigationValueProcessor implements ValueProcessor
 
             if (is_array($stepConfiguration)) {
                 $buttonResult = $this->processButton($renderingContext, $stepRenderable, $formRuntime, $step);
-                $stepViewModel = new DataProcessing\Renderable\RenderableViewModel(
+                $stepViewModel = new Domain\Renderable\ViewModel\ViewModel(
                     $renderingContext,
                     $buttonResult->content,
                     $buttonResult->tag,
                 );
             } else {
                 $stepConfiguration = [];
-                $stepViewModel = new DataProcessing\Renderable\RenderableViewModel($renderingContext, null);
+                $stepViewModel = new Domain\Renderable\ViewModel\ViewModel($renderingContext, null);
             }
 
             $processedElement = $context->process($stepConfiguration, $stepRenderable, $stepViewModel);

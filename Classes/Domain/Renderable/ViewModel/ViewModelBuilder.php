@@ -15,30 +15,30 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Renderable;
+namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
 
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * RenderableProcessor
+ * ViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
  * @template T of Form\Domain\Model\Renderable\RootRenderableInterface
  */
-#[DependencyInjection\Attribute\AutoconfigureTag('handlebars_forms.renderable_processor')]
-interface RenderableProcessor
+#[DependencyInjection\Attribute\AutoconfigureTag('handlebars_forms.view_model_builder')]
+interface ViewModelBuilder
 {
     /**
      * @param T $renderable
      */
-    public function process(
+    public function build(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): RenderableViewModel;
+    ): ViewModel;
 
     public function supports(Form\Domain\Model\Renderable\RootRenderableInterface $renderable): bool;
 }

@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
-use CPSIT\Typo3HandlebarsForms\DataProcessing;
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Form;
 
@@ -31,7 +31,7 @@ final readonly class PropertyValueProcessor implements ValueProcessor
 {
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        Domain\Renderable\ViewModel\ViewModel $viewModel,
         ProcessingContext $context = new ProcessingContext(),
     ): mixed {
         $path = $context['path'];

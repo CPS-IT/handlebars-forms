@@ -15,29 +15,29 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Renderable;
+namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
 
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * CountrySelectRenderableProcessor
+ * CountrySelectViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
- * @extends AbstractRenderableProcessor<Form\Domain\Model\FormElements\FormElementInterface>
+ * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\FormElementInterface>
  */
-final class CountrySelectRenderableProcessor extends AbstractRenderableProcessor
+final class CountrySelectViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
         'CountrySelect',
     ];
 
-    public function process(
+    public function build(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): RenderableViewModel {
+    ): ViewModel {
         $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
@@ -61,6 +61,6 @@ final class CountrySelectRenderableProcessor extends AbstractRenderableProcessor
             $result->tag->addAttribute($name, $value);
         }
 
-        return new RenderableViewModel($renderingContext, $result->content, $result->tag);
+        return new ViewModel($renderingContext, $result->content, $result->tag);
     }
 }

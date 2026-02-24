@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
-use CPSIT\Typo3HandlebarsForms\DataProcessing;
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Form;
 
 /**
@@ -31,7 +31,7 @@ use TYPO3\CMS\Form;
  * @phpstan-type ProcessorClosure \Closure(
  *     array<string, mixed>,
  *     Form\Domain\Model\Renderable\RootRenderableInterface|null,
- *     DataProcessing\Renderable\RenderableViewModel|null,
+ *     Domain\Renderable\ViewModel\ViewModel|null,
  * ): mixed
  */
 final readonly class ProcessingContext implements \ArrayAccess
@@ -51,7 +51,7 @@ final readonly class ProcessingContext implements \ArrayAccess
     public function process(
         array $configuration = [],
         ?Form\Domain\Model\Renderable\RootRenderableInterface $renderable = null,
-        ?DataProcessing\Renderable\RenderableViewModel $viewModel = null,
+        ?Domain\Renderable\ViewModel\ViewModel $viewModel = null,
     ): mixed {
         if ($this->processRenderableClosure === null) {
             return null;

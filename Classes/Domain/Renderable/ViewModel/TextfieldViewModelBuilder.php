@@ -15,39 +15,50 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Renderable;
+namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
 
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * CheckboxRenderableProcessor
+ * TextfieldViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
- * @extends AbstractRenderableProcessor<Form\Domain\Model\FormElements\FormElementInterface>
+ * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\FormElementInterface>
  */
-final class CheckboxRenderableProcessor extends AbstractRenderableProcessor
+final class TextfieldViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
-        'Checkbox',
-        'MultiCheckbox',
+        'Date',
+        'Email',
+        'Number',
+        'Telephone',
+        'Text',
+        'Url',
     ];
 
-    public function process(
+    public function build(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): RenderableViewModel {
+    ): ViewModel {
         $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
-            Fluid\ViewHelpers\Form\CheckboxViewHelper::class,
+            Fluid\ViewHelpers\Form\TextfieldViewHelper::class,
             [
+                'type' => match ($renderable->getType()) {
+                    'Date' => 'date',
+                    'Email' => 'email',
+                    'Number' => 'number',
+                    'Telephone' => 'tel',
+                    'Url' => 'url',
+                    default => 'text',
+                },
                 'property' => $renderable->getIdentifier(),
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
-                'value' => $renderable->getProperties()['value'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
                 'additionalAttributes' => $additionalAttributes,
             ],
@@ -57,6 +68,6 @@ final class CheckboxRenderableProcessor extends AbstractRenderableProcessor
             $result->tag->addAttribute($name, $value);
         }
 
-        return new RenderableViewModel($renderingContext, $result->content, $result->tag);
+        return new ViewModel($renderingContext, $result->content, $result->tag);
     }
 }

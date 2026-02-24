@@ -15,18 +15,18 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Renderable;
+namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
 
 use TYPO3\CMS\Fluid;
 use TYPO3Fluid\Fluid as FluidStandalone;
 
 /**
- * RenderableViewModel
+ * ViewModel
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class RenderableViewModel
+final readonly class ViewModel
 {
     public function __construct(
         public Fluid\Core\Rendering\RenderingContext $renderingContext,

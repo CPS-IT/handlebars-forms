@@ -15,22 +15,22 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Renderable;
+namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
 
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * AbstractRenderableProcessor
+ * AbstractViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
  * @template T of Form\Domain\Model\Renderable\RootRenderableInterface
- * @implements RenderableProcessor<T>
+ * @implements ViewModelBuilder<T>
  */
-abstract class AbstractRenderableProcessor implements RenderableProcessor
+abstract class AbstractViewModelBuilder implements ViewModelBuilder
 {
     /**
      * @var list<non-empty-string>
