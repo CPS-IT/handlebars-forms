@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Renderer;
+namespace CPSIT\Typo3HandlebarsForms\Domain\Renderer;
 
 use CPSIT\Typo3Handlebars\View;
 use Symfony\Component\DependencyInjection;
