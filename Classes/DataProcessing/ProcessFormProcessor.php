@@ -79,6 +79,10 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $formRuntime,
         );
 
+        // Render form and process renderables as part of the form's renderChildrenClosure.
+        // Since the final rendered form content (which especially contains all relevant hidden fields)
+        // is not yet available when processing renderables, we temporarily pass a content placeholder
+        // for all configured CONTENT values and replace them with the real content value later.
         $this->formRenderableProcessor->process(
             $formRuntime,
             $renderingContext,
@@ -100,13 +104,16 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             },
         );
 
-        $inputFields = $tag?->getContent() ?? '';
+        $formContent = $tag?->getContent();
 
-        array_walk_recursive($processedData, static function (&$value) use ($inputFields) {
-            if (is_string($value)) {
-                $value = str_replace(self::CONTENT_PLACEHOLDER, $inputFields, $value);
-            }
-        });
+        // Replace content placeholder with final rendered form content
+        if ($formContent !== null) {
+            array_walk_recursive($processedData, static function (&$value) use ($formContent) {
+                if (is_string($value)) {
+                    $value = str_replace(self::CONTENT_PLACEHOLDER, $formContent, $value);
+                }
+            });
+        }
 
         return $processedData;
     }
