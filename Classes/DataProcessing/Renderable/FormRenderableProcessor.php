@@ -38,7 +38,7 @@ final class FormRenderableProcessor extends AbstractRenderableProcessor
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
         ?\Closure $viewHelperClosure = null,
-    ): ProcessedRenderable {
+    ): RenderableViewModel {
         $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
@@ -61,6 +61,6 @@ final class FormRenderableProcessor extends AbstractRenderableProcessor
             $result->tag->addAttribute($name, $value);
         }
 
-        return new ProcessedRenderable($renderingContext, $result->content, $result->tag);
+        return new RenderableViewModel($renderingContext, $result->content, $result->tag);
     }
 }

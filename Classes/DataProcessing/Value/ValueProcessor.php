@@ -30,13 +30,10 @@ use TYPO3\CMS\Form;
 #[DependencyInjection\Attribute\AutoconfigureTag('handlebars_forms.value_processor')]
 interface ValueProcessor
 {
-    /**
-     * @param array<string, mixed> $configuration
-     */
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\ProcessedRenderable $processedRenderable,
-        array $configuration = [],
+        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        ProcessingContext $context = new ProcessingContext(),
     ): mixed;
 
     /**

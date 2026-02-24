@@ -30,16 +30,16 @@ final readonly class AttributeValueProcessor implements ValueProcessor
 {
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\ProcessedRenderable $processedRenderable,
-        array $configuration = [],
+        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        ProcessingContext $context = new ProcessingContext(),
     ): ?string {
-        $name = $configuration['name'] ?? null;
+        $name = $context['name'];
 
         if (!is_string($name)) {
             return null;
         }
 
-        return $processedRenderable->tag->getAttribute($name);
+        return $viewModel->tag->getAttribute($name);
     }
 
     public static function getName(): string

@@ -37,15 +37,12 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     private const CONTENT_PLACEHOLDER = '###FORM_CONTENT###';
 
     /**
-     * @param iterable<Renderable\RenderableProcessor> $renderableProcessors
      * @param DependencyInjection\ServiceLocator<Value\ValueProcessor> $valueProcessors
      */
     public function __construct(
         private Log\LoggerInterface $logger,
         private Fluid\Core\Rendering\RenderingContextFactory $renderingContextFactory,
         private Renderable\FormRenderableProcessor $formRenderableProcessor,
-        #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.renderable_processor', exclude: Renderable\FormRenderableProcessor::class)]
-        private iterable $renderableProcessors,
         #[DependencyInjection\Attribute\AutowireLocator('handlebars_forms.value_processor', defaultIndexMethod: 'getName')]
         private DependencyInjection\ServiceLocator $valueProcessors,
     ) {}
@@ -96,8 +93,8 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $tag = $tagBuilder;
                 $tag->setContent(self::CONTENT_PLACEHOLDER);
 
-                $processedRenderable = new Renderable\ProcessedRenderable($renderingContext, null, $tag);
-                $processedData = $this->processRenderable($processorConfiguration, $formRuntime, $cObj, $processedRenderable) ?? [];
+                $viewModel = new Renderable\RenderableViewModel($renderingContext, null, $tag);
+                $processedData = $this->processRenderable($formRuntime, $processorConfiguration, $cObj, $viewModel) ?? [];
 
                 return '';
             },
@@ -119,15 +116,15 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
      * @return array<string, mixed>|null
      */
     private function processRenderable(
-        array $configuration,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        array $configuration,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Renderable\ProcessedRenderable $processedRenderable,
+        Renderable\RenderableViewModel $viewModel,
     ): ?array {
         $processedData = [];
 
         // Early return on configured "if" condition evaluating to false
-        if (!$this->checkIf($configuration, $renderable, $cObj, $processedRenderable)) {
+        if (!$this->checkIf($configuration, $renderable, $cObj, $viewModel)) {
             return null;
         }
 
@@ -136,7 +133,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $keyWithDot = $keyWithoutDot . '.';
 
             if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
-                $processedValue = $this->processRenderable($value, $renderable, $cObj, $processedRenderable);
+                $processedValue = $this->processRenderable($renderable, $value, $cObj, $viewModel);
 
                 if (is_array($processedValue)) {
                     $processedData[$keyWithoutDot] = $processedValue;
@@ -153,23 +150,23 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             if ($this->valueProcessors->has($value)) {
                 $processedValue = $this->valueProcessors->get($value)->process(
                     $renderable,
-                    $processedRenderable,
-                    $valueConfiguration,
-                );
-            } elseif ($value === 'RENDERABLES') {
-                $processedValue = $this->processRenderables(
-                    $valueConfiguration,
-                    $cObj,
-                    $renderable,
-                    $processedRenderable->renderingContext,
+                    $viewModel,
+                    new Value\ProcessingContext(
+                        $valueConfiguration,
+                        fn(
+                            array $contextConfiguration,
+                            ?Form\Domain\Model\Renderable\RootRenderableInterface $contextRenderable = null,
+                            ?Renderable\RenderableViewModel $contextViewModel = null,
+                        ) => $this->processRenderable(
+                            $contextRenderable ?? $renderable,
+                            $contextConfiguration,
+                            $cObj,
+                            $contextViewModel ?? $viewModel,
+                        ),
+                    ),
                 );
             } else {
                 $processedValue = $value;
-            }
-
-            // Post-process navigation
-            if (is_array($processedValue) && Value\NavigationValueProcessor::getName() === $value) {
-                $processedValue = $this->processNavigation($processedValue, $cObj, $processedRenderable);
             }
 
             // Skip further processing if processed value is not a string (all COR related methods require a string value)
@@ -199,86 +196,13 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     }
 
     /**
-     * @param array<string, array<string, mixed>> $configuration
-     * @return list<array<string, mixed>>
-     */
-    private function processRenderables(
-        array $configuration,
-        Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Form\Domain\Model\Renderable\RootRenderableInterface $rootRenderable,
-        Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): array {
-        $processedElements = [];
-
-        if ($rootRenderable instanceof Form\Domain\Runtime\FormRuntime) {
-            $renderables = $rootRenderable->getCurrentPage()?->getRenderablesRecursively() ?? [];
-        } elseif ($rootRenderable instanceof Form\Domain\Model\Renderable\CompositeRenderableInterface) {
-            $renderables = $rootRenderable->getRenderablesRecursively();
-        } else {
-            // We cannot process non-composite renderables here
-            return [];
-        }
-
-        foreach ($renderables as $renderable) {
-            $typeConfiguration = $configuration[$renderable->getType() . '.'] ?? null;
-
-            if (is_array($typeConfiguration)) {
-                $processedRenderable = $this->buildFormProperties($renderable, $renderingContext);
-            } else {
-                $typeConfiguration = [];
-                $processedRenderable = new Renderable\ProcessedRenderable($renderingContext, null);
-            }
-
-            $processedElement = $this->processRenderable(
-                $typeConfiguration,
-                $renderable,
-                $cObj,
-                $processedRenderable,
-            );
-
-            if ($processedElement !== null) {
-                $processedElements[] = $processedElement;
-            }
-        }
-
-        return $processedElements;
-    }
-
-    /**
-     * @param list<Value\NavigationElement> $navigationElements
-     * @return list<array<string, mixed>>
-     */
-    private function processNavigation(
-        array $navigationElements,
-        Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Renderable\ProcessedRenderable $processedRenderable,
-    ): array {
-        $processedElements = [];
-
-        foreach ($navigationElements as $navigationElement) {
-            $processedElement = $this->processRenderable(
-                $navigationElement->configuration,
-                $navigationElement->renderable,
-                $cObj,
-                $navigationElement->processedRenderable,
-            );
-
-            if ($processedElement !== null) {
-                $processedElements[] = $processedElement;
-            }
-        }
-
-        return $processedElements;
-    }
-
-    /**
      * @param array<string, mixed> $configuration
      */
     private function checkIf(
         array &$configuration,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Renderable\ProcessedRenderable $processedRenderable,
+        Renderable\RenderableViewModel $viewModel,
     ): bool {
         if (!is_array($configuration['if.'] ?? null)) {
             return true;
@@ -288,13 +212,13 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
 
         if (is_string($configuration['if.']['value'] ?? null) && is_array($configuration['if.']['value.'] ?? null)) {
             $processedValue = $this->processRenderable(
+                $renderable,
                 [
                     'value' => $configuration['if.']['value'],
                     'value.' => $configuration['if.']['value.'],
                 ],
-                $renderable,
                 $cObj,
-                $processedRenderable,
+                $viewModel,
             );
 
             $cObjTemp->setCurrentVal($processedValue['value'] ?? null);
@@ -309,18 +233,5 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         unset($configuration['if.']);
 
         return true;
-    }
-
-    private function buildFormProperties(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): Renderable\ProcessedRenderable {
-        foreach ($this->renderableProcessors as $renderableProcessor) {
-            if ($renderableProcessor->supports($renderable)) {
-                return $renderableProcessor->process($renderable, $renderingContext);
-            }
-        }
-
-        return new Renderable\ProcessedRenderable($renderingContext, null);
     }
 }

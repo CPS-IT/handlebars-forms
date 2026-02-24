@@ -37,7 +37,7 @@ final class CountrySelectRenderableProcessor extends AbstractRenderableProcessor
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ProcessedRenderable {
+    ): RenderableViewModel {
         $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
@@ -51,6 +51,6 @@ final class CountrySelectRenderableProcessor extends AbstractRenderableProcessor
             $result->tag->addAttribute($name, $value);
         }
 
-        return new ProcessedRenderable($renderingContext, $result->content, $result->tag);
+        return new RenderableViewModel($renderingContext, $result->content, $result->tag);
     }
 }

@@ -30,10 +30,10 @@ final readonly class RawValueValueProcessor implements ValueProcessor
 {
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\ProcessedRenderable $processedRenderable,
-        array $configuration = [],
+        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        ProcessingContext $context = new ProcessingContext(),
     ): mixed {
-        return $configuration['value'] ?? null;
+        return $context['value'];
     }
 
     public static function getName(): string

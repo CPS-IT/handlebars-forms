@@ -31,10 +31,10 @@ final readonly class PropertyValueProcessor implements ValueProcessor
 {
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\ProcessedRenderable $processedRenderable,
-        array $configuration = [],
+        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        ProcessingContext $context = new ProcessingContext(),
     ): mixed {
-        $path = $configuration['path'] ?? null;
+        $path = $context['path'];
 
         if (!is_string($path)) {
             return null;

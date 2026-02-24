@@ -54,20 +54,33 @@ abstract class AbstractRenderableProcessor implements RenderableProcessor
         Fluid\Core\Rendering\RenderingContext $renderingContext,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
     ): array {
+        $content = $this->translateElementProperty(
+            $renderingContext,
+            $renderable,
+            'fluidAdditionalAttributes',
+        );
+
+        if (!is_array($content)) {
+            return [];
+        }
+
+        return $content;
+    }
+
+    protected function translateElementProperty(
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        string $property,
+    ): mixed {
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Form\ViewHelpers\TranslateElementPropertyViewHelper::class,
             [
                 'element' => $renderable,
-                'property' => 'fluidAdditionalAttributes',
+                'property' => $property,
             ],
         );
 
-        if (!is_array($result->content)) {
-            return [];
-        }
-
         return $result->content;
     }
-
 }

@@ -30,10 +30,10 @@ final readonly class ContentValueProcessor implements ValueProcessor
 {
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\ProcessedRenderable $processedRenderable,
-        array $configuration = [],
+        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        ProcessingContext $context = new ProcessingContext(),
     ): ?string {
-        return $processedRenderable->tag->getContent();
+        return $viewModel->tag->getContent();
     }
 
     public static function getName(): string

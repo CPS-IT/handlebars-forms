@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
 
 use CPSIT\Typo3HandlebarsForms\DataProcessing;
+use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvocationResult;
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
@@ -30,83 +31,121 @@ use TYPO3\CMS\Form;
  */
 final readonly class NavigationValueProcessor implements ValueProcessor
 {
+    private const PREVIOUS_PAGE = 'previousPage';
+    private const NEXT_PAGE = 'nextPage';
+    private const SUBMIT = 'submit';
+
     public function __construct(
         private ViewHelperInvoker $viewHelperInvoker,
     ) {}
 
     /**
-     * @return list<NavigationElement>
+     * @return list<mixed>
      */
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        DataProcessing\Renderable\ProcessedRenderable $processedRenderable,
-        array $configuration = [],
+        DataProcessing\Renderable\RenderableViewModel $viewModel,
+        ProcessingContext $context = new ProcessingContext(),
     ): array {
-        $navigationElements = [];
-        $renderables = [];
+        $elements = [];
 
         // We cannot process navigation within a concrete form element
         if (!($renderable instanceof Form\Domain\Runtime\FormRuntime)) {
             return [];
         }
 
+        // Add previous page button
         if ($renderable->getPreviousPage() !== null) {
-            $renderables['previousPage'] = $renderable->getPreviousPage();
+            $elements[self::PREVIOUS_PAGE] = $renderable->getPreviousPage();
         }
 
+        // Add next page OR submit button
         if ($renderable->getNextPage() !== null) {
-            $renderables['nextPage'] = $renderable->getNextPage();
+            $elements[self::NEXT_PAGE] = $renderable->getNextPage();
         } else {
-            $renderables['submit'] = $renderable;
+            $elements[self::SUBMIT] = $renderable;
         }
 
-        foreach ($renderables as $step => $pageOrForm) {
-            $stepConfiguration = $configuration[$step . '.'] ?? null;
-            $isPage = $pageOrForm instanceof Form\Domain\Model\FormElements\Page;
+        return $this->processElements($elements, $context, $viewModel->renderingContext, $renderable);
+    }
+
+    /**
+     * @param array{
+     *     previousPage?: Form\Domain\Model\FormElements\Page,
+     *     nextPage?: Form\Domain\Model\FormElements\Page,
+     *     submit?: Form\Domain\Runtime\FormRuntime,
+     * } $renderables
+     * @return list<mixed>
+     */
+    private function processElements(
+        array $renderables,
+        ProcessingContext $context,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+        Form\Domain\Runtime\FormRuntime $formRuntime,
+    ): array {
+        $processedElements = [];
+
+        foreach ($renderables as $step => $stepRenderable) {
+            $stepConfiguration = $context[$step . '.'] ?? null;
 
             if (is_array($stepConfiguration)) {
-                $buttonResult = $this->viewHelperInvoker->invoke(
-                    $processedRenderable->renderingContext,
-                    Fluid\ViewHelpers\Form\ButtonViewHelper::class,
-                    [
-                        'property' => '__currentPage',
-                        'value' => $isPage ? $pageOrForm->getIndex() : count($pageOrForm->getPages()),
-                    ],
-                );
-
-                $labelResult = $this->viewHelperInvoker->invoke(
-                    $processedRenderable->renderingContext,
-                    Form\ViewHelpers\TranslateElementPropertyViewHelper::class,
-                    [
-                        'element' => $isPage ? $renderable->getCurrentPage() : $renderable,
-                        'renderingOptionProperty' => match ($step) {
-                            'previousPage' => 'previousButtonLabel',
-                            'nextPage' => 'nextButtonLabel',
-                            'submit' => 'submitButtonLabel',
-                        },
-                    ],
-                );
-
-                $buttonResult->tag->addAttribute('label', $labelResult->content);
-
-                $navigationElements[] = new NavigationElement(
-                    $pageOrForm,
-                    new DataProcessing\Renderable\ProcessedRenderable(
-                        $processedRenderable->renderingContext,
-                        $buttonResult->content,
-                        $buttonResult->tag,
-                    ),
-                    $stepConfiguration,
+                $buttonResult = $this->processButton($renderingContext, $stepRenderable, $formRuntime, $step);
+                $stepViewModel = new DataProcessing\Renderable\RenderableViewModel(
+                    $renderingContext,
+                    $buttonResult->content,
+                    $buttonResult->tag,
                 );
             } else {
-                $navigationElements[] = new NavigationElement(
-                    $pageOrForm,
-                    new DataProcessing\Renderable\ProcessedRenderable($processedRenderable->renderingContext, null),
-                );
+                $stepConfiguration = [];
+                $stepViewModel = new DataProcessing\Renderable\RenderableViewModel($renderingContext, null);
+            }
+
+            $processedElement = $context->process($stepConfiguration, $stepRenderable, $stepViewModel);
+
+            if ($processedElement !== null) {
+                $processedElements[] = $processedElement;
             }
         }
 
-        return $navigationElements;
+        return $processedElements;
+    }
+
+    /**
+     * @param self::* $step
+     */
+    private function processButton(
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+        Form\Domain\Model\FormElements\Page|Form\Domain\Runtime\FormRuntime $pageOrForm,
+        Form\Domain\Runtime\FormRuntime $formRuntime,
+        string $step,
+    ): ViewHelperInvocationResult {
+        $isPage = $pageOrForm instanceof Form\Domain\Model\FormElements\Page;
+
+        $buttonResult = $this->viewHelperInvoker->invoke(
+            $renderingContext,
+            Fluid\ViewHelpers\Form\ButtonViewHelper::class,
+            [
+                'property' => '__currentPage',
+                'value' => $isPage ? $pageOrForm->getIndex() : count($pageOrForm->getPages()),
+            ],
+        );
+
+        $labelResult = $this->viewHelperInvoker->invoke(
+            $renderingContext,
+            Form\ViewHelpers\TranslateElementPropertyViewHelper::class,
+            [
+                'element' => $isPage ? $formRuntime->getCurrentPage() : $formRuntime,
+                'renderingOptionProperty' => match ($step) {
+                    self::PREVIOUS_PAGE => 'previousButtonLabel',
+                    self::NEXT_PAGE => 'nextButtonLabel',
+                    self::SUBMIT => 'submitButtonLabel',
+                },
+            ],
+        );
+
+        $buttonResult->tag->addAttribute('label', $labelResult->content);
+
+        return $buttonResult;
     }
 
     public static function getName(): string

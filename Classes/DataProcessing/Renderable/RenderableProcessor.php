@@ -38,7 +38,7 @@ interface RenderableProcessor
     public function process(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ProcessedRenderable;
+    ): RenderableViewModel;
 
     public function supports(Form\Domain\Model\Renderable\RootRenderableInterface $renderable): bool;
 }
