@@ -44,7 +44,15 @@ final class SelectRenderableProcessor extends AbstractRenderableProcessor
             $renderingContext,
             Fluid\ViewHelpers\Form\SelectViewHelper::class,
             [
-                // @todo add arguments
+                'property' => $renderable->getIdentifier(),
+                'id' => $renderable->getUniqueIdentifier(),
+                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+                'options' => $this->translateElementProperty($renderingContext, $renderable, 'options'),
+                'multiple' => $renderable->getType() === 'MultiSelect' ? 'multiple' : null,
+                'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
+                'additionalAttributes' => $additionalAttributes,
+                'prependOptionLabel' => $this->translateElementProperty($renderingContext, $renderable, 'prependOptionLabel'),
+                'prependOptionValue' => $this->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
             ],
         );
 

@@ -43,7 +43,17 @@ final class CountrySelectRenderableProcessor extends AbstractRenderableProcessor
             $renderingContext,
             Fluid\ViewHelpers\Form\CountrySelectViewHelper::class,
             [
-                // @todo add arguments
+                'property' => $renderable->getIdentifier(),
+                'id' => $renderable->getUniqueIdentifier(),
+                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+                'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
+                'additionalAttributes' => $additionalAttributes,
+                'prependOptionLabel' => $this->translateElementProperty($renderingContext, $renderable, 'prependOptionLabel'),
+                'prependOptionValue' => $this->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
+                'sortByOptionLabel' => true,
+                'prioritizedCountries' => $renderable->getProperties()['prioritizedCountries'] ?? [],
+                'onlyCountries' => $renderable->getProperties()['onlyCountries'] ?? [],
+                'excludeCountries' => $renderable->getProperties()['excludeCountries'] ?? [],
             ],
         );
 
