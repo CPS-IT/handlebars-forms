@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
+use DevTheorem\Handlebars;
 use Psr\Http\Message;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
@@ -195,6 +196,12 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 if (!$cObj->checkIf($valueConfiguration['if.'])) {
                     continue;
                 }
+            }
+
+            // Strings can be considered safe, since the relevant escaping is already performed
+            // in the view helpers and/or TagBuilder instances when adding attributes
+            if (is_string($resolvedValue)) {
+                $resolvedValue = new Handlebars\SafeString($resolvedValue);
             }
 
             $processedData[$keyWithoutDot] = $resolvedValue;
