@@ -152,6 +152,20 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $keyWithoutDot = rtrim($key, '.');
             $keyWithDot = $keyWithoutDot . '.';
 
+            // Merge TS reference (=<) and replace configuration with merged configuration
+            if (is_string($value)) {
+                $mergedConfig = $cObj->mergeTSRef(
+                    [
+                        $keyWithoutDot => $configuration[$keyWithoutDot] ?? '',
+                        $keyWithDot => $configuration[$keyWithDot] ?? [],
+                    ],
+                    $keyWithoutDot,
+                );
+                $configuration[$keyWithoutDot] = $mergedConfig[$keyWithoutDot];
+                $configuration[$keyWithDot] = $mergedConfig[$keyWithDot];
+                $value = $configuration[$keyWithoutDot];
+            }
+
             if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
                 $resolvedValue = $this->processRenderable($renderable, $value, $cObj, $viewModel);
 
