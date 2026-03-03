@@ -225,20 +225,20 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
 
         $cObjTemp = clone $cObj;
 
-        if (is_string($configuration['if.']['value'] ?? null) && is_array($configuration['if.']['value.'] ?? null)) {
+        if (is_string($configuration['if.']['currentValue'] ?? null) && is_array($configuration['if.']['currentValue.'] ?? null)) {
             $processedValue = $this->processRenderable(
                 $renderable,
                 [
-                    'value' => $configuration['if.']['value'],
-                    'value.' => $configuration['if.']['value.'],
+                    'currentValue' => $configuration['if.']['currentValue'],
+                    'currentValue.' => $configuration['if.']['currentValue.'],
                 ],
                 $cObj,
                 $viewModel,
             );
 
-            $cObjTemp->setCurrentVal($processedValue['value'] ?? null);
+            $cObjTemp->setCurrentVal($processedValue['currentValue'] ?? null);
 
-            unset($configuration['if.']['value'], $configuration['if.']['value.']);
+            unset($configuration['if.']['currentValue'], $configuration['if.']['currentValue.']);
         }
 
         if (!$cObjTemp->checkIf($configuration['if.'])) {
