@@ -48,13 +48,21 @@ final readonly class RenderablesValueResolver implements ValueResolver
     ): array {
         $processedRenderables = [];
 
+        // Use current page as base renderable if we're on root form context
         if ($renderable instanceof Form\Domain\Runtime\FormRuntime) {
-            $renderables = $renderable->getCurrentPage()?->getRenderablesRecursively() ?? [];
+            $renderable = $renderable->getCurrentPage() ?? $renderable;
+        }
+
+        // Fetch renderables from base renderable. On default sections (e.g. pages), this reflects
+        // all direct children. On all other composite renderables, this reflects all renderables
+        // recursively (including deeply nested rebderables). If we have a non-composite base
+        // renderable in place, we do nothing since this value resolver only handles composite renderables.
+        if ($renderable instanceof Form\Domain\Model\FormElements\AbstractSection) {
+            $renderables = $renderable->getElements();
         } elseif ($renderable instanceof Form\Domain\Model\Renderable\CompositeRenderableInterface) {
             $renderables = $renderable->getRenderablesRecursively();
         } else {
-            // We cannot process non-composite renderables here
-            return [];
+            $renderables = [];
         }
 
         foreach ($renderables as $child) {
