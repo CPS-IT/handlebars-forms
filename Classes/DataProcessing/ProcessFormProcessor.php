@@ -111,8 +111,19 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         // Replace content placeholder with final rendered form content
         if ($formContent !== null) {
             array_walk_recursive($processedData, static function (&$value) use ($formContent) {
+                $isSafeString = false;
+
+                if ($value instanceof Handlebars\SafeString) {
+                    $isSafeString = true;
+                    $value = (string)$value;
+                }
+
                 if (is_string($value)) {
                     $value = str_replace(self::CONTENT_PLACEHOLDER, $formContent, $value);
+                }
+
+                if ($isSafeString) {
+                    $value = new Handlebars\SafeString($value);
                 }
             });
         }
