@@ -193,7 +193,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             if (is_array($valueConfiguration['if.'] ?? null)) {
                 $valueConfiguration['if.']['value'] ??= $resolvedValue;
 
-                if (!$cObj->checkIf($valueConfiguration['if.'])) {
+                if (!$this->checkIf($valueConfiguration, $renderable, $cObj, $viewModel)) {
                     continue;
                 }
             }
