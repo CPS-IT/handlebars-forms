@@ -77,12 +77,12 @@ final readonly class ValidationResultsValueResolver implements ValueResolver
         }
 
         // Resolve complex rendering configuration
-        if (!is_array($outputConfiguration)) {
+        if (is_array($outputConfiguration)) {
             return $this->processRenderingConfiguration(
                 $renderable,
                 $viewModel,
                 $validationResults,
-                [],
+                $outputConfiguration,
             );
         }
 
