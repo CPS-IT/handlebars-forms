@@ -143,7 +143,7 @@ final readonly class NavigationValueResolver implements ValueResolver
                 'renderingOptionProperty',
             );
 
-            $buttonResult->tag->addAttribute('label', $labelResult->content);
+            $buttonResult->tag->addAttribute('label', $labelResult);
         }
 
         return $buttonResult;
