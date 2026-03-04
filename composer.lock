@@ -126,12 +126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CPS-IT/handlebars.git",
-                "reference": "6ad9ba67fe6d44d27b01149f69e8866342ba34e5"
+                "reference": "63772fdfa010b01c5be66a7d4532a85b180e5cda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/6ad9ba67fe6d44d27b01149f69e8866342ba34e5",
-                "reference": "6ad9ba67fe6d44d27b01149f69e8866342ba34e5",
+                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/63772fdfa010b01c5be66a7d4532a85b180e5cda",
+                "reference": "63772fdfa010b01c5be66a7d4532a85b180e5cda",
                 "shasum": ""
             },
             "require": {
@@ -204,7 +204,7 @@
                 "issues": "https://github.com/CPS-IT/handlebars/issues",
                 "source": "https://github.com/CPS-IT/handlebars"
             },
-            "time": "2026-02-23T08:42:35+00:00"
+            "time": "2026-03-04T07:53:04+00:00"
         },
         {
             "name": "dasprid/enum",
