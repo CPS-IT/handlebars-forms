@@ -86,7 +86,7 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
         Fluid\Core\Rendering\RenderingContext $renderingContext,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
     ): array {
-        $content = $this->translateElementProperty(
+        $content = $this->viewHelperInvoker->translateElementProperty(
             $renderingContext,
             $renderable,
             'fluidAdditionalAttributes',
@@ -99,20 +99,4 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
         return $content;
     }
 
-    protected function translateElementProperty(
-        Fluid\Core\Rendering\RenderingContext $renderingContext,
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        string $property,
-    ): mixed {
-        $result = $this->viewHelperInvoker->invoke(
-            $renderingContext,
-            Form\ViewHelpers\TranslateElementPropertyViewHelper::class,
-            [
-                'element' => $renderable,
-                'property' => $property,
-            ],
-        );
-
-        return $result->content;
-    }
 }

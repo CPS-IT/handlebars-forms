@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\Fluid;
 
 use TYPO3\CMS\Fluid;
+use TYPO3\CMS\Form;
 use TYPO3Fluid\Fluid as FluidStandalone;
 
 /**
@@ -53,5 +54,26 @@ final readonly class ViewHelperInvoker
         );
 
         return new ViewHelperInvocationResult($viewHelper, $renderingContext, $content, $tag);
+    }
+
+    /**
+     * @param 'property'|'renderingOptionProperty' $propertyArgumentName
+     */
+    public function translateElementProperty(
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        string $property,
+        string $propertyArgumentName = 'property',
+    ): mixed {
+        $result = $this->invoke(
+            $renderingContext,
+            Form\ViewHelpers\TranslateElementPropertyViewHelper::class,
+            [
+                'element' => $renderable,
+                $propertyArgumentName => $property,
+            ],
+        );
+
+        return $result->content;
     }
 }

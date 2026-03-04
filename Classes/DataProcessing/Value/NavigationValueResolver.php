@@ -120,6 +120,7 @@ final readonly class NavigationValueResolver implements ValueResolver
         string $step,
     ): ViewHelperInvocationResult {
         $isPage = $pageOrForm instanceof Form\Domain\Model\FormElements\Page;
+        $labelRenderable = $isPage ? $formRuntime->getCurrentPage() : $formRuntime;
 
         $buttonResult = $this->viewHelperInvoker->invoke(
             $renderingContext,
@@ -130,20 +131,20 @@ final readonly class NavigationValueResolver implements ValueResolver
             ],
         );
 
-        $labelResult = $this->viewHelperInvoker->invoke(
-            $renderingContext,
-            Form\ViewHelpers\TranslateElementPropertyViewHelper::class,
-            [
-                'element' => $isPage ? $formRuntime->getCurrentPage() : $formRuntime,
-                'renderingOptionProperty' => match ($step) {
+        if ($labelRenderable !== null) {
+            $labelResult = $this->viewHelperInvoker->translateElementProperty(
+                $renderingContext,
+                $labelRenderable,
+                match ($step) {
                     self::PREVIOUS_PAGE => 'previousButtonLabel',
                     self::NEXT_PAGE => 'nextButtonLabel',
                     self::SUBMIT => 'submitButtonLabel',
                 },
-            ],
-        );
+                'renderingOptionProperty',
+            );
 
-        $buttonResult->tag->addAttribute('label', $labelResult->content);
+            $buttonResult->tag->addAttribute('label', $labelResult->content);
+        }
 
         return $buttonResult;
     }
