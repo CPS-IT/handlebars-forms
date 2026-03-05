@@ -27,6 +27,7 @@ use TYPO3\CMS\Form;
  * @license GPL-2.0-or-later
  *
  * @implements \ArrayAccess<string, mixed>
+ * @implements \IteratorAggregate<string, mixed>
  *
  * @phpstan-type ProcessorClosure \Closure(
  *     array<string, mixed>,
@@ -34,7 +35,7 @@ use TYPO3\CMS\Form;
  *     Domain\Renderable\ViewModel\ViewModel|null,
  * ): mixed
  */
-final readonly class ValueResolutionContext implements \ArrayAccess
+final readonly class ValueResolutionContext implements \ArrayAccess, \IteratorAggregate
 {
     /**
      * @param array<string, mixed> $configuration
@@ -78,5 +79,10 @@ final readonly class ValueResolutionContext implements \ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         // Not allowed.
+    }
+
+    public function getIterator(): \Traversable
+    {
+        return new \ArrayIterator($this->configuration);
     }
 }
