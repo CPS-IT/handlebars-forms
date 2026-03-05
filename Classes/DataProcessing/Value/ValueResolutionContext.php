@@ -61,6 +61,14 @@ final readonly class ValueResolutionContext implements \ArrayAccess, \IteratorAg
         return ($this->renderableProcessor)($configuration, $renderable, $viewModel);
     }
 
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    public function withConfiguration(array $configuration): self
+    {
+        return new self($configuration, $this->renderableProcessor);
+    }
+
     public function offsetExists(mixed $offset): bool
     {
         return \array_key_exists($offset, $this->configuration);
