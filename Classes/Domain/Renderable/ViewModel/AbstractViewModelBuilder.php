@@ -45,6 +45,7 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
+        $viewModel = null;
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Form\ViewHelpers\RenderRenderableViewHelper::class,
@@ -56,11 +57,13 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
             },
         );
 
-        if ($viewModel instanceof ViewModel) {
-            return $viewModel;
+        if (!($viewModel instanceof ViewModel)) {
+            $viewModel = new ViewModel($renderingContext, $result->content, $result->tag);
         }
 
-        return new ViewModel($renderingContext, $result->content, $result->tag);
+        $this->applyGridColumnClasses($renderable, $viewModel);
+
+        return $viewModel;
     }
 
     /**
@@ -99,4 +102,34 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
         return $content;
     }
 
+    /**
+     * @param T $renderable
+     */
+    protected function applyGridColumnClasses(
+        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        ViewModel $viewModel,
+    ): void {
+        if (!($renderable instanceof Form\Domain\Model\Renderable\RenderableInterface)) {
+            return;
+        }
+
+        if ($renderable->getParentRenderable()?->getType() !== 'GridRow') {
+            return;
+        }
+
+        $gridResult = $this->viewHelperInvoker->invoke(
+            $viewModel->renderingContext,
+            Form\ViewHelpers\GridColumnClassAutoConfigurationViewHelper::class,
+            [
+                'element' => $renderable,
+            ],
+        );
+
+        if (is_string($gridResult->content)) {
+            $viewModel->tag->addAttribute(
+                'class',
+                trim($viewModel->tag->getAttribute('class') . ' ' . $gridResult->content),
+            );
+        }
+    }
 }
