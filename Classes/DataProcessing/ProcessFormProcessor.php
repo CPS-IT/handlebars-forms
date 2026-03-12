@@ -148,23 +148,12 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             return null;
         }
 
+        // Merge TS reference (=<) and replace configuration with merged configuration
+        $this->mergeTypoScriptReferences($configuration, $cObj);
+
         foreach ($configuration as $key => $value) {
             $keyWithoutDot = rtrim($key, '.');
             $keyWithDot = $keyWithoutDot . '.';
-
-            // Merge TS reference (=<) and replace configuration with merged configuration
-            if (is_string($value)) {
-                $mergedConfig = $cObj->mergeTSRef(
-                    [
-                        $keyWithoutDot => $configuration[$keyWithoutDot] ?? '',
-                        $keyWithDot => $configuration[$keyWithDot] ?? [],
-                    ],
-                    $keyWithoutDot,
-                );
-                $configuration[$keyWithoutDot] = $mergedConfig[$keyWithoutDot];
-                $configuration[$keyWithDot] = $mergedConfig[$keyWithDot];
-                $value = $configuration[$keyWithoutDot];
-            }
 
             if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
                 $resolvedValue = $this->processRenderable($renderable, $value, $cObj, $viewModel);
@@ -233,6 +222,50 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         }
 
         return $processedData;
+    }
+
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    private function mergeTypoScriptReferences(
+        array &$configuration,
+        Frontend\ContentObject\ContentObjectRenderer $cObj,
+    ): void {
+        $processedKeys = [];
+
+        foreach ($configuration as $key => $value) {
+            if (in_array($key, $processedKeys, true)) {
+                continue;
+            }
+
+            $keyWithoutDot = rtrim($key, '.');
+            $keyWithDot = $keyWithoutDot . '.';
+
+            if (array_key_exists($keyWithDot, $configuration) && is_array($configuration[$keyWithDot])) {
+                $this->mergeTypoScriptReferences($configuration[$keyWithDot], $cObj);
+            }
+
+            if (!array_key_exists($keyWithoutDot, $configuration)) {
+                continue;
+            }
+
+            $mergedConfig = $cObj->mergeTSRef(
+                [
+                    $keyWithoutDot => $configuration[$keyWithoutDot] ?? '',
+                    $keyWithDot => $configuration[$keyWithDot] ?? [],
+                ],
+                $keyWithoutDot,
+            );
+
+            $configuration[$keyWithoutDot] = $mergedConfig[$keyWithoutDot];
+
+            if ($mergedConfig[$keyWithDot] !== []) {
+                $configuration[$keyWithDot] = $mergedConfig[$keyWithDot];
+            }
+
+            $processedKeys[] = $keyWithoutDot;
+            $processedKeys[] = $keyWithDot;
+        }
     }
 
     /**
