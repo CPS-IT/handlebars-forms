@@ -66,6 +66,10 @@ final readonly class RenderablesValueResolver implements ValueResolver
         }
 
         foreach ($renderables as $child) {
+            if (!$child->isEnabled()) {
+                continue;
+            }
+
             $childConfiguration = $context[$child->getType() . '.'];
 
             if (is_array($childConfiguration)) {
