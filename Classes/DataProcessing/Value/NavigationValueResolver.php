@@ -55,13 +55,13 @@ final readonly class NavigationValueResolver implements ValueResolver
         }
 
         // Add previous page button
-        if ($renderable->getPreviousPage() !== null) {
-            $elements[self::PREVIOUS_PAGE] = $renderable->getPreviousPage();
+        if ($renderable->getPreviousEnabledPage() !== null) {
+            $elements[self::PREVIOUS_PAGE] = $renderable->getPreviousEnabledPage();
         }
 
         // Add next page OR submit button
-        if ($renderable->getNextPage() !== null) {
-            $elements[self::NEXT_PAGE] = $renderable->getNextPage();
+        if ($renderable->getNextEnabledPage() !== null) {
+            $elements[self::NEXT_PAGE] = $renderable->getNextEnabledPage();
         } else {
             $elements[self::SUBMIT] = $renderable;
         }
