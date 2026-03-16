@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
-use CPSIT\Typo3HandlebarsForms\Domain;
 use CPSIT\Typo3HandlebarsForms\Fluid;
 use Psr\Http\Message;
 use Symfony\Component\DependencyInjection;
@@ -68,8 +67,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
         // Resolve validation results by a single rendering instruction
         if (is_string($outputInstruction)) {
             return $this->processRenderingInstruction(
-                $renderable,
-                $context->viewModel,
+                $context,
                 $validationResults,
                 $outputInstruction,
                 $outputConfiguration ?? [],
@@ -78,12 +76,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
 
         // Resolve complex rendering configuration
         if (is_array($outputConfiguration)) {
-            return $this->processRenderingConfiguration(
-                $renderable,
-                $context->viewModel,
-                $validationResults,
-                $outputConfiguration,
-            );
+            return $this->processRenderingConfiguration($context, $validationResults, $outputConfiguration);
         }
 
         // Return raw results in case no rendering instructions are specified
@@ -95,10 +88,10 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
      * @return array<string, mixed>
      */
     private function processRenderingConfiguration(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
+        Context\ValueResolutionContext $context,
         Extbase\Error\Result $result,
         array $configuration,
+        bool $retainUnmatchedRenderingConfiguration = false,
     ): array {
         $processedData = [];
 
@@ -106,17 +99,22 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
             $keyWithoutDot = rtrim($key, '.');
             $keyWithDot = $keyWithoutDot . '.';
 
-            if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
-                $processedData[$keyWithoutDot] = $this->processRenderingConfiguration(
-                    $renderable,
-                    $viewModel,
-                    $result,
-                    $value,
-                );
+            if (is_array($value)) {
+                if (!array_key_exists($keyWithoutDot, $processedData)) {
+                    // Process nested rendering configuration
+                    $processedData[$keyWithoutDot] = $this->processRenderingConfiguration(
+                        $context,
+                        $result,
+                        $value,
+                        $retainUnmatchedRenderingConfiguration,
+                    );
+                } elseif ($retainUnmatchedRenderingConfiguration) {
+                    // Keep non-resolvable configuration (may be resolved differently)
+                    $processedData[$keyWithDot] = $value;
+                }
             } elseif (is_string($value)) {
                 $processedData[$keyWithoutDot] = $this->processRenderingInstruction(
-                    $renderable,
-                    $viewModel,
+                    $context,
                     $result,
                     $value,
                     $configuration[$keyWithDot] ?? [],
@@ -131,30 +129,31 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
      * @param array<string, mixed> $configuration
      */
     private function processRenderingInstruction(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
+        Context\ValueResolutionContext $context,
         Extbase\Error\Result $result,
         string $value,
         array $configuration,
     ): mixed {
         return match ($value) {
-            'EACH_ERROR' => $this->processErrors($renderable, $viewModel, $result, $configuration),
-            'ERROR_MESSAGE' => $this->processErrorMessage($renderable, $viewModel, $result),
-            'PROPERTY' => $this->processProperty($result, $configuration),
+            'EACH_ERROR' => $this->processErrors($context, $result, $configuration),
+            'EACH_RENDERABLE' => $this->processRenderables($context, $result, $configuration),
+            'ERROR_MESSAGE' => $this->processErrorMessage($context, $result),
+            'PROPERTY' => $this->processProperty($context, $configuration),
+            'RESULT' => $this->processResult($result, $configuration),
             default => $value,
         };
     }
 
     /**
      * @param array<string, mixed> $configuration
-     * @return ($renderable is Form\Domain\Model\Renderable\CompositeRenderableInterface|Form\Domain\Runtime\FormRuntime ? array<string, list<array<string, mixed>>> : list<array<string, mixed>>)
+     * @return array<string, list<array<string, mixed>>>|list<array<string, mixed>>
      */
     private function processErrors(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
+        Context\ValueResolutionContext $context,
         Extbase\Error\Result $result,
         array $configuration,
     ): array {
+        $renderable = $context->renderable;
         $processedErrors = [];
 
         foreach ($result->getFlattenedErrors() as $propertyPath => $errors) {
@@ -176,8 +175,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
                 $errorResult->addError($error);
 
                 $processedResult[] = $this->processRenderingConfiguration(
-                    $currentRenderable,
-                    $viewModel,
+                    $context->withRenderable($currentRenderable),
                     $errorResult,
                     $configuration,
                 );
@@ -201,11 +199,76 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
         return [];
     }
 
-    private function processErrorMessage(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
+    /**
+     * @param array<string, mixed> $configuration
+     * @return array<string, array<string, mixed>>
+     */
+    private function processRenderables(
+        Context\ValueResolutionContext $context,
         Extbase\Error\Result $result,
-    ): mixed {
+        array $configuration,
+    ): array {
+        $renderable = $context->renderable;
+        $processedRenderables = [];
+
+        foreach ($result->getFlattenedErrors() as $propertyPath => $errors) {
+            $currentRenderable = $renderable;
+
+            if ($propertyPath !== '' && $renderable instanceof Form\Domain\Runtime\FormRuntime) {
+                $currentRenderable = $renderable->getFormDefinition()->getElementByIdentifier($propertyPath);
+            }
+
+            // Skip errors if current renderable could not be resolved
+            if ($currentRenderable === null) {
+                continue;
+            }
+
+            // Process validation result first
+            $processedRenderable = $this->processRenderingConfiguration(
+                $context->withRenderable($currentRenderable),
+                $result->forProperty($propertyPath),
+                $configuration,
+                true,
+            );
+
+            // Normalize rendering configuration for post-processing
+            $processedRenderable = $this->normalizeRenderingConfiguration($processedRenderable);
+
+            // Post-process renderable
+            $processedRenderables[$propertyPath] = $context->process($processedRenderable, $currentRenderable);
+        }
+
+        return $processedRenderables;
+    }
+
+    /**
+     * @param array<string, mixed> $processedRenderable
+     * @return array<string, mixed>
+     */
+    private function normalizeRenderingConfiguration(array $processedRenderable): array
+    {
+        foreach ($processedRenderable as $key => $value) {
+            $keyWithoutDot = rtrim($key, '.');
+            $keyWithDot = $keyWithoutDot . '.';
+
+            if (!is_array($value) || $key === $keyWithDot) {
+                continue;
+            }
+
+            if (!array_key_exists($keyWithDot, $processedRenderable)) {
+                $processedRenderable[$keyWithDot] = $this->normalizeRenderingConfiguration($value);
+            }
+
+            $processedRenderable[$keyWithDot] = array_replace_recursive($processedRenderable[$keyWithDot], $value);
+
+            unset($processedRenderable[$keyWithoutDot]);
+        }
+
+        return $processedRenderable;
+    }
+
+    private function processErrorMessage(Context\ValueResolutionContext $context, Extbase\Error\Result $result): mixed
+    {
         $error = $result->getFirstError();
 
         // Early return if no error is attached to result
@@ -214,10 +277,10 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
         }
 
         $translationResult = $this->viewHelperInvoker->invoke(
-            $viewModel->renderingContext,
+            $context->viewModel->renderingContext,
             Form\ViewHelpers\TranslateElementErrorViewHelper::class,
             [
-                'element' => $renderable,
+                'element' => $context->renderable,
                 'error' => $error,
             ],
         );
@@ -228,7 +291,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     /**
      * @param array<string, mixed> $configuration
      */
-    private function processProperty(Extbase\Error\Result $result, array $configuration): mixed
+    private function processProperty(Context\ValueResolutionContext $context, array $configuration): mixed
     {
         $path = $configuration['path'] ?? null;
 
@@ -236,6 +299,20 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
             return null;
         }
 
-        return Extbase\Reflection\ObjectAccess::getProperty($result, $path);
+        return Extbase\Reflection\ObjectAccess::getProperty($context->renderable, $path);
+    }
+
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    private function processResult(Extbase\Error\Result $result, array $configuration): mixed
+    {
+        $propertyPath = $configuration['propertyPath'];
+
+        if (!is_string($propertyPath)) {
+            return $result;
+        }
+
+        return Extbase\Reflection\ObjectAccess::getProperty($result, $propertyPath);
     }
 }
