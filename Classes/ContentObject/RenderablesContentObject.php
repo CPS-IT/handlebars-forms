@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
+namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
 use Symfony\Component\DependencyInjection;
@@ -23,29 +23,28 @@ use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * RenderablesValueProcessor
+ * RenderablesContentObject
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class RenderablesValueResolver implements ValueResolver
+#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_RENDERABLES'])]
+final class RenderablesContentObject extends AbstractHandlebarsFormsContentObject
 {
     /**
      * @param iterable<Domain\Renderable\ViewModel\ViewModelBuilder<Form\Domain\Model\Renderable\RootRenderableInterface>> $viewModelBuilders
      */
     public function __construct(
         #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.view_model_builder')]
-        private iterable $viewModelBuilders,
+        private readonly iterable $viewModelBuilders,
     ) {}
 
     /**
      * @return list<mixed>
      */
-    public function resolve(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ValueResolutionContext $context = new ValueResolutionContext(),
-    ): array {
+    protected function resolve(array $configuration, Context\ValueResolutionContext $context): array
+    {
+        $renderable = $context->renderable;
         $processedRenderables = [];
 
         // Use current page as base renderable if we're on root form context
@@ -70,13 +69,13 @@ final readonly class RenderablesValueResolver implements ValueResolver
                 continue;
             }
 
-            $childConfiguration = $context[$child->getType() . '.'];
+            $childConfiguration = $configuration[$child->getType() . '.'] ?? null;
 
             if (is_array($childConfiguration)) {
-                $childViewModel = $this->buildViewModel($child, $viewModel->renderingContext);
+                $childViewModel = $this->buildViewModel($child, $context->viewModel->renderingContext);
             } else {
                 $childConfiguration = [];
-                $childViewModel = new Domain\Renderable\ViewModel\ViewModel($viewModel->renderingContext, null);
+                $childViewModel = new Domain\Renderable\ViewModel\ViewModel($context->viewModel->renderingContext, null);
             }
 
             $processedChild = $context->process($childConfiguration, $child, $childViewModel);
@@ -100,10 +99,5 @@ final readonly class RenderablesValueResolver implements ValueResolver
         }
 
         return new Domain\Renderable\ViewModel\ViewModel($renderingContext, null);
-    }
-
-    public static function getName(): string
-    {
-        return 'RENDERABLES';
     }
 }

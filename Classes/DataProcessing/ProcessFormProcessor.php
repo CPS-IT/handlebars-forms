@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing;
 
+use CPSIT\Typo3HandlebarsForms\ContentObject;
 use CPSIT\Typo3HandlebarsForms\Domain;
 use DevTheorem\Handlebars;
 use Psr\Http\Message;
@@ -38,15 +39,12 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
 {
     private const CONTENT_PLACEHOLDER = '###FORM_CONTENT###';
 
-    /**
-     * @param DependencyInjection\ServiceLocator<Value\ValueResolver> $valueResolvers
-     */
     public function __construct(
         private Log\LoggerInterface $logger,
         private Fluid\Core\Rendering\RenderingContextFactory $renderingContextFactory,
         private Domain\Renderable\ViewModel\FormViewModelBuilder $formRenderableProcessor,
-        #[DependencyInjection\Attribute\AutowireLocator('handlebars_forms.value_resolver', defaultIndexMethod: 'getName')]
-        private DependencyInjection\ServiceLocator $valueResolvers,
+        private ContentObject\Context\ValueCollector $valueCollector,
+        private ContentObject\Context\ContextStack $contextStack,
     ) {}
 
     /**
@@ -168,26 +166,36 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             }
 
             $valueConfiguration = $configuration[$keyWithDot] ?? [];
+            $contentObject = $cObj->getContentObject($value);
 
             // Resolve configured value
-            if ($this->valueResolvers->has($value)) {
-                $resolvedValue = $this->valueResolvers->get($value)->resolve(
+            if ($contentObject !== null) {
+                $context = new ContentObject\Context\ValueResolutionContext(
                     $renderable,
                     $viewModel,
-                    new Value\ValueResolutionContext(
-                        $valueConfiguration,
-                        fn(
-                            array $contextConfiguration,
-                            ?Form\Domain\Model\Renderable\RootRenderableInterface $contextRenderable = null,
-                            ?Domain\Renderable\ViewModel\ViewModel $contextViewModel = null,
-                        ) => $this->processRenderable(
-                            $contextRenderable ?? $renderable,
-                            $contextConfiguration,
-                            $cObj,
-                            $contextViewModel ?? $viewModel,
-                        ),
+                    fn(
+                        array $contextConfiguration,
+                        ?Form\Domain\Model\Renderable\RootRenderableInterface $contextRenderable = null,
+                        ?Domain\Renderable\ViewModel\ViewModel $contextViewModel = null,
+                    ) => $this->processRenderable(
+                        $contextRenderable ?? $renderable,
+                        $contextConfiguration,
+                        $cObj,
+                        $contextViewModel ?? $viewModel,
                     ),
                 );
+
+                $this->contextStack->push($context);
+
+                try {
+                    $resolvedValue = $cObj->render($contentObject, $valueConfiguration);
+                } finally {
+                    $this->contextStack->pop();
+                }
+
+                if ($this->valueCollector->has($resolvedValue)) {
+                    $resolvedValue = $this->valueCollector->load($resolvedValue);
+                }
             } else {
                 $resolvedValue = $value;
             }
