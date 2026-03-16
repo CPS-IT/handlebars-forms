@@ -57,4 +57,14 @@ final readonly class ValueResolutionContext
 
         return ($this->renderableProcessor)($configuration, $renderable, $viewModel);
     }
+
+    public function withRenderable(Form\Domain\Model\Renderable\RootRenderableInterface $renderable): self
+    {
+        return new self($renderable, $this->viewModel, $this->renderableProcessor);
+    }
+
+    public function withViewModel(Domain\Renderable\ViewModel\ViewModel $viewModel): self
+    {
+        return new self($this->renderable, $viewModel, $this->renderableProcessor);
+    }
 }
