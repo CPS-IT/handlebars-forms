@@ -15,33 +15,33 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
+namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
 use CPSIT\Typo3HandlebarsForms\Fluid;
 use Psr\Http\Message;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Form;
 
 /**
- * ValidationResultsValueResolver
+ * ValidationResultsContentObject
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class ValidationResultsValueResolver implements ValueResolver
+#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_VALIDATION_RESULTS'])]
+final class ValidationResultsContentObject extends AbstractHandlebarsFormsContentObject
 {
     public function __construct(
-        private Fluid\ViewHelperInvoker $viewHelperInvoker,
+        private readonly Fluid\ViewHelperInvoker $viewHelperInvoker,
     ) {}
 
-    public function resolve(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ValueResolutionContext $context = new ValueResolutionContext(),
-    ): mixed {
-        $outputInstruction = $context['output'];
-        $outputConfiguration = $context['output.'];
+    protected function resolve(array $configuration, Context\ValueResolutionContext $context): mixed
+    {
+        $outputInstruction = $configuration['output'] ?? null;
+        $outputConfiguration = $configuration['output.'] ?? null;
+        $renderable = $context->renderable;
 
         // Resolve form definition from renderable
         if ($renderable instanceof Form\Domain\Model\Renderable\AbstractRenderable) {
@@ -50,7 +50,7 @@ final readonly class ValidationResultsValueResolver implements ValueResolver
             $property = $renderable->getIdentifier();
         }
 
-        $request = $viewModel->renderingContext->getAttribute(Message\ServerRequestInterface::class);
+        $request = $context->viewModel->renderingContext->getAttribute(Message\ServerRequestInterface::class);
         $extbaseRequestParameters = $request->getAttribute('extbase');
 
         // Early return when resolver was requested outside of extbase context
@@ -69,7 +69,7 @@ final readonly class ValidationResultsValueResolver implements ValueResolver
         if (is_string($outputInstruction)) {
             return $this->processRenderingInstruction(
                 $renderable,
-                $viewModel,
+                $context->viewModel,
                 $validationResults,
                 $outputInstruction,
                 $outputConfiguration ?? [],
@@ -80,7 +80,7 @@ final readonly class ValidationResultsValueResolver implements ValueResolver
         if (is_array($outputConfiguration)) {
             return $this->processRenderingConfiguration(
                 $renderable,
-                $viewModel,
+                $context->viewModel,
                 $validationResults,
                 $outputConfiguration,
             );
@@ -237,10 +237,5 @@ final readonly class ValidationResultsValueResolver implements ValueResolver
         }
 
         return Extbase\Reflection\ObjectAccess::getProperty($result, $path);
-    }
-
-    public static function getName(): string
-    {
-        return 'VALIDATION_RESULTS';
     }
 }

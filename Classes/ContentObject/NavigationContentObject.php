@@ -15,38 +15,38 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
+namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvocationResult;
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * NavigationValueProcessor
+ * NavigationContentObject
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class NavigationValueResolver implements ValueResolver
+#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_NAVIGATION'])]
+final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
 {
     private const PREVIOUS_PAGE = 'previousPage';
     private const NEXT_PAGE = 'nextPage';
     private const SUBMIT = 'submit';
 
     public function __construct(
-        private ViewHelperInvoker $viewHelperInvoker,
+        private readonly ViewHelperInvoker $viewHelperInvoker,
     ) {}
 
     /**
      * @return list<mixed>
      */
-    public function resolve(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ValueResolutionContext $context = new ValueResolutionContext(),
-    ): array {
+    protected function resolve(array $configuration, Context\ValueResolutionContext $context): array
+    {
+        $renderable = $context->renderable;
         $elements = [];
 
         // We cannot process navigation within a concrete form element
@@ -66,27 +66,25 @@ final readonly class NavigationValueResolver implements ValueResolver
             $elements[self::SUBMIT] = $renderable;
         }
 
-        return $this->processElements($elements, $context, $viewModel->renderingContext, $renderable);
+        return $this->processElements($elements, $configuration, $context, $renderable);
     }
 
     /**
-     * @param array{
-     *     previousPage?: Form\Domain\Model\FormElements\Page,
-     *     nextPage?: Form\Domain\Model\FormElements\Page,
-     *     submit?: Form\Domain\Runtime\FormRuntime,
-     * } $renderables
+     * @param array<self::*, Form\Domain\Model\FormElements\Page|Form\Domain\Runtime\FormRuntime> $renderables
+     * @param array<string, mixed> $configuration
      * @return list<mixed>
      */
     private function processElements(
         array $renderables,
-        ValueResolutionContext $context,
-        Fluid\Core\Rendering\RenderingContext $renderingContext,
+        array $configuration,
+        Context\ValueResolutionContext $context,
         Form\Domain\Runtime\FormRuntime $formRuntime,
     ): array {
+        $renderingContext = $context->viewModel->renderingContext;
         $processedElements = [];
 
         foreach ($renderables as $step => $stepRenderable) {
-            $stepConfiguration = $context[$step . '.'] ?? null;
+            $stepConfiguration = $configuration[$step . '.'] ?? null;
 
             if (is_array($stepConfiguration)) {
                 $buttonResult = $this->processButton($renderingContext, $stepRenderable, $formRuntime, $step);
@@ -147,10 +145,5 @@ final readonly class NavigationValueResolver implements ValueResolver
         }
 
         return $buttonResult;
-    }
-
-    public static function getName(): string
-    {
-        return 'NAVIGATION';
     }
 }

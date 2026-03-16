@@ -15,29 +15,21 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
+namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
-use CPSIT\Typo3HandlebarsForms\Domain;
 use Symfony\Component\DependencyInjection;
-use TYPO3\CMS\Form;
 
 /**
- * ValueProcessor
+ * ContentContentObject
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AutoconfigureTag('handlebars_forms.value_resolver')]
-interface ValueResolver
+#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_CONTENT'])]
+final class ContentContentObject extends AbstractHandlebarsFormsContentObject
 {
-    public function resolve(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ValueResolutionContext $context = new ValueResolutionContext(),
-    ): mixed;
-
-    /**
-     * @return non-empty-string
-     */
-    public static function getName(): string;
+    public function resolve(array $configuration, Context\ValueResolutionContext $context): mixed
+    {
+        return $context->viewModel->content;
+    }
 }

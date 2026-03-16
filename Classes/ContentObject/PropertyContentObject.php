@@ -15,36 +15,28 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
+namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
-use CPSIT\Typo3HandlebarsForms\Domain;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
-use TYPO3\CMS\Form;
 
 /**
- * PropertyValueProcessor
+ * PropertyContentObject
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class PropertyValueResolver implements ValueResolver
+#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_PROPERTY'])]
+final class PropertyContentObject extends AbstractHandlebarsFormsContentObject
 {
-    public function resolve(
-        Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
-        ValueResolutionContext $context = new ValueResolutionContext(),
-    ): mixed {
-        $path = $context['path'];
+    public function resolve(array $configuration, Context\ValueResolutionContext $context): mixed
+    {
+        $path = $configuration['path'] ?? null;
 
         if (!is_string($path)) {
             return null;
         }
 
-        return Extbase\Reflection\ObjectAccess::getProperty($renderable, $path);
-    }
-
-    public static function getName(): string
-    {
-        return 'PROPERTY';
+        return Extbase\Reflection\ObjectAccess::getProperty($context->renderable, $path);
     }
 }

@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\DataProcessing\Value;
+namespace CPSIT\Typo3HandlebarsForms\ContentObject\Context;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Form;
@@ -26,23 +26,20 @@ use TYPO3\CMS\Form;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
- * @implements \ArrayAccess<string, mixed>
- * @implements \IteratorAggregate<string, mixed>
- *
  * @phpstan-type ProcessorClosure \Closure(
  *     array<string, mixed>,
  *     Form\Domain\Model\Renderable\RootRenderableInterface|null,
  *     Domain\Renderable\ViewModel\ViewModel|null,
  * ): mixed
  */
-final readonly class ValueResolutionContext implements \ArrayAccess, \IteratorAggregate
+final readonly class ValueResolutionContext
 {
     /**
-     * @param array<string, mixed> $configuration
      * @param ProcessorClosure|null $renderableProcessor
      */
     public function __construct(
-        public array $configuration = [],
+        public Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        public Domain\Renderable\ViewModel\ViewModel $viewModel,
         private ?\Closure $renderableProcessor = null,
     ) {}
 
@@ -59,38 +56,5 @@ final readonly class ValueResolutionContext implements \ArrayAccess, \IteratorAg
         }
 
         return ($this->renderableProcessor)($configuration, $renderable, $viewModel);
-    }
-
-    /**
-     * @param array<string, mixed> $configuration
-     */
-    public function withConfiguration(array $configuration): self
-    {
-        return new self($configuration, $this->renderableProcessor);
-    }
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return \array_key_exists($offset, $this->configuration);
-    }
-
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->configuration[$offset] ?? null;
-    }
-
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        // Not allowed.
-    }
-
-    public function offsetUnset(mixed $offset): void
-    {
-        // Not allowed.
-    }
-
-    public function getIterator(): \Traversable
-    {
-        return new \ArrayIterator($this->configuration);
     }
 }
