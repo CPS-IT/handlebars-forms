@@ -201,19 +201,19 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             }
 
             // Skip further processing if processed value is not a string (all COR related methods require a string value)
-            if (!is_string($resolvedValue)) {
+            if (!is_string($resolvedValue) && $resolvedValue !== null) {
                 $processedData[$keyWithoutDot] = $resolvedValue;
                 continue;
             }
 
             // Process value with stdWrap
             if (is_array($valueConfiguration['stdWrap.'] ?? null)) {
-                $resolvedValue = $cObj->stdWrap($resolvedValue, $valueConfiguration['stdWrap.']);
+                $resolvedValue = $cObj->stdWrap((string)$resolvedValue, $valueConfiguration['stdWrap.']);
             }
 
             // Skip value if a configured "if" evaluates to false
             if (is_array($valueConfiguration['if.'] ?? null)) {
-                $valueConfiguration['if.']['value'] ??= $resolvedValue;
+                $valueConfiguration['if.']['value'] ??= (string)$resolvedValue;
 
                 if (!$this->checkIf($valueConfiguration, $renderable, $cObj, $viewModel)) {
                     continue;
