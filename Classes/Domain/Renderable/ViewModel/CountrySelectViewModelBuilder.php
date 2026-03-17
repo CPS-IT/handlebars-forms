@@ -38,7 +38,6 @@ final class CountrySelectViewModelBuilder extends AbstractViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
-        $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Fluid\ViewHelpers\Form\CountrySelectViewHelper::class,
@@ -47,7 +46,7 @@ final class CountrySelectViewModelBuilder extends AbstractViewModelBuilder
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $additionalAttributes,
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
                 'prependOptionLabel' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionLabel'),
                 'prependOptionValue' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
                 'sortByOptionLabel' => true,
@@ -56,10 +55,6 @@ final class CountrySelectViewModelBuilder extends AbstractViewModelBuilder
                 'excludeCountries' => $renderable->getProperties()['excludeCountries'] ?? [],
             ],
         );
-
-        foreach ($additionalAttributes as $name => $value) {
-            $result->tag->addAttribute($name, $value);
-        }
 
         return new ViewModel($renderingContext, $result->content, $result->tag);
     }

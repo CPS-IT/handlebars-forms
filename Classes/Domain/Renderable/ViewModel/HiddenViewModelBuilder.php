@@ -39,7 +39,6 @@ final class HiddenViewModelBuilder extends AbstractViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
-        $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Fluid\ViewHelpers\Form\HiddenViewHelper::class,
@@ -47,13 +46,9 @@ final class HiddenViewModelBuilder extends AbstractViewModelBuilder
                 'property' => $renderable->getIdentifier(),
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
-                'additionalAttributes' => $additionalAttributes,
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
             ],
         );
-
-        foreach ($additionalAttributes as $name => $value) {
-            $result->tag->addAttribute($name, $value);
-        }
 
         return new ViewModel($renderingContext, $result->content, $result->tag);
     }

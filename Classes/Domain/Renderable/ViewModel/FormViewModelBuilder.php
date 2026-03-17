@@ -39,7 +39,6 @@ final class FormViewModelBuilder extends AbstractViewModelBuilder
         Fluid\Core\Rendering\RenderingContext $renderingContext,
         ?\Closure $viewHelperClosure = null,
     ): ViewModel {
-        $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Form\ViewHelpers\FormViewHelper::class,
@@ -52,14 +51,10 @@ final class FormViewModelBuilder extends AbstractViewModelBuilder
                 'addQueryString' => $renderable->getRenderingOptions()['addQueryString'] ?? null,
                 'argumentsToBeExcludedFromQueryString' => $renderable->getRenderingOptions()['argumentsToBeExcludedFromQueryString'] ?? null,
                 'additionalParams' => $renderable->getRenderingOptions()['additionalParams'] ?? null,
-                'additionalAttributes' => $additionalAttributes,
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
             ],
             $viewHelperClosure,
         );
-
-        foreach ($additionalAttributes as $name => $value) {
-            $result->tag->addAttribute($name, $value);
-        }
 
         return new ViewModel($renderingContext, $result->content, $result->tag);
     }

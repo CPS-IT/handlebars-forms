@@ -43,7 +43,6 @@ final class TextfieldViewModelBuilder extends AbstractViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
-        $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Fluid\ViewHelpers\Form\TextfieldViewHelper::class,
@@ -60,13 +59,9 @@ final class TextfieldViewModelBuilder extends AbstractViewModelBuilder
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $additionalAttributes,
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
             ],
         );
-
-        foreach ($additionalAttributes as $name => $value) {
-            $result->tag->addAttribute($name, $value);
-        }
 
         return new ViewModel($renderingContext, $result->content, $result->tag);
     }

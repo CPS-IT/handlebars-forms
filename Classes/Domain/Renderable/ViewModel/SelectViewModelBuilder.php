@@ -39,7 +39,6 @@ final class SelectViewModelBuilder extends AbstractViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
-        $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Fluid\ViewHelpers\Form\SelectViewHelper::class,
@@ -50,15 +49,11 @@ final class SelectViewModelBuilder extends AbstractViewModelBuilder
                 'options' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'options'),
                 'multiple' => $renderable->getType() === 'MultiSelect' ? 'multiple' : null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $additionalAttributes,
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
                 'prependOptionLabel' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionLabel'),
                 'prependOptionValue' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
             ],
         );
-
-        foreach ($additionalAttributes as $name => $value) {
-            $result->tag->addAttribute($name, $value);
-        }
 
         return new ViewModel($renderingContext, $result->content, $result->tag);
     }
