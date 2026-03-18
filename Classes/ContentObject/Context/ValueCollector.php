@@ -51,6 +51,10 @@ final readonly class ValueCollector
 
     public function load(string $identifier): mixed
     {
+        if (!$this->isValidIdentifier($identifier)) {
+            return null;
+        }
+
         if (!$this->cache->has($identifier)) {
             return null;
         }
@@ -60,6 +64,15 @@ final readonly class ValueCollector
 
     public function has(string $identifier): bool
     {
+        if (!$this->isValidIdentifier($identifier)) {
+            return false;
+        }
+
         return $this->cache->has($identifier);
+    }
+
+    private function isValidIdentifier(string $identifier): bool
+    {
+        return str_starts_with($identifier, self::CACHE_IDENTIFIER_PREFIX);
     }
 }
