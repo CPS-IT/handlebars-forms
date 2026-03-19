@@ -47,6 +47,7 @@ final class FormViewModelBuilder extends AbstractViewModelBuilder
                 'action' => $renderable->getRenderingOptions()['controllerAction'] ?? null,
                 'method' => $renderable->getRenderingOptions()['httpMethod'] ?? null,
                 'id' => $renderable->getIdentifier(),
+                'enctype' => $renderable->getRenderingOptions()['httpEnctype'] ?? null,
                 'section' => $renderable->getIdentifier(),
                 'addQueryString' => $renderable->getRenderingOptions()['addQueryString'] ?? null,
                 'argumentsToBeExcludedFromQueryString' => $renderable->getRenderingOptions()['argumentsToBeExcludedFromQueryString'] ?? null,
