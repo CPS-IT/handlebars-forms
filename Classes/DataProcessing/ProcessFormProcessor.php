@@ -48,10 +48,10 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     ) {}
 
     /**
-     * @param array<string, mixed> $contentObjectConfiguration
-     * @param array<string, mixed> $processorConfiguration
-     * @param array<string, mixed> $processedData
-     * @return array<string, mixed>
+     * @param array<string|int, mixed> $contentObjectConfiguration
+     * @param array<string|int, mixed> $processorConfiguration
+     * @param array<string|int, mixed> $processedData
+     * @return array<string|int, mixed>
      */
     public function process(
         Frontend\ContentObject\ContentObjectRenderer $cObj,
@@ -130,8 +130,8 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     }
 
     /**
-     * @param array<string, mixed> $configuration
-     * @return array<string, mixed>|null
+     * @param array<string|int, mixed> $configuration
+     * @return array<string|int, mixed>|null
      */
     private function processRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
@@ -150,7 +150,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         $this->mergeTypoScriptReferences($configuration, $cObj);
 
         foreach ($configuration as $key => $value) {
-            $keyWithoutDot = rtrim($key, '.');
+            $keyWithoutDot = rtrim((string)$key, '.');
             $keyWithDot = $keyWithoutDot . '.';
 
             if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
@@ -233,7 +233,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     private function mergeTypoScriptReferences(
         array &$configuration,
@@ -246,7 +246,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 continue;
             }
 
-            $keyWithoutDot = rtrim($key, '.');
+            $keyWithoutDot = rtrim((string)$key, '.');
             $keyWithDot = $keyWithoutDot . '.';
 
             if (array_key_exists($keyWithDot, $configuration) && is_array($configuration[$keyWithDot])) {
@@ -277,7 +277,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     private function checkIf(
         array &$configuration,
