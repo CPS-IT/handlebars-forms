@@ -31,6 +31,8 @@ use TYPO3\CMS\Form;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_RENDERABLES'])]
 final class RenderablesContentObject extends AbstractHandlebarsFormsContentObject
 {
+    private const RENDERABLE_INDEX_IDENTIFIER = '_currentRenderableIndex';
+
     /**
      * @param iterable<Domain\Renderable\ViewModel\ViewModelBuilder<Form\Domain\Model\Renderable\RootRenderableInterface>> $viewModelBuilders
      */
@@ -64,7 +66,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
             $renderables = [];
         }
 
-        foreach ($renderables as $child) {
+        foreach ($renderables as $index => $child) {
             if (!$child->isEnabled()) {
                 continue;
             }
@@ -78,7 +80,17 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                 $childViewModel = new Domain\Renderable\ViewModel\ViewModel($context->viewModel->renderingContext);
             }
 
-            $processedChild = $context->process($childConfiguration, $child, $childViewModel);
+            if ($this->cObj !== null) {
+                $this->cObj->data[self::RENDERABLE_INDEX_IDENTIFIER] = $index;
+            }
+
+            try {
+                $processedChild = $context->process($childConfiguration, $child, $childViewModel);
+            } finally {
+                if ($this->cObj !== null) {
+                    unset($this->cObj->data[self::RENDERABLE_INDEX_IDENTIFIER]);
+                }
+            }
 
             if ($processedChild !== null) {
                 $processedRenderables[] = $processedChild;

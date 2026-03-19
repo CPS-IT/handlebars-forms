@@ -28,6 +28,8 @@ use Symfony\Component\DependencyInjection;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_CHILDREN'])]
 final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
 {
+    private const CHILD_INDEX_IDENTIFIER = '_currentChildIndex';
+
     /**
      * @return list<mixed>|null
      */
@@ -41,8 +43,18 @@ final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
 
         $processedValue = [];
 
-        foreach ($children as $childViewModel) {
-            $processedValue[] = $context->process($configuration, viewModel: $childViewModel);
+        foreach ($children as $index => $childViewModel) {
+            if ($this->cObj !== null) {
+                $this->cObj->data[self::CHILD_INDEX_IDENTIFIER] = $index;
+            }
+
+            try {
+                $processedValue[] = $context->process($configuration, viewModel: $childViewModel);
+            } finally {
+                if ($this->cObj !== null) {
+                    unset($this->cObj->data[self::CHILD_INDEX_IDENTIFIER]);
+                }
+            }
         }
 
         return $processedValue;
