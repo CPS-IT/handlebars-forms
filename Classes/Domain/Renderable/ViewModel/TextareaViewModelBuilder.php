@@ -26,7 +26,7 @@ use TYPO3\CMS\Form;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
- * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\FormElementInterface>
+ * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\GenericFormElement>
  */
 final class TextareaViewModelBuilder extends AbstractViewModelBuilder
 {
