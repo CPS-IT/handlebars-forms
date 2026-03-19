@@ -75,7 +75,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                 $childViewModel = $this->buildViewModel($child, $context->viewModel->renderingContext);
             } else {
                 $childConfiguration = [];
-                $childViewModel = new Domain\Renderable\ViewModel\ViewModel($context->viewModel->renderingContext, null);
+                $childViewModel = new Domain\Renderable\ViewModel\ViewModel($context->viewModel->renderingContext);
             }
 
             $processedChild = $context->process($childConfiguration, $child, $childViewModel);
@@ -98,6 +98,6 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
             }
         }
 
-        return new Domain\Renderable\ViewModel\ViewModel($renderingContext, null);
+        return new Domain\Renderable\ViewModel\ViewModel($renderingContext);
     }
 }

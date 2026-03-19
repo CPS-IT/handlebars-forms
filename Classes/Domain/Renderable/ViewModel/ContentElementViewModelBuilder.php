@@ -42,7 +42,7 @@ final class ContentElementViewModelBuilder extends AbstractViewModelBuilder
         $contentElementUid = $renderable->getProperties()['contentElementUid'] ?? null;
 
         if (!is_numeric($contentElementUid) || (int)$contentElementUid <= 0) {
-            return new ViewModel($renderingContext, null);
+            return new ViewModel($renderingContext);
         }
 
         $result = $this->viewHelperInvoker->invoke(

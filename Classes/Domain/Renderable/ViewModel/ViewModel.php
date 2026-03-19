@@ -30,7 +30,7 @@ final readonly class ViewModel
 {
     public function __construct(
         public Fluid\Core\Rendering\RenderingContext $renderingContext,
-        public mixed $content,
+        public mixed $content = null,
         public FluidStandalone\Core\ViewHelper\TagBuilder $tag = new FluidStandalone\Core\ViewHelper\TagBuilder(),
     ) {}
 }

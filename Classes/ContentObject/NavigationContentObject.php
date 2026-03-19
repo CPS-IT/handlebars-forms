@@ -95,7 +95,7 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
                 );
             } else {
                 $stepConfiguration = [];
-                $stepViewModel = new Domain\Renderable\ViewModel\ViewModel($renderingContext, null);
+                $stepViewModel = new Domain\Renderable\ViewModel\ViewModel($renderingContext);
             }
 
             $processedElement = $context->process($stepConfiguration, $stepRenderable, $stepViewModel);
