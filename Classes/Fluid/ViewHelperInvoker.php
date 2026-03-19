@@ -58,12 +58,13 @@ final readonly class ViewHelperInvoker
     }
 
     /**
+     * @param string|list<string|int> $property
      * @param 'property'|'renderingOptionProperty' $propertyArgumentName
      */
     public function translateElementProperty(
         Fluid\Core\Rendering\RenderingContext $renderingContext,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        string $property,
+        string|array $property,
         string $propertyArgumentName = 'property',
     ): mixed {
         $result = $this->invoke(
