@@ -206,11 +206,6 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 continue;
             }
 
-            // Process value with stdWrap
-            if (is_array($valueConfiguration['stdWrap.'] ?? null)) {
-                $resolvedValue = $cObj->stdWrap((string)$resolvedValue, $valueConfiguration['stdWrap.']);
-            }
-
             // Skip value if a configured "if" evaluates to false
             if (is_array($valueConfiguration['if.'] ?? null)) {
                 $valueConfiguration['if.']['value'] ??= (string)$resolvedValue;

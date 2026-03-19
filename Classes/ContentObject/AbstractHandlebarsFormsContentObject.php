@@ -58,11 +58,29 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
             return '';
         }
 
-        return $this->valueCollector->save($this, $this->resolve($conf, $context));
+        $value = $this->resolve($conf, $context);
+
+        if (is_string($value)) {
+            return $this->applyStdWrap($value, $conf);
+        }
+
+        return $this->valueCollector->save($this, $value);
     }
 
     /**
      * @param array<string, mixed> $configuration
      */
     abstract protected function resolve(array $configuration, Context\ValueResolutionContext $context): mixed;
+
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    private function applyStdWrap(string $value, array $configuration): string
+    {
+        if (!is_array($configuration['stdWrap.'] ?? null)) {
+            return $value;
+        }
+
+        return $this->cObj?->stdWrap($value, $configuration['stdWrap.']) ?? $value;
+    }
 }
