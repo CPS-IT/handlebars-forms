@@ -26,7 +26,7 @@ use TYPO3\CMS\Form;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
- * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\FormElementInterface>
+ * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\GenericFormElement>
  */
 final class RadioViewModelBuilder extends AbstractViewModelBuilder
 {
@@ -38,19 +38,40 @@ final class RadioViewModelBuilder extends AbstractViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
-        $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
-        $result = $this->viewHelperInvoker->invoke(
-            $renderingContext,
-            Fluid\ViewHelpers\Form\RadioViewHelper::class,
-            [
-                // @todo add arguments
-            ],
-        );
+        $options = $renderable->getProperties()['options'] ?? null;
+        $optionIndex = 0;
+        $children = [];
 
-        foreach ($additionalAttributes as $name => $value) {
-            $result->tag->addAttribute($name, $value);
+        if (!is_array($options)) {
+            $options = [];
         }
 
-        return new ViewModel($renderingContext, $result->content, $result->tag);
+        foreach ($options as $value => $label) {
+            $radioResult = $this->viewHelperInvoker->invoke(
+                $renderingContext,
+                Fluid\ViewHelpers\Form\RadioViewHelper::class,
+                [
+                    'property' => $renderable->getIdentifier(),
+                    'id' => $renderable->getUniqueIdentifier() . '-' . $optionIndex++,
+                    'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+                    'value' => $value,
+                    'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
+                    'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                ],
+            );
+
+            $labelResult = $this->viewHelperInvoker->translateElementProperty(
+                $renderingContext,
+                $renderable,
+                ['options', $value],
+            );
+
+            // @todo Check if this can be done in a better way
+            $radioResult->tag->addAttribute('label', $labelResult);
+
+            $children[] = new ViewModel($renderingContext, $radioResult->content, $radioResult->tag);
+        }
+
+        return new ViewModel($renderingContext, children: $children);
     }
 }
