@@ -28,9 +28,13 @@ use TYPO3Fluid\Fluid as FluidStandalone;
  */
 final readonly class ViewModel
 {
+    /**
+     * @param list<self> $children
+     */
     public function __construct(
         public Fluid\Core\Rendering\RenderingContext $renderingContext,
         public mixed $content = null,
         public FluidStandalone\Core\ViewHelper\TagBuilder $tag = new FluidStandalone\Core\ViewHelper\TagBuilder(),
+        public array $children = [],
     ) {}
 }
