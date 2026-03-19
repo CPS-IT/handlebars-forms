@@ -39,13 +39,12 @@ final class MultiCheckboxViewModelBuilder extends AbstractViewModelBuilder
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
         $options = $renderable->getProperties()['options'] ?? null;
-
-        if (!is_array($options) || $options === []) {
-            return new ViewModel($renderingContext);
-        }
-
-        $children = [];
         $optionIndex = 0;
+        $children = [];
+
+        if (!is_array($options)) {
+            $options = [];
+        }
 
         foreach ($options as $value => $label) {
             $checkboxResult = $this->viewHelperInvoker->invoke(
