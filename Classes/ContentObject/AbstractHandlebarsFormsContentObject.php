@@ -60,8 +60,8 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
 
         $value = $this->resolve($conf, $context);
 
-        if (is_string($value)) {
-            return $this->applyStdWrap($value, $conf);
+        if (is_string($value) || $value === null) {
+            return $this->applyStdWrap((string)$value, $conf);
         }
 
         return $this->valueCollector->save($this, $value);
