@@ -42,7 +42,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
         $outputConfiguration = $configuration['output.'] ?? null;
         $renderable = $context->renderable;
 
-        // Resolve form definition from renderable
+        // Resolve property path from renderable
         if ($renderable instanceof Form\Domain\Model\Renderable\AbstractRenderable) {
             $property = $renderable->getRootForm()->getIdentifier() . '.' . $renderable->getIdentifier();
         } else {
@@ -52,7 +52,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
         $request = $context->viewModel->renderingContext->getAttribute(Message\ServerRequestInterface::class);
         $extbaseRequestParameters = $request->getAttribute('extbase');
 
-        // Early return when resolver was requested outside of extbase context
+        // Early return when content object was requested outside of extbase context
         if (!($extbaseRequestParameters instanceof Extbase\Mvc\ExtbaseRequestParameters)) {
             return null;
         }
