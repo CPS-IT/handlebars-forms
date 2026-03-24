@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
+use DevTheorem\Handlebars;
 use Symfony\Component\DependencyInjection;
 
 /**
@@ -28,10 +29,10 @@ use Symfony\Component\DependencyInjection;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_TAG'])]
 final class TagContentObject extends AbstractHandlebarsFormsContentObject
 {
-    protected function resolve(array $configuration, Context\ValueResolutionContext $context): ?string
+    protected function resolve(array $configuration, Context\ValueResolutionContext $context): ?Handlebars\SafeString
     {
         if (!array_key_exists('attribute', $configuration)) {
-            return $context->viewModel->tag->getContent();
+            return $this->safeString($context->viewModel->tag->getContent());
         }
 
         $attributeName = $configuration['attribute'] ?? null;
@@ -40,6 +41,15 @@ final class TagContentObject extends AbstractHandlebarsFormsContentObject
             return null;
         }
 
-        return $context->viewModel->tag->getAttribute($attributeName);
+        return $this->safeString($context->viewModel->tag->getAttribute($attributeName));
+    }
+
+    private function safeString(?string $content): ?Handlebars\SafeString
+    {
+        if ($content === null) {
+            return null;
+        }
+
+        return new Handlebars\SafeString($content);
     }
 }

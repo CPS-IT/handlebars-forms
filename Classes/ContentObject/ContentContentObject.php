@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
+use DevTheorem\Handlebars;
 use Symfony\Component\DependencyInjection;
 
 /**
@@ -30,6 +31,13 @@ final class ContentContentObject extends AbstractHandlebarsFormsContentObject
 {
     public function resolve(array $configuration, Context\ValueResolutionContext $context): mixed
     {
-        return $context->viewModel->content;
+        $content = $context->viewModel->content;
+
+        // Strings can be considered safe, since the relevant escaping is already performed in the view helper
+        if (is_string($content)) {
+            $content = new Handlebars\SafeString($content);
+        }
+
+        return $content;
     }
 }

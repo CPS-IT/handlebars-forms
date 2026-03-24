@@ -19,7 +19,7 @@ namespace CPSIT\Typo3HandlebarsForms\DataProcessing;
 
 use CPSIT\Typo3HandlebarsForms\ContentObject;
 use CPSIT\Typo3HandlebarsForms\Domain;
-use DevTheorem\Handlebars;
+use CPSIT\Typo3HandlebarsForms\Utility;
 use Psr\Http\Message;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
@@ -109,19 +109,11 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         // Replace content placeholder with final rendered form content
         if ($formContent !== null) {
             array_walk_recursive($processedData, static function (&$value) use ($formContent) {
-                $isSafeString = false;
-
-                if ($value instanceof Handlebars\SafeString) {
-                    $isSafeString = true;
-                    $value = (string)$value;
-                }
-
-                if (is_string($value)) {
-                    $value = str_replace(self::CONTENT_PLACEHOLDER, $formContent, $value);
-                }
-
-                if ($isSafeString) {
-                    $value = new Handlebars\SafeString($value);
+                if (Utility\StringUtility::isStringable($value)) {
+                    $value = Utility\StringUtility::processStringable(
+                        $value,
+                        static fn(string $string) => str_replace(self::CONTENT_PLACEHOLDER, $formContent, $string),
+                    );
                 }
             });
         }
@@ -201,7 +193,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             }
 
             // Skip further processing if processed value is not a string (all COR related methods require a string value)
-            if (!is_string($resolvedValue) && $resolvedValue !== null) {
+            if (!Utility\StringUtility::isStringable($resolvedValue)) {
                 $processedData[$keyWithoutDot] = $resolvedValue;
                 continue;
             }
@@ -213,12 +205,6 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 if (!$this->checkIf($valueConfiguration, $renderable, $cObj, $viewModel)) {
                     continue;
                 }
-            }
-
-            // Strings can be considered safe, since the relevant escaping is already performed
-            // in the view helpers and/or TagBuilder instances when adding attributes
-            if (is_string($resolvedValue)) {
-                $resolvedValue = new Handlebars\SafeString($resolvedValue);
             }
 
             $processedData[$keyWithoutDot] = $resolvedValue;

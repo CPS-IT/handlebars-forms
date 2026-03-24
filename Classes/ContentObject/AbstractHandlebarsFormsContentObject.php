@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
+use CPSIT\Typo3HandlebarsForms\Utility;
 use Psr\Log;
 use TYPO3\CMS\Frontend;
 
@@ -60,8 +61,8 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
 
         $value = $this->resolve($conf, $context);
 
-        if (is_string($value) || $value === null) {
-            return $this->applyStdWrap((string)$value, $conf);
+        if (Utility\StringUtility::isStringable($value)) {
+            return Utility\StringUtility::processStringable($value, fn(string $string) => $this->applyStdWrap($string, $conf));
         }
 
         return $this->valueCollector->save($this, $value);
