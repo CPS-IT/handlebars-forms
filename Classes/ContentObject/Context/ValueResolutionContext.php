@@ -27,7 +27,7 @@ use TYPO3\CMS\Form;
  * @license GPL-2.0-or-later
  *
  * @phpstan-type ProcessorClosure \Closure(
- *     array<string, mixed>,
+ *     array<string|int, mixed>,
  *     Form\Domain\Model\Renderable\RootRenderableInterface|null,
  *     Domain\Renderable\ViewModel\ViewModel|null,
  * ): mixed
@@ -44,7 +44,7 @@ final readonly class ValueResolutionContext
     ) {}
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     public function process(
         array $configuration = [],

@@ -83,7 +83,7 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
 
     /**
      * @param T $renderable
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     protected function renderAdditionalAttributes(
         Fluid\Core\Rendering\RenderingContext $renderingContext,

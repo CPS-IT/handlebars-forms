@@ -45,6 +45,8 @@ final class StaticTextViewModelBuilder extends AbstractViewModelBuilder
 
         if (is_string($text)) {
             $text = nl2br($text);
+        } elseif ($text !== null) {
+            $text = null;
         }
 
         $tag = new StandaloneFluid\Core\ViewHelper\TagBuilder('p', $text);

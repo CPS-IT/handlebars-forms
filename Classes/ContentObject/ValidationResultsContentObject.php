@@ -84,8 +84,8 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     }
 
     /**
-     * @param array<string, mixed> $configuration
-     * @return array<string, mixed>
+     * @param array<string|int, mixed> $configuration
+     * @return array<string|int, mixed>
      */
     private function processRenderingConfiguration(
         Context\ValueResolutionContext $context,
@@ -96,7 +96,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
         $processedData = [];
 
         foreach ($configuration as $key => $value) {
-            $keyWithoutDot = rtrim($key, '.');
+            $keyWithoutDot = rtrim((string)$key, '.');
             $keyWithDot = $keyWithoutDot . '.';
 
             if (is_array($value)) {
@@ -113,11 +113,17 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
                     $processedData[$keyWithDot] = $value;
                 }
             } elseif (is_string($value)) {
+                $valueConfiguration = $configuration[$keyWithDot] ?? [];
+
+                if (!is_array($valueConfiguration)) {
+                    $valueConfiguration = [];
+                }
+
                 $processedData[$keyWithoutDot] = $this->processRenderingInstruction(
                     $context,
                     $result,
                     $value,
-                    $configuration[$keyWithDot] ?? [],
+                    $valueConfiguration,
                 );
             }
         }
@@ -145,8 +151,8 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     }
 
     /**
-     * @param array<string, mixed> $configuration
-     * @return array<string, list<array<string, mixed>>>|list<array<string, mixed>>
+     * @param array<string|int, mixed> $configuration
+     * @return array<string, list<array<string|int, mixed>>>|list<array<string|int, mixed>>
      */
     private function processErrors(
         Context\ValueResolutionContext $context,
@@ -200,8 +206,8 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     }
 
     /**
-     * @param array<string, mixed> $configuration
-     * @return array<string, array<string, mixed>>
+     * @param array<string|int, mixed> $configuration
+     * @return array<string, mixed>
      */
     private function processRenderables(
         Context\ValueResolutionContext $context,
@@ -242,13 +248,13 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     }
 
     /**
-     * @param array<string, mixed> $processedRenderable
-     * @return array<string, mixed>
+     * @param array<string|int, mixed> $processedRenderable
+     * @return array<string|int, mixed>
      */
     private function normalizeRenderingConfiguration(array $processedRenderable): array
     {
         foreach ($processedRenderable as $key => $value) {
-            $keyWithoutDot = rtrim($key, '.');
+            $keyWithoutDot = rtrim((string)$key, '.');
             $keyWithDot = $keyWithoutDot . '.';
 
             if (!is_array($value) || $key === $keyWithDot) {
@@ -257,6 +263,10 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
 
             if (!array_key_exists($keyWithDot, $processedRenderable)) {
                 $processedRenderable[$keyWithDot] = $this->normalizeRenderingConfiguration($value);
+            }
+
+            if (!is_array($processedRenderable[$keyWithDot])) {
+                $processedRenderable[$keyWithDot] = [];
             }
 
             $processedRenderable[$keyWithDot] = array_replace_recursive($processedRenderable[$keyWithDot], $value);

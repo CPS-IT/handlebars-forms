@@ -68,7 +68,9 @@ final class MultiCheckboxViewModelBuilder extends AbstractViewModelBuilder
             );
 
             // @todo Check if this can be done in a better way
-            $checkboxResult->tag->addAttribute('label', $labelResult);
+            if (is_string($labelResult)) {
+                $checkboxResult->tag->addAttribute('label', $labelResult);
+            }
 
             $children[] = new ViewModel($renderingContext, $checkboxResult->content, $checkboxResult->tag);
         }

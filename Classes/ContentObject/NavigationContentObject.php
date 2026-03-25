@@ -141,7 +141,10 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
                 'renderingOptionProperty',
             );
 
-            $buttonResult->tag->addAttribute('label', $labelResult);
+            // @todo Check if this can be done in a better way
+            if (is_string($labelResult)) {
+                $buttonResult->tag->addAttribute('label', $labelResult);
+            }
         }
 
         return $buttonResult;

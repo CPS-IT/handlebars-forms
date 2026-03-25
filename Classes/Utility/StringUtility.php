@@ -42,8 +42,8 @@ final readonly class StringUtility
     {
         $processedValue = $processor((string)$value);
 
-        if ($value instanceof Handlebars\SafeString) {
-            return new Handlebars\SafeString($processedValue);
+        if ($value instanceof Handlebars\SafeString && is_scalar($processedValue)) {
+            return new Handlebars\SafeString((string)$processedValue);
         }
 
         return $processedValue;

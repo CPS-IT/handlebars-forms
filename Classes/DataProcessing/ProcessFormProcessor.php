@@ -160,6 +160,10 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $valueConfiguration = $configuration[$keyWithDot] ?? [];
             $contentObject = $cObj->getContentObject($value);
 
+            if (!is_array($valueConfiguration)) {
+                $valueConfiguration = [];
+            }
+
             // Resolve configured value
             if ($contentObject !== null) {
                 $context = new ContentObject\Context\ValueResolutionContext(

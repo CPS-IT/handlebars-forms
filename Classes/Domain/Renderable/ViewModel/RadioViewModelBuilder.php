@@ -67,7 +67,9 @@ final class RadioViewModelBuilder extends AbstractViewModelBuilder
             );
 
             // @todo Check if this can be done in a better way
-            $radioResult->tag->addAttribute('label', $labelResult);
+            if (is_string($labelResult)) {
+                $radioResult->tag->addAttribute('label', $labelResult);
+            }
 
             $children[] = new ViewModel($renderingContext, $radioResult->content, $radioResult->tag);
         }
