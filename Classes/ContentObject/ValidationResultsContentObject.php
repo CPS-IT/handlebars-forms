@@ -132,7 +132,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     private function processRenderingInstruction(
         Context\ValueResolutionContext $context,
@@ -299,7 +299,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     private function processProperty(Context\ValueResolutionContext $context, array $configuration): mixed
     {
@@ -313,7 +313,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     private function processResult(Extbase\Error\Result $result, array $configuration): mixed
     {

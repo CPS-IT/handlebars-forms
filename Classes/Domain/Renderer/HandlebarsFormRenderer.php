@@ -100,7 +100,9 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
             $this->formRuntime->getFormDefinition()->getPersistenceIdentifier(),
         ];
         foreach ($possibleConfigurationKeys as $possibleConfigurationKey) {
-            if (\array_key_exists($possibleConfigurationKey . '.', $typoScriptConfiguration)) {
+            if (is_string($possibleConfigurationKey) &&
+                is_array($typoScriptConfiguration[$possibleConfigurationKey . '.'] ?? null)
+            ) {
                 Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
                     $resolvedConfiguration,
                     $typoScriptConfiguration[$possibleConfigurationKey . '.'],
@@ -119,10 +121,24 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
     private function resolveDefaultView(): Core\View\ViewInterface
     {
         $renderingOptions = $this->formRuntime->getRenderingOptions();
+        $templateRootPaths = $renderingOptions['templateRootPaths'] ?? [];
+        $partialRootPaths = $renderingOptions['partialRootPaths'] ?? [];
+        $layoutRootPaths = $renderingOptions['layoutRootPaths'] ?? [];
+
+        if (!is_array($templateRootPaths)) {
+            $templateRootPaths = null;
+        }
+        if (!is_array($partialRootPaths)) {
+            $partialRootPaths = null;
+        }
+        if (!is_array($layoutRootPaths)) {
+            $layoutRootPaths = null;
+        }
+
         $viewFactoryData = new Core\View\ViewFactoryData(
-            templateRootPaths: $renderingOptions['templateRootPaths'] ?? [],
-            partialRootPaths: $renderingOptions['partialRootPaths'] ?? [],
-            layoutRootPaths: $renderingOptions['layoutRootPaths'] ?? [],
+            templateRootPaths: $templateRootPaths,
+            partialRootPaths: $partialRootPaths,
+            layoutRootPaths: $layoutRootPaths,
             request: $this->formRuntime->getRequest(),
         );
 
