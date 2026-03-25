@@ -134,9 +134,10 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
      */
     private function triggerBeforeRenderingHook(): void
     {
+        /** @var class-string $className */
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'] ?? [] as $className) {
-            /* @phpstan-ignore argument.templateType */
             $hookObj = Core\Utility\GeneralUtility::makeInstance($className);
+
             if (method_exists($hookObj, 'beforeRendering')) {
                 $hookObj->beforeRendering($this->formRuntime, $this->formRuntime->getFormDefinition());
             }
