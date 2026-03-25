@@ -64,6 +64,10 @@ final class ContextAwareContentObjectFactory extends Frontend\ContentObject\Cont
             {
                 $value = $this->contentObject->render($conf);
 
+                if (!is_string($value)) {
+                    return $value;
+                }
+
                 if (!$this->valueCollector->has($value)) {
                     return $value;
                 }

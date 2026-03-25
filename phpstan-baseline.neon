@@ -7,6 +7,12 @@ parameters:
 			path: Classes/ContentObject/ContextAwareContentObjectFactory.php
 
 		-
+			rawMessage: 'Call to function is_string() with string will always evaluate to true.'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Classes/ContentObject/ContextAwareContentObjectFactory.php
+
+		-
 			rawMessage: Cannot access offset 'form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
