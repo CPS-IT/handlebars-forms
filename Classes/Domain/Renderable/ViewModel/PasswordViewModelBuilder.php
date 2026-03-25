@@ -39,18 +39,14 @@ final class PasswordViewModelBuilder extends AbstractViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): ViewModel {
-        $additionalAttributes = $this->renderAdditionalAttributes($renderingContext, $renderable);
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Fluid\ViewHelpers\Form\PasswordViewHelper::class,
             [
                 // @todo add arguments
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
             ],
         );
-
-        foreach ($additionalAttributes as $name => $value) {
-            $result->tag->addAttribute($name, $value);
-        }
 
         return new ViewModel($renderingContext, $result->content, $result->tag);
     }
