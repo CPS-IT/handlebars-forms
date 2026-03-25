@@ -39,6 +39,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
     public function __construct(
         #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.view_model_builder')]
         private readonly iterable $viewModelBuilders,
+        private readonly PassthroughContentObject $passthroughContentObject,
     ) {}
 
     /**
@@ -71,7 +72,13 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                 continue;
             }
 
-            $childConfiguration = $configuration[$child->getType() . '.'] ?? null;
+            if (!array_key_exists($child->getType() . '.', $configuration)) {
+                $processedRenderables[] = $this->passthroughContentObject->render();
+
+                continue;
+            }
+
+            $childConfiguration = $configuration[$child->getType() . '.'];
 
             if (is_array($childConfiguration)) {
                 $childViewModel = $this->buildViewModel($child, $context->viewModel->renderingContext);
