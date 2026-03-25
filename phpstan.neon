@@ -1,4 +1,5 @@
 includes:
+	- phar://phpstan.phar/conf/bleedingEdge.neon
 	- phpstan-baseline.neon
 parameters:
 	level: 9
@@ -6,3 +7,5 @@ parameters:
 		- Classes
 		- Configuration
 		- Tests
+	featureToggles:
+		internalTag: false
