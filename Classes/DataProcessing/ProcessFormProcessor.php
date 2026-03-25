@@ -98,7 +98,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $tag->setContent(self::CONTENT_PLACEHOLDER);
 
                 $viewModel = new Domain\Renderable\ViewModel\ViewModel($renderingContext, null, $tag);
-                $processedData = $this->processRenderable($formRuntime, $processorConfiguration, $cObj, $viewModel) ?? [];
+                $processedData = $this->processRenderable($formRuntime, $processorConfiguration, $formRuntime, $cObj, $viewModel) ?? [];
 
                 return '';
             },
@@ -128,13 +128,14 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     private function processRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         array $configuration,
+        Form\Domain\Runtime\FormRuntime $formRuntime,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
         Domain\Renderable\ViewModel\ViewModel $viewModel,
     ): ?array {
         $processedData = [];
 
         // Early return on configured "if" condition evaluating to false
-        if (!$this->checkIf($configuration, $renderable, $cObj, $viewModel)) {
+        if (!$this->checkIf($configuration, $renderable, $formRuntime, $cObj, $viewModel)) {
             return null;
         }
 
@@ -146,7 +147,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $keyWithDot = $keyWithoutDot . '.';
 
             if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
-                $resolvedValue = $this->processRenderable($renderable, $value, $cObj, $viewModel);
+                $resolvedValue = $this->processRenderable($renderable, $value, $formRuntime, $cObj, $viewModel);
 
                 if (is_array($resolvedValue)) {
                     $processedData[$keyWithoutDot] = $resolvedValue;
@@ -169,6 +170,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $context = new ContentObject\Context\ValueResolutionContext(
                     $renderable,
                     $viewModel,
+                    $formRuntime,
                     fn(
                         array $contextConfiguration,
                         ?Form\Domain\Model\Renderable\RootRenderableInterface $contextRenderable = null,
@@ -176,6 +178,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                     ) => $this->processRenderable(
                         $contextRenderable ?? $renderable,
                         $contextConfiguration,
+                        $formRuntime,
                         $cObj,
                         $contextViewModel ?? $viewModel,
                     ),
@@ -206,7 +209,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             if (is_array($valueConfiguration['if.'] ?? null)) {
                 $valueConfiguration['if.']['value'] ??= (string)$resolvedValue;
 
-                if (!$this->checkIf($valueConfiguration, $renderable, $cObj, $viewModel)) {
+                if (!$this->checkIf($valueConfiguration, $renderable, $formRuntime, $cObj, $viewModel)) {
                     continue;
                 }
             }
@@ -267,6 +270,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     private function checkIf(
         array &$configuration,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        Form\Domain\Runtime\FormRuntime $formRuntime,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
         Domain\Renderable\ViewModel\ViewModel $viewModel,
     ): bool {
@@ -283,6 +287,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                     'currentValue' => $configuration['if.']['currentValue'] ?? '',
                     'currentValue.' => $configuration['if.']['currentValue.'] ?? [],
                 ],
+                $formRuntime,
                 $cObj,
                 $viewModel,
             );

@@ -40,6 +40,7 @@ final readonly class ValueResolutionContext
     public function __construct(
         public Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         public Domain\Renderable\ViewModel\ViewModel $viewModel,
+        public Form\Domain\Runtime\FormRuntime $formRuntime,
         private ?\Closure $renderableProcessor = null,
     ) {}
 
@@ -60,11 +61,11 @@ final readonly class ValueResolutionContext
 
     public function withRenderable(Form\Domain\Model\Renderable\RootRenderableInterface $renderable): self
     {
-        return new self($renderable, $this->viewModel, $this->renderableProcessor);
+        return new self($renderable, $this->viewModel, $this->formRuntime, $this->renderableProcessor);
     }
 
     public function withViewModel(Domain\Renderable\ViewModel\ViewModel $viewModel): self
     {
-        return new self($this->renderable, $viewModel, $this->renderableProcessor);
+        return new self($this->renderable, $viewModel, $this->formRuntime, $this->renderableProcessor);
     }
 }
