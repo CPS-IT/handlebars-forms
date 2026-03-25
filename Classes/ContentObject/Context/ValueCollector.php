@@ -29,14 +29,17 @@ use TYPO3\CMS\Core;
  *
  * @internal
  */
-final readonly class ValueCollector
+#[DependencyInjection\Attribute\Autoconfigure(shared: true)]
+final class ValueCollector
 {
     private const CACHE_IDENTIFIER_PREFIX = 'HandlebarsFormsValue_';
 
-    public function __construct(
-        #[DependencyInjection\Attribute\Autowire(service: 'cache.runtime')]
-        private Core\Cache\Frontend\FrontendInterface $cache,
-    ) {}
+    /**
+     * @todo Switch to runtiem cache once https://forge.typo3.org/issues/109220 is resolved
+     *
+     * @var array<string, mixed>
+     */
+    private static array $collection = [];
 
     public function save(ContentObject\AbstractHandlebarsFormsContentObject $contentObject, mixed $value): string
     {
@@ -44,22 +47,18 @@ final readonly class ValueCollector
             self::CACHE_IDENTIFIER_PREFIX . spl_object_hash($contentObject),
         );
 
-        $this->cache->set($identifier, $value);
+        self::$collection[$identifier] = $value;
 
         return $identifier;
     }
 
     public function load(string $identifier): mixed
     {
-        if (!$this->isValidIdentifier($identifier)) {
+        if (!$this->has($identifier)) {
             return null;
         }
 
-        if (!$this->cache->has($identifier)) {
-            return null;
-        }
-
-        return $this->cache->get($identifier);
+        return self::$collection[$identifier];
     }
 
     public function has(string $identifier): bool
@@ -68,7 +67,11 @@ final readonly class ValueCollector
             return false;
         }
 
-        return $this->cache->has($identifier);
+        // The array_key_exists check is intentional – Null-coalescing operator MUST be avoided,
+        // otherwise collected NULL values will be treated as if no value has been collected.
+        // This is also the case why we don't use runtime cache at the moment, because it improperly
+        // checks for the existence of a cache entry (see https://forge.typo3.org/issues/109220).
+        return array_key_exists($identifier, self::$collection);
     }
 
     private function isValidIdentifier(string $identifier): bool
