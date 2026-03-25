@@ -36,7 +36,9 @@ final class ContextAwareContentObjectFactory extends Frontend\ContentObject\Cont
         #[DependencyInjection\Attribute\AutowireDecorated]
         private readonly Frontend\ContentObject\ContentObjectFactory $inner,
         private readonly Context\ValueCollector $valueCollector,
-    ) {}
+    ) {
+        // Missing constructor call is intended.
+    }
 
     public function getContentObject(
         string $name,
@@ -60,7 +62,7 @@ final class ContextAwareContentObjectFactory extends Frontend\ContentObject\Cont
              */
             public function render($conf = [])
             {
-                $value = (string)$this->contentObject->render($conf);
+                $value = $this->contentObject->render($conf);
 
                 if (!$this->valueCollector->has($value)) {
                     return $value;

@@ -71,7 +71,7 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
 
     /**
      * @param array<self::*, Form\Domain\Model\FormElements\Page|Form\Domain\Runtime\FormRuntime> $renderables
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      * @return list<mixed>
      */
     private function processElements(

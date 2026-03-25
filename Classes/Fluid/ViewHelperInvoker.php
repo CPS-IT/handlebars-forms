@@ -47,11 +47,12 @@ final readonly class ViewHelperInvoker
             $viewHelper->setTagBuilder($tag);
         }
 
+        $closure ??= static fn() => '';
         $content = $renderingContext->getViewHelperInvoker()->invoke(
             $viewHelper,
             $arguments,
             $renderingContext,
-            static fn() => $closure ? $closure($tag) : '',
+            static fn() => $closure($tag),
         );
 
         return new ViewHelperInvocationResult($viewHelper, $renderingContext, $content, $tag);

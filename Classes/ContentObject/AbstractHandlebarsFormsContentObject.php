@@ -45,7 +45,7 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
     }
 
     /**
-     * @param array<string, mixed> $conf
+     * @param array<string|int, mixed> $conf
      */
     final public function render($conf = []): string
     {
@@ -79,12 +79,12 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     abstract protected function resolve(array $configuration, Context\ValueResolutionContext $context): mixed;
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<string|int, mixed> $configuration
      */
     private function applyStdWrap(string $value, array $configuration): string
     {

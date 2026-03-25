@@ -1,6 +1,12 @@
 parameters:
 	ignoreErrors:
 		-
+			rawMessage: 'CPSIT\Typo3HandlebarsForms\ContentObject\ContextAwareContentObjectFactory::__construct() does not call parent constructor from TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory.'
+			identifier: constructor.missingParentCall
+			count: 1
+			path: Classes/ContentObject/ContextAwareContentObjectFactory.php
+
+		-
 			rawMessage: Cannot access offset 'form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
