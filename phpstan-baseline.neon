@@ -1,31 +1,31 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Cannot access offset ''form'' on mixed\.$#'
+			rawMessage: Cannot access offset 'form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: Classes/DataProcessing/ProcessFormProcessor.php
 
 		-
-			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			rawMessage: 'Argument of an invalid type mixed supplied for foreach, only iterables are supported.'
 			identifier: foreach.nonIterable
 			count: 1
 			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
-			message: '#^Cannot access offset ''SC_OPTIONS'' on mixed\.$#'
+			rawMessage: Cannot access offset 'SC_OPTIONS' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
-			message: '#^Cannot access offset ''beforeRendering'' on mixed\.$#'
+			rawMessage: Cannot access offset 'beforeRendering' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
-			message: '#^Cannot access offset ''ext/form'' on mixed\.$#'
+			rawMessage: Cannot access offset 'ext/form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
