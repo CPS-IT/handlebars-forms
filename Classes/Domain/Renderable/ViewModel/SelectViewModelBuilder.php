@@ -54,7 +54,8 @@ final class SelectViewModelBuilder extends AbstractViewModelBuilder
                 'prependOptionValue' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
             ],
         );
+        $options = $result->extractChildNodes('option');
 
-        return new ViewModel($renderingContext, $result->content, $result->tag);
+        return new ViewModel($renderingContext, $result->content, $result->tag, $options);
     }
 }
