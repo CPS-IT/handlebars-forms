@@ -61,8 +61,18 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
 
         $value = $this->resolve($conf, $context);
 
+        // Apply stdWrap to stringables (string, NULL, SafeString)
         if (Utility\StringUtility::isStringable($value)) {
-            return Utility\StringUtility::processStringable($value, fn(string $string) => $this->applyStdWrap($string, $conf));
+            $value = Utility\StringUtility::processStringable(
+                $value,
+                fn(string $string) => $this->applyStdWrap($string, $conf),
+            );
+        }
+
+        // Strings can be returned without additional caching using ValueCollector,
+        // since content objects are already designed to return string values
+        if (is_string($value)) {
+            return $value;
         }
 
         return $this->valueCollector->save($this, $value);
