@@ -19,7 +19,7 @@ namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
 
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
-use TYPO3Fluid\Fluid as StandaloneFluid;
+use TYPO3Fluid\Fluid as FluidStandalone;
 
 /**
  * StaticTextViewModelBuilder
@@ -49,7 +49,7 @@ final class StaticTextViewModelBuilder extends AbstractViewModelBuilder
             $text = null;
         }
 
-        $tag = new StandaloneFluid\Core\ViewHelper\TagBuilder('p', $text);
+        $tag = new FluidStandalone\Core\ViewHelper\TagBuilder('p', $text);
 
         if (is_string($className)) {
             $tag->addAttribute('class', $className);
