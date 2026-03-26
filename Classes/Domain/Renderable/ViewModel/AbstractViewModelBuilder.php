@@ -113,7 +113,7 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
             return;
         }
 
-        if ($renderable->getParentRenderable()?->getType() !== 'GridRow') {
+        if (!($renderable->getParentRenderable() instanceof Form\Domain\Model\FormElements\GridRowInterface)) {
             return;
         }
 
