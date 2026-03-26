@@ -48,7 +48,7 @@ final class TextareaViewModelBuilder extends AbstractViewModelBuilder
                 'rows' => $renderable->getProperties()['rows'] ?? null,
                 'cols' => $renderable->getProperties()['cols'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
             ],
         );
 

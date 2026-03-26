@@ -46,7 +46,7 @@ final class HiddenViewModelBuilder extends AbstractViewModelBuilder
                 'property' => $renderable->getIdentifier(),
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
             ],
         );
 

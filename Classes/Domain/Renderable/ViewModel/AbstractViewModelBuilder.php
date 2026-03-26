@@ -86,8 +86,8 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
      * @return array<string|int, mixed>
      */
     protected function renderAdditionalAttributes(
-        Fluid\Core\Rendering\RenderingContext $renderingContext,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): array {
         $content = $this->viewHelperInvoker->translateElementProperty(
             $renderingContext,

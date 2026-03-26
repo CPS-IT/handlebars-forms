@@ -57,7 +57,7 @@ final class MultiCheckboxViewModelBuilder extends AbstractViewModelBuilder
                     'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
                     'value' => $value,
                     'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                    'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                    'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
                 ],
             );
 

@@ -52,7 +52,7 @@ final class FormViewModelBuilder extends AbstractViewModelBuilder
                 'addQueryString' => $renderable->getRenderingOptions()['addQueryString'] ?? null,
                 'argumentsToBeExcludedFromQueryString' => $renderable->getRenderingOptions()['argumentsToBeExcludedFromQueryString'] ?? null,
                 'additionalParams' => $renderable->getRenderingOptions()['additionalParams'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
             ],
             $viewHelperClosure,
         );

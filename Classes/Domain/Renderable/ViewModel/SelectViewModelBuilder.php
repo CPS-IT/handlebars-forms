@@ -49,7 +49,7 @@ final class SelectViewModelBuilder extends AbstractViewModelBuilder
                 'options' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'options'),
                 'multiple' => $renderable->getType() === 'MultiSelect' ? 'multiple' : null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
                 'prependOptionLabel' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionLabel'),
                 'prependOptionValue' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
             ],

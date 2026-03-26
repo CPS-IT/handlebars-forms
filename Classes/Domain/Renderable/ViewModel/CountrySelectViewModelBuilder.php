@@ -46,7 +46,7 @@ final class CountrySelectViewModelBuilder extends AbstractViewModelBuilder
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
                 'prependOptionLabel' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionLabel'),
                 'prependOptionValue' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
                 'sortByOptionLabel' => true,

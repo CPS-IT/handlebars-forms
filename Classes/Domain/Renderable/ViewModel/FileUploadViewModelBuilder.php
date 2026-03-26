@@ -48,7 +48,7 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
                 'accept' => $renderable->getProperties()['allowedMimeTypes'] ?? null,
             ],
         );

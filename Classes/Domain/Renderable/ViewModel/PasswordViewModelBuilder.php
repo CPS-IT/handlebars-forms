@@ -44,7 +44,7 @@ final class PasswordViewModelBuilder extends AbstractViewModelBuilder
             Fluid\ViewHelpers\Form\PasswordViewHelper::class,
             [
                 // @todo add arguments
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderingContext, $renderable),
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
             ],
         );
 
