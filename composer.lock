@@ -126,12 +126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CPS-IT/handlebars.git",
-                "reference": "d4cd671d30a88e856c8c390d4a918917b8730115"
+                "reference": "a8414774e2c33a7e76fc6237a409386a75e22829"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/d4cd671d30a88e856c8c390d4a918917b8730115",
-                "reference": "d4cd671d30a88e856c8c390d4a918917b8730115",
+                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/a8414774e2c33a7e76fc6237a409386a75e22829",
+                "reference": "a8414774e2c33a7e76fc6237a409386a75e22829",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
                 "issues": "https://github.com/CPS-IT/handlebars/issues",
                 "source": "https://github.com/CPS-IT/handlebars"
             },
-            "time": "2026-03-23T09:24:02+00:00"
+            "time": "2026-03-25T06:47:44+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -263,20 +263,20 @@
         },
         {
             "name": "devtheorem/php-handlebars",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/devtheorem/php-handlebars.git",
-                "reference": "59f5bc256bdca286f90917a80d038cb7f000f207"
+                "reference": "5526b37129957e8829a7b6541e598dc5f155f8b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/devtheorem/php-handlebars/zipball/59f5bc256bdca286f90917a80d038cb7f000f207",
-                "reference": "59f5bc256bdca286f90917a80d038cb7f000f207",
+                "url": "https://api.github.com/repos/devtheorem/php-handlebars/zipball/5526b37129957e8829a7b6541e598dc5f155f8b9",
+                "reference": "5526b37129957e8829a7b6541e598dc5f155f8b9",
                 "shasum": ""
             },
             "require": {
-                "devtheorem/php-handlebars-parser": "^1.1.0",
+                "devtheorem/php-handlebars-parser": "^1.1.1",
                 "php": ">=8.2"
             },
             "require-dev": {
@@ -312,22 +312,22 @@
             ],
             "support": {
                 "issues": "https://github.com/devtheorem/php-handlebars/issues",
-                "source": "https://github.com/devtheorem/php-handlebars/tree/v1.0.0"
+                "source": "https://github.com/devtheorem/php-handlebars/tree/v1.1.0"
             },
-            "time": "2026-03-23T04:09:08+00:00"
+            "time": "2026-03-27T04:04:59+00:00"
         },
         {
             "name": "devtheorem/php-handlebars-parser",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/devtheorem/php-handlebars-parser.git",
-                "reference": "cd9fcd2a2ea8869378a999ff420625b2c25b9571"
+                "reference": "9374a7833a9046dccff0afad9c0202391d94714d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/devtheorem/php-handlebars-parser/zipball/cd9fcd2a2ea8869378a999ff420625b2c25b9571",
-                "reference": "cd9fcd2a2ea8869378a999ff420625b2c25b9571",
+                "url": "https://api.github.com/repos/devtheorem/php-handlebars-parser/zipball/9374a7833a9046dccff0afad9c0202391d94714d",
+                "reference": "9374a7833a9046dccff0afad9c0202391d94714d",
                 "shasum": ""
             },
             "require": {
@@ -337,7 +337,7 @@
                 "friendsofphp/php-cs-fixer": "^3.94",
                 "ircmaxell/php-yacc": "dev-master",
                 "jbboehr/handlebars-spec": "dev-master",
-                "phpstan/phpstan": "^2.1.40",
+                "phpstan/phpstan": "^2.1.42",
                 "phpunit/phpunit": "^11.5"
             },
             "type": "library",
@@ -366,9 +366,9 @@
             ],
             "support": {
                 "issues": "https://github.com/devtheorem/php-handlebars-parser/issues",
-                "source": "https://github.com/devtheorem/php-handlebars-parser/tree/v1.1.0"
+                "source": "https://github.com/devtheorem/php-handlebars-parser/tree/v1.1.1"
             },
-            "time": "2026-02-25T01:18:54+00:00"
+            "time": "2026-03-24T04:44:28+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -953,16 +953,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v7.0.3",
+            "version": "v7.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "28aa0694bcfdfa5e2959c394d5a1ee7a5083629e"
+                "reference": "e41f1bd7dbe3c5455c3f72d4338cfeb083b71931"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/28aa0694bcfdfa5e2959c394d5a1ee7a5083629e",
-                "reference": "28aa0694bcfdfa5e2959c394d5a1ee7a5083629e",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/e41f1bd7dbe3c5455c3f72d4338cfeb083b71931",
+                "reference": "e41f1bd7dbe3c5455c3f72d4338cfeb083b71931",
                 "shasum": ""
             },
             "require": {
@@ -970,6 +970,7 @@
             },
             "require-dev": {
                 "guzzlehttp/guzzle": "^7.4",
+                "phpfastcache/phpfastcache": "^9.2",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "^9.5",
                 "psr/cache": "^2.0||^3.0",
@@ -1010,9 +1011,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v7.0.3"
+                "source": "https://github.com/firebase/php-jwt/tree/v7.0.4"
             },
-            "time": "2026-02-25T22:16:40+00:00"
+            "time": "2026-03-27T21:17:19+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -6410,16 +6411,16 @@
         },
         {
             "name": "cuyz/valinor",
-            "version": "2.3.2",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CuyZ/Valinor.git",
-                "reference": "3b9f3f54901371d589776502aab3da3a046801a7"
+                "reference": "3b0afa3a287ed7f3a69aab223726cf1139454c34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/3b9f3f54901371d589776502aab3da3a046801a7",
-                "reference": "3b9f3f54901371d589776502aab3da3a046801a7",
+                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/3b0afa3a287ed7f3a69aab223726cf1139454c34",
+                "reference": "3b0afa3a287ed7f3a69aab223726cf1139454c34",
                 "shasum": ""
             },
             "require": {
@@ -6431,14 +6432,15 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.91",
-                "infection/infection": "^0.31",
+                "infection/infection": "^0.32",
                 "marcocesarato/php-conventional-changelog": "^1.12",
                 "mikey179/vfsstream": "^1.6.10",
                 "phpbench/phpbench": "^1.3",
                 "phpstan/phpstan": "^2.0",
                 "phpstan/phpstan-phpunit": "^2.0",
                 "phpstan/phpstan-strict-rules": "^2.0",
-                "phpunit/phpunit": "^10.5",
+                "phpunit/phpunit": "^11.5",
+                "psr/http-message": "^2.0",
                 "rector/rector": "^2.0",
                 "vimeo/psalm": "^6.0"
             },
@@ -6474,7 +6476,7 @@
             ],
             "support": {
                 "issues": "https://github.com/CuyZ/Valinor/issues",
-                "source": "https://github.com/CuyZ/Valinor/tree/2.3.2"
+                "source": "https://github.com/CuyZ/Valinor/tree/2.4.0"
             },
             "funding": [
                 {
@@ -6482,7 +6484,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-23T15:26:34+00:00"
+            "time": "2026-03-23T17:38:05+00:00"
         },
         {
             "name": "cypresslab/gitelephant",
@@ -7551,16 +7553,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.32.0",
+            "version": "3.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "254b1595b16b22dbddaaef9ed6ca9fdac4956725"
+                "reference": "570b8871e0ce693764434b29154c54b434905350"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/254b1595b16b22dbddaaef9ed6ca9fdac4956725",
-                "reference": "254b1595b16b22dbddaaef9ed6ca9fdac4956725",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/570b8871e0ce693764434b29154c54b434905350",
+                "reference": "570b8871e0ce693764434b29154c54b434905350",
                 "shasum": ""
             },
             "require": {
@@ -7628,9 +7630,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.32.0"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.33.0"
             },
-            "time": "2026-02-25T17:01:41+00:00"
+            "time": "2026-03-25T07:59:30+00:00"
         },
         {
             "name": "league/flysystem-local",
@@ -8365,11 +8367,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.42",
+            "version": "2.1.44",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/1279e1ce86ba768f0780c9d889852b4e02ff40d0",
-                "reference": "1279e1ce86ba768f0780c9d889852b4e02ff40d0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/4a88c083c668b2c364a425c9b3171b2d9ea5d218",
+                "reference": "4a88c083c668b2c364a425c9b3171b2d9ea5d218",
                 "shasum": ""
             },
             "require": {
@@ -8414,7 +8416,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-17T14:58:32+00:00"
+            "time": "2026-03-25T17:34:21+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -11553,16 +11555,16 @@
         },
         {
             "name": "typo3/testing-framework",
-            "version": "9.4.0",
+            "version": "9.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TYPO3/testing-framework.git",
-                "reference": "dfc296e30de8023b07812c42cd2be9b0ed9e6ad0"
+                "reference": "bc918e46acc8d10c3e883b90f39b7fcdc339ab65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TYPO3/testing-framework/zipball/dfc296e30de8023b07812c42cd2be9b0ed9e6ad0",
-                "reference": "dfc296e30de8023b07812c42cd2be9b0ed9e6ad0",
+                "url": "https://api.github.com/repos/TYPO3/testing-framework/zipball/bc918e46acc8d10c3e883b90f39b7fcdc339ab65",
+                "reference": "bc918e46acc8d10c3e883b90f39b7fcdc339ab65",
                 "shasum": ""
             },
             "require": {
@@ -11581,9 +11583,9 @@
                 "sbuerk/typo3-cmscomposerinstallers-testingframework-bridge": "*"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.65.0",
-                "phpstan/phpstan": "^2.0.2",
-                "phpstan/phpstan-phpunit": "^2.0.1",
+                "friendsofphp/php-cs-fixer": "^3.94.2",
+                "phpstan/phpstan": "^2.1.42",
+                "phpstan/phpstan-phpunit": "^2.0.16",
                 "typo3/cms-workspaces": "13.*.*@dev || 14.*.*@dev"
             },
             "type": "library",
@@ -11625,9 +11627,9 @@
             "support": {
                 "general": "https://typo3.org/support/",
                 "issues": "https://github.com/TYPO3/testing-framework/issues",
-                "source": "https://github.com/TYPO3/testing-framework/tree/9.4.0"
+                "source": "https://github.com/TYPO3/testing-framework/tree/9.5.0"
             },
-            "time": "2026-03-06T23:02:07+00:00"
+            "time": "2026-03-25T21:37:25+00:00"
         }
     ],
     "aliases": [],
