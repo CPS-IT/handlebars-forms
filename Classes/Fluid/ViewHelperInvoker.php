@@ -32,7 +32,7 @@ final readonly class ViewHelperInvoker
     /**
      * @param class-string<FluidStandalone\Core\ViewHelper\ViewHelperInterface> $viewHelperClassName
      * @param array<string, mixed> $arguments
-     * @param (\Closure(FluidStandalone\Core\ViewHelper\TagBuilder): mixed)|null $closure
+     * @param (\Closure(FluidStandalone\Core\ViewHelper\TagBuilder=): mixed)|null $closure
      */
     public function invoke(
         Fluid\Core\Rendering\RenderingContext $renderingContext,
