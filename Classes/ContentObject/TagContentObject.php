@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use DevTheorem\Handlebars;
 use Symfony\Component\DependencyInjection;
 
@@ -31,8 +32,14 @@ final class TagContentObject extends AbstractHandlebarsFormsContentObject
 {
     protected function resolve(array $configuration, Context\ValueResolutionContext $context): ?Handlebars\SafeString
     {
+        if (!($context->viewModel instanceof Domain\ViewModel\TagAwareViewModel)) {
+            return null;
+        }
+
+        $tag = $context->viewModel->getTag();
+
         if (!array_key_exists('attribute', $configuration)) {
-            return $this->safeString($context->viewModel->tag->getContent());
+            return $this->safeString($tag->getContent());
         }
 
         $attributeName = $configuration['attribute'] ?? null;
@@ -41,7 +48,7 @@ final class TagContentObject extends AbstractHandlebarsFormsContentObject
             return null;
         }
 
-        return $this->safeString($context->viewModel->tag->getAttribute($attributeName));
+        return $this->safeString($tag->getAttribute($attributeName));
     }
 
     private function safeString(?string $content): ?Handlebars\SafeString

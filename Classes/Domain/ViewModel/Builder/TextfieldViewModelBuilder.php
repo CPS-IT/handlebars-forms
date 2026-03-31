@@ -15,8 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
@@ -42,7 +43,7 @@ final class TextfieldViewModelBuilder extends AbstractViewModelBuilder
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
+    ): Domain\ViewModel\ViewHelperContainedViewModel {
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Fluid\ViewHelpers\Form\TextfieldViewHelper::class,
@@ -63,6 +64,6 @@ final class TextfieldViewModelBuilder extends AbstractViewModelBuilder
             ],
         );
 
-        return new ViewModel($renderingContext, $result->content, $result->tag);
+        return new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
     }
 }

@@ -35,7 +35,7 @@ final class ValueCollector
     private const CACHE_IDENTIFIER_PREFIX = 'HandlebarsFormsValue_';
 
     /**
-     * @todo Switch to runtiem cache once https://forge.typo3.org/issues/109220 is resolved
+     * @todo Switch to runtime cache once https://forge.typo3.org/issues/109220 is resolved
      *
      * @var array<string, mixed>
      */

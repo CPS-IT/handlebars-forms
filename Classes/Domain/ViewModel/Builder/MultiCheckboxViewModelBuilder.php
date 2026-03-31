@@ -15,29 +15,30 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * RadioViewModelBuilder
+ * MultiCheckboxViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
  * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\GenericFormElement>
  */
-final class RadioViewModelBuilder extends AbstractViewModelBuilder
+final class MultiCheckboxViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
-        'RadioButton',
+        'MultiCheckbox',
     ];
 
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
+    ): Domain\ViewModel\ViewModelCollection {
         $options = $renderable->getProperties()['options'] ?? null;
         $optionIndex = 0;
         $children = [];
@@ -47,11 +48,12 @@ final class RadioViewModelBuilder extends AbstractViewModelBuilder
         }
 
         foreach ($options as $value => $label) {
-            $radioResult = $this->viewHelperInvoker->invoke(
+            $checkboxResult = $this->viewHelperInvoker->invoke(
                 $renderingContext,
-                Fluid\ViewHelpers\Form\RadioViewHelper::class,
+                Fluid\ViewHelpers\Form\CheckboxViewHelper::class,
                 [
                     'property' => $renderable->getIdentifier(),
+                    'multiple' => true,
                     'id' => $renderable->getUniqueIdentifier() . '-' . $optionIndex++,
                     'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
                     'value' => $value,
@@ -60,20 +62,20 @@ final class RadioViewModelBuilder extends AbstractViewModelBuilder
                 ],
             );
 
+            $checkboxViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $checkboxResult);
             $labelResult = $this->viewHelperInvoker->translateElementProperty(
                 $renderingContext,
                 $renderable,
                 ['options', $value],
             );
 
-            // @todo Check if this can be done in a better way
             if (is_string($labelResult)) {
-                $radioResult->tag->addAttribute('label', $labelResult);
+                $children[] = Domain\ViewModel\FormFieldViewModel::forLabelAndElement($labelResult, $checkboxViewModel);
+            } else {
+                $children[] = $checkboxViewModel;
             }
-
-            $children[] = new ViewModel($renderingContext, $radioResult->content, $radioResult->tag);
         }
 
-        return new ViewModel($renderingContext, children: $children);
+        return new Domain\ViewModel\ViewModelCollection($renderable, $children);
     }
 }

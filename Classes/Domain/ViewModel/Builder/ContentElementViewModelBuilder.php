@@ -15,42 +15,50 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * CheckboxViewModelBuilder
+ * ContentElementViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
  * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\GenericFormElement>
  */
-final class CheckboxViewModelBuilder extends AbstractViewModelBuilder
+final class ContentElementViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
-        'Checkbox',
+        'ContentElement',
     ];
 
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
+    ): Domain\ViewModel\SimpleViewModel|Domain\ViewModel\ViewHelperContainedViewModel {
+        $className = $renderable->getProperties()['elementClassAttribute'] ?? null;
+        $contentElementUid = $renderable->getProperties()['contentElementUid'] ?? null;
+
+        if (!is_numeric($contentElementUid) || (int)$contentElementUid <= 0) {
+            return new Domain\ViewModel\SimpleViewModel($renderable);
+        }
+
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
-            Fluid\ViewHelpers\Form\CheckboxViewHelper::class,
+            Fluid\ViewHelpers\CObjectViewHelper::class,
             [
-                'property' => $renderable->getIdentifier(),
-                'id' => $renderable->getUniqueIdentifier(),
-                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
-                'value' => $renderable->getProperties()['value'] ?? null,
-                'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
+                'data' => (int)$contentElementUid,
+                'typoscriptObjectPath' => 'lib.tx_form.contentElementRendering',
             ],
         );
 
-        return new ViewModel($renderingContext, $result->content, $result->tag);
+        if (is_string($className)) {
+            $result->tag->addAttribute('class', $className);
+        }
+
+        return new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
     }
 }

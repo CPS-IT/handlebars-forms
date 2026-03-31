@@ -15,47 +15,44 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * SelectViewModelBuilder
+ * TextareaViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
  * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\GenericFormElement>
  */
-final class SelectViewModelBuilder extends AbstractViewModelBuilder
+final class TextareaViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
-        'MultiSelect',
-        'SingleSelect',
+        'Textarea',
     ];
 
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
+    ): Domain\ViewModel\ViewHelperContainedViewModel {
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
-            Fluid\ViewHelpers\Form\SelectViewHelper::class,
+            Fluid\ViewHelpers\Form\TextareaViewHelper::class,
             [
                 'property' => $renderable->getIdentifier(),
                 'id' => $renderable->getUniqueIdentifier(),
                 'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
-                'options' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'options'),
-                'multiple' => $renderable->getType() === 'MultiSelect' ? 'multiple' : null,
+                'rows' => $renderable->getProperties()['rows'] ?? null,
+                'cols' => $renderable->getProperties()['cols'] ?? null,
                 'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
                 'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
-                'prependOptionLabel' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionLabel'),
-                'prependOptionValue' => $this->viewHelperInvoker->translateElementProperty($renderingContext, $renderable, 'prependOptionValue'),
             ],
         );
-        $options = $result->extractChildNodes('option');
 
-        return new ViewModel($renderingContext, $result->content, $result->tag, $options);
+        return new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
     }
 }

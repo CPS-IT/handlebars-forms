@@ -15,8 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 use TYPO3Fluid\Fluid as FluidStandalone;
@@ -38,7 +39,7 @@ final class FieldsetViewModelBuilder extends AbstractViewModelBuilder
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
+    ): Domain\ViewModel\StandaloneTagViewModel {
         $additionalAttributes = $this->renderAdditionalAttributes($renderable, $renderingContext);
         $className = $renderable->getProperties()['elementClassAttribute'] ?? null;
 
@@ -49,6 +50,6 @@ final class FieldsetViewModelBuilder extends AbstractViewModelBuilder
             $tag->addAttribute('class', $className);
         }
 
-        return new ViewModel($renderingContext, tag: $tag);
+        return new Domain\ViewModel\StandaloneTagViewModel($renderable, $tag);
     }
 }

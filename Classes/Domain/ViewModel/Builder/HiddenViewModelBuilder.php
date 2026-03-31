@@ -15,49 +15,42 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
- * ContentElementViewModelBuilder
+ * HiddenViewModelBuilder
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
  * @extends AbstractViewModelBuilder<Form\Domain\Model\FormElements\GenericFormElement>
  */
-final class ContentElementViewModelBuilder extends AbstractViewModelBuilder
+final class HiddenViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
-        'ContentElement',
+        'Hidden',
+        'Honeypot',
     ];
 
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
-        $className = $renderable->getProperties()['elementClassAttribute'] ?? null;
-        $contentElementUid = $renderable->getProperties()['contentElementUid'] ?? null;
-
-        if (!is_numeric($contentElementUid) || (int)$contentElementUid <= 0) {
-            return new ViewModel($renderingContext);
-        }
-
+    ): Domain\ViewModel\ViewHelperContainedViewModel {
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
-            Fluid\ViewHelpers\CObjectViewHelper::class,
+            Fluid\ViewHelpers\Form\HiddenViewHelper::class,
             [
-                'data' => (int)$contentElementUid,
-                'typoscriptObjectPath' => 'lib.tx_form.contentElementRendering',
+                'property' => $renderable->getIdentifier(),
+                'id' => $renderable->getUniqueIdentifier(),
+                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
             ],
         );
 
-        if (is_string($className)) {
-            $result->tag->addAttribute('class', $className);
-        }
-
-        return new ViewModel($renderingContext, $result->content, $result->tag);
+        return new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
     }
 }

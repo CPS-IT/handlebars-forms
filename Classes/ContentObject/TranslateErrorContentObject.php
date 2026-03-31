@@ -45,7 +45,7 @@ final class TranslateErrorContentObject extends AbstractHandlebarsFormsContentOb
         }
 
         return $this->viewHelperInvoker->invoke(
-            $context->viewModel->renderingContext,
+            $context->renderingContext,
             Form\ViewHelpers\TranslateElementErrorViewHelper::class,
             [
                 'element' => $context->renderable,
@@ -66,7 +66,7 @@ final class TranslateErrorContentObject extends AbstractHandlebarsFormsContentOb
             $property = $renderable->getIdentifier();
         }
 
-        $request = $context->viewModel->renderingContext->getAttribute(Message\ServerRequestInterface::class);
+        $request = $context->renderingContext->getAttribute(Message\ServerRequestInterface::class);
         $extbaseRequestParameters = $request->getAttribute('extbase');
 
         // Early return when content object was requested outside of extbase context

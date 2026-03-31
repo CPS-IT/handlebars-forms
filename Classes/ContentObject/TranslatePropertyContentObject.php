@@ -47,7 +47,7 @@ final class TranslatePropertyContentObject extends AbstractHandlebarsFormsConten
         }
 
         return $this->viewHelperInvoker->translateElementProperty(
-            $context->viewModel->renderingContext,
+            $context->renderingContext,
             $context->renderable,
             $property,
             $argumentName,

@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
-use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvocationResult;
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Fluid;
@@ -80,22 +79,17 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
         Context\ValueResolutionContext $context,
         Form\Domain\Runtime\FormRuntime $formRuntime,
     ): array {
-        $renderingContext = $context->viewModel->renderingContext;
+        $renderingContext = $context->renderingContext;
         $processedElements = [];
 
         foreach ($renderables as $step => $stepRenderable) {
             $stepConfiguration = $configuration[$step . '.'] ?? null;
 
             if (is_array($stepConfiguration)) {
-                $buttonResult = $this->processButton($renderingContext, $stepRenderable, $formRuntime, $step);
-                $stepViewModel = new Domain\Renderable\ViewModel\ViewModel(
-                    $renderingContext,
-                    $buttonResult->content,
-                    $buttonResult->tag,
-                );
+                $stepViewModel = $this->processButton($renderingContext, $stepRenderable, $formRuntime, $step);
             } else {
                 $stepConfiguration = [];
-                $stepViewModel = new Domain\Renderable\ViewModel\ViewModel($renderingContext);
+                $stepViewModel = new Domain\ViewModel\SimpleViewModel($stepRenderable);
             }
 
             $processedElement = $context->process($stepConfiguration, $stepRenderable, $stepViewModel);
@@ -116,7 +110,7 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
         Form\Domain\Model\FormElements\Page|Form\Domain\Runtime\FormRuntime $pageOrForm,
         Form\Domain\Runtime\FormRuntime $formRuntime,
         string $step,
-    ): ViewHelperInvocationResult {
+    ): Domain\ViewModel\ViewModel {
         $isPage = $pageOrForm instanceof Form\Domain\Model\FormElements\Page;
         $labelRenderable = $isPage ? $formRuntime->getCurrentPage() : $formRuntime;
 
@@ -128,25 +122,27 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
                 'value' => $isPage ? $pageOrForm->getIndex() : count($pageOrForm->getPages()),
             ],
         );
+        $buttonViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($pageOrForm, $buttonResult);
 
-        if ($labelRenderable !== null) {
-            $labelResult = $this->viewHelperInvoker->translateElementProperty(
-                $renderingContext,
-                $labelRenderable,
-                match ($step) {
-                    self::PREVIOUS_PAGE => 'previousButtonLabel',
-                    self::NEXT_PAGE => 'nextButtonLabel',
-                    self::SUBMIT => 'submitButtonLabel',
-                },
-                'renderingOptionProperty',
-            );
-
-            // @todo Check if this can be done in a better way
-            if (is_string($labelResult)) {
-                $buttonResult->tag->addAttribute('label', $labelResult);
-            }
+        if ($labelRenderable === null) {
+            return $buttonViewModel;
         }
 
-        return $buttonResult;
+        $labelResult = $this->viewHelperInvoker->translateElementProperty(
+            $renderingContext,
+            $labelRenderable,
+            match ($step) {
+                self::PREVIOUS_PAGE => 'previousButtonLabel',
+                self::NEXT_PAGE => 'nextButtonLabel',
+                self::SUBMIT => 'submitButtonLabel',
+            },
+            'renderingOptionProperty',
+        );
+
+        if (!is_string($labelResult)) {
+            return $buttonViewModel;
+        }
+
+        return Domain\ViewModel\FormFieldViewModel::forLabelAndElement($labelResult, $buttonViewModel);
     }
 }

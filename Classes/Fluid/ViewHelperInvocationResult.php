@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\Fluid;
 
-use CPSIT\Typo3HandlebarsForms\Domain;
 use TYPO3\CMS\Fluid;
 use TYPO3Fluid\Fluid as FluidStandalone;
 
@@ -38,7 +37,7 @@ final readonly class ViewHelperInvocationResult
 
     /**
      * @param non-empty-string $tagName
-     * @return list<Domain\Renderable\ViewModel\ViewModel>
+     * @return list<FluidStandalone\Core\ViewHelper\TagBuilder>
      */
     public function extractChildNodes(string $tagName): array
     {
@@ -84,7 +83,7 @@ final readonly class ViewHelperInvocationResult
                 $tag->addAttribute($attribute->name, $attribute->value);
             }
 
-            $children[] = new Domain\Renderable\ViewModel\ViewModel($this->renderingContext, null, $tag);
+            $children[] = $tag;
         }
 
         return $children;

@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\ContentObject\Context;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
+use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
 /**
@@ -29,7 +30,7 @@ use TYPO3\CMS\Form;
  * @phpstan-type ProcessorClosure \Closure(
  *     array<string|int, mixed>,
  *     Form\Domain\Model\Renderable\RootRenderableInterface|null,
- *     Domain\Renderable\ViewModel\ViewModel|null,
+ *     Domain\ViewModel\ViewModel|null,
  * ): mixed
  */
 final readonly class ValueResolutionContext
@@ -39,7 +40,8 @@ final readonly class ValueResolutionContext
      */
     public function __construct(
         public Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        public Domain\Renderable\ViewModel\ViewModel $viewModel,
+        public Domain\ViewModel\ViewModel $viewModel,
+        public Fluid\Core\Rendering\RenderingContext $renderingContext,
         public Form\Domain\Runtime\FormRuntime $formRuntime,
         private ?\Closure $renderableProcessor = null,
     ) {}
@@ -50,7 +52,7 @@ final readonly class ValueResolutionContext
     public function process(
         array $configuration = [],
         ?Form\Domain\Model\Renderable\RootRenderableInterface $renderable = null,
-        ?Domain\Renderable\ViewModel\ViewModel $viewModel = null,
+        ?Domain\ViewModel\ViewModel $viewModel = null,
     ): mixed {
         if ($this->renderableProcessor === null) {
             return null;
@@ -61,11 +63,11 @@ final readonly class ValueResolutionContext
 
     public function withRenderable(Form\Domain\Model\Renderable\RootRenderableInterface $renderable): self
     {
-        return new self($renderable, $this->viewModel, $this->formRuntime, $this->renderableProcessor);
+        return new self($renderable, $this->viewModel, $this->renderingContext, $this->formRuntime, $this->renderableProcessor);
     }
 
-    public function withViewModel(Domain\Renderable\ViewModel\ViewModel $viewModel): self
+    public function withViewModel(Domain\ViewModel\ViewModel $viewModel): self
     {
-        return new self($this->renderable, $viewModel, $this->formRuntime, $this->renderableProcessor);
+        return new self($this->renderable, $viewModel, $this->renderingContext, $this->formRuntime, $this->renderableProcessor);
     }
 }
