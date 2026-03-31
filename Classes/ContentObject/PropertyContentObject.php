@@ -32,11 +32,16 @@ final class PropertyContentObject extends AbstractHandlebarsFormsContentObject
     public function resolve(array $configuration, Context\ValueResolutionContext $context): mixed
     {
         $path = $configuration['path'] ?? null;
+        $subject = match ($configuration['subject'] ?? null) {
+            'formRuntime' => $context->formRuntime,
+            'viewModel' => $context->viewModel,
+            default => $context->renderable,
+        };
 
         if (!is_string($path)) {
             return null;
         }
 
-        return Extbase\Reflection\ObjectAccess::getProperty($context->renderable, $path);
+        return Extbase\Reflection\ObjectAccess::getProperty($subject, $path);
     }
 }
