@@ -42,7 +42,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     public function __construct(
         private Log\LoggerInterface $logger,
         private Fluid\Core\Rendering\RenderingContextFactory $renderingContextFactory,
-        private Domain\Renderable\ViewModel\FormViewModelBuilder $formRenderableProcessor,
+        private Domain\ViewModel\Builder\FormViewModelBuilder $formRenderableProcessor,
         private ContentObject\Context\ValueCollector $valueCollector,
         private ContentObject\Context\ContextStack $contextStack,
     ) {}
@@ -97,8 +97,15 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $tag = $tagBuilder;
                 $tag->setContent(self::CONTENT_PLACEHOLDER);
 
-                $viewModel = new Domain\Renderable\ViewModel\ViewModel($renderingContext, null, $tag);
-                $processedData = $this->processRenderable($formRuntime, $processorConfiguration, $formRuntime, $cObj, $viewModel) ?? [];
+                $viewModel = new Domain\ViewModel\StandaloneTagViewModel($formRuntime, $tag);
+                $processedData = $this->processRenderable(
+                    $formRuntime,
+                    $processorConfiguration,
+                    $renderingContext,
+                    $formRuntime,
+                    $cObj,
+                    $viewModel,
+                ) ?? [];
 
                 return '';
             },
@@ -128,14 +135,15 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     private function processRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         array $configuration,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
         Form\Domain\Runtime\FormRuntime $formRuntime,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
+        Domain\ViewModel\ViewModel $viewModel,
     ): ?array {
         $processedData = [];
 
         // Early return on configured "if" condition evaluating to false
-        if (!$this->checkIf($configuration, $renderable, $formRuntime, $cObj, $viewModel)) {
+        if (!$this->checkIf($configuration, $renderable, $renderingContext, $formRuntime, $cObj, $viewModel)) {
             return null;
         }
 
@@ -147,7 +155,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $keyWithDot = $keyWithoutDot . '.';
 
             if (is_array($value) && !array_key_exists($keyWithoutDot, $processedData)) {
-                $resolvedValue = $this->processRenderable($renderable, $value, $formRuntime, $cObj, $viewModel);
+                $resolvedValue = $this->processRenderable($renderable, $value, $renderingContext, $formRuntime, $cObj, $viewModel);
 
                 if (is_array($resolvedValue)) {
                     $processedData[$keyWithoutDot] = $resolvedValue;
@@ -170,14 +178,16 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $context = new ContentObject\Context\ValueResolutionContext(
                     $renderable,
                     $viewModel,
+                    $renderingContext,
                     $formRuntime,
                     fn(
                         array $contextConfiguration,
                         ?Form\Domain\Model\Renderable\RootRenderableInterface $contextRenderable = null,
-                        ?Domain\Renderable\ViewModel\ViewModel $contextViewModel = null,
+                        ?Domain\ViewModel\ViewModel $contextViewModel = null,
                     ) => $this->processRenderable(
                         $contextRenderable ?? $renderable,
                         $contextConfiguration,
+                        $renderingContext,
                         $formRuntime,
                         $cObj,
                         $contextViewModel ?? $viewModel,
@@ -209,7 +219,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             if (is_array($valueConfiguration['if.'] ?? null)) {
                 $valueConfiguration['if.']['value'] ??= (string)$resolvedValue;
 
-                if (!$this->checkIf($valueConfiguration, $renderable, $formRuntime, $cObj, $viewModel)) {
+                if (!$this->checkIf($valueConfiguration, $renderable, $renderingContext, $formRuntime, $cObj, $viewModel)) {
                     continue;
                 }
             }
@@ -270,9 +280,10 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     private function checkIf(
         array &$configuration,
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
         Form\Domain\Runtime\FormRuntime $formRuntime,
         Frontend\ContentObject\ContentObjectRenderer $cObj,
-        Domain\Renderable\ViewModel\ViewModel $viewModel,
+        Domain\ViewModel\ViewModel $viewModel,
     ): bool {
         if (!is_array($configuration['if.'] ?? null)) {
             return true;
@@ -287,6 +298,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                     'currentValue' => $configuration['if.']['currentValue'] ?? '',
                     'currentValue.' => $configuration['if.']['currentValue.'] ?? [],
                 ],
+                $renderingContext,
                 $formRuntime,
                 $cObj,
                 $viewModel,

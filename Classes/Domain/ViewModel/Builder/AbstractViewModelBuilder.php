@@ -15,8 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
@@ -44,7 +45,7 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
     public function build(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
+    ): Domain\ViewModel\ViewModel {
         $viewModel = null;
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
@@ -57,11 +58,11 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
             },
         );
 
-        if (!($viewModel instanceof ViewModel)) {
-            $viewModel = new ViewModel($renderingContext, $result->content, $result->tag);
+        if (!($viewModel instanceof Domain\ViewModel\ViewModel)) {
+            $viewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
         }
 
-        $this->applyGridColumnClasses($renderable, $viewModel);
+        $this->applyGridColumnClasses($renderable, $viewModel, $renderingContext);
 
         return $viewModel;
     }
@@ -72,7 +73,7 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
     protected function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ?ViewModel {
+    ): ?Domain\ViewModel\ViewModel {
         return null;
     }
 
@@ -107,7 +108,8 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
      */
     protected function applyGridColumnClasses(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        ViewModel $viewModel,
+        Domain\ViewModel\ViewModel $viewModel,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): void {
         if (!($renderable instanceof Form\Domain\Model\Renderable\RenderableInterface)) {
             return;
@@ -118,17 +120,18 @@ abstract class AbstractViewModelBuilder implements ViewModelBuilder
         }
 
         $gridResult = $this->viewHelperInvoker->invoke(
-            $viewModel->renderingContext,
+            $renderingContext,
             Form\ViewHelpers\GridColumnClassAutoConfigurationViewHelper::class,
             [
                 'element' => $renderable,
             ],
         );
 
-        if (is_string($gridResult->content)) {
-            $viewModel->tag->addAttribute(
+        if (is_string($gridResult->content) && $viewModel instanceof Domain\ViewModel\TagAwareViewModel) {
+            $tag = $viewModel->getTag();
+            $tag->addAttribute(
                 'class',
-                trim($viewModel->tag->getAttribute('class') . ' ' . $gridResult->content),
+                trim($tag->getAttribute('class') . ' ' . $gridResult->content),
             );
         }
     }

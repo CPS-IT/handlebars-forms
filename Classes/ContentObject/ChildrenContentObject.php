@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use Symfony\Component\DependencyInjection;
 
 /**
@@ -35,7 +36,11 @@ final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
      */
     protected function resolve(array $configuration, Context\ValueResolutionContext $context): ?array
     {
-        $children = $context->viewModel->children;
+        if (!($context->viewModel instanceof Domain\ViewModel\CompositeViewModel)) {
+            return null;
+        }
+
+        $children = $context->viewModel->getChildren();
 
         if ($children === []) {
             return null;

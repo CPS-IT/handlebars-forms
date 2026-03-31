@@ -34,7 +34,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
     private const RENDERABLE_INDEX_IDENTIFIER = '_currentRenderableIndex';
 
     /**
-     * @param iterable<Domain\Renderable\ViewModel\ViewModelBuilder<Form\Domain\Model\Renderable\RootRenderableInterface>> $viewModelBuilders
+     * @param iterable<Domain\ViewModel\Builder\ViewModelBuilder<Form\Domain\Model\Renderable\RootRenderableInterface>> $viewModelBuilders
      */
     public function __construct(
         #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.view_model_builder')]
@@ -68,7 +68,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
         }
 
         foreach ($renderables as $index => $child) {
-            if (!$child->isEnabled()) {
+            if (!$this->isEnabled($child)) {
                 continue;
             }
 
@@ -81,10 +81,10 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
             $childConfiguration = $configuration[$child->getType() . '.'];
 
             if (is_array($childConfiguration)) {
-                $childViewModel = $this->buildViewModel($child, $context->viewModel->renderingContext);
+                $childViewModel = $this->buildViewModel($child, $context->renderingContext);
             } else {
                 $childConfiguration = [];
-                $childViewModel = new Domain\Renderable\ViewModel\ViewModel($context->viewModel->renderingContext);
+                $childViewModel = new Domain\ViewModel\SimpleViewModel($child);
             }
 
             if ($this->cObj !== null) {
@@ -110,13 +110,28 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
     private function buildViewModel(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): Domain\Renderable\ViewModel\ViewModel {
+    ): Domain\ViewModel\ViewModel {
         foreach ($this->viewModelBuilders as $viewModelBuilder) {
             if ($viewModelBuilder->supports($renderable)) {
                 return $viewModelBuilder->build($renderable, $renderingContext);
             }
         }
 
-        return new Domain\Renderable\ViewModel\ViewModel($renderingContext);
+        return new Domain\ViewModel\SimpleViewModel($renderable);
+    }
+
+    private function isEnabled(Form\Domain\Model\Renderable\RenderableInterface $renderable): bool
+    {
+        if (!$renderable->isEnabled()) {
+            return false;
+        }
+
+        while (($renderable = $renderable->getParentRenderable()) !== null) {
+            if (!$renderable->isEnabled()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

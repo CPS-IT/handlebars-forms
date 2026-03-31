@@ -15,8 +15,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
+use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
@@ -37,7 +39,7 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel {
+    ): Domain\ViewModel\ViewModelCollection|Domain\ViewModel\ViewHelperContainedViewModel {
         $resourceVariableName = 'resource';
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
@@ -52,10 +54,19 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
                 'accept' => $renderable->getProperties()['allowedMimeTypes'] ?? null,
             ],
         );
-
-        // @todo Expose uploaded resource for configuration in TypoScript
         $resource = $renderingContext->getVariableProvider()->get($resourceVariableName);
+        $inputViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
 
-        return new ViewModel($renderingContext, $result->content, $result->tag);
+        if ($resource instanceof Extbase\Domain\Model\FileReference) {
+            return new Domain\ViewModel\ViewModelCollection(
+                $renderable,
+                [
+                    $inputViewModel,
+                    new Domain\ViewModel\FileResourceViewModel($renderable, $resource),
+                ],
+            );
+        }
+
+        return $inputViewModel;
     }
 }

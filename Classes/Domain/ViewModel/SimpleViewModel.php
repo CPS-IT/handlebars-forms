@@ -15,26 +15,32 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel;
 
-use TYPO3\CMS\Fluid;
-use TYPO3Fluid\Fluid as FluidStandalone;
+use TYPO3\CMS\Form;
 
 /**
  * ViewModel
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ *
+ * @extends \ArrayObject<string|int, mixed>
  */
-final readonly class ViewModel
+final class SimpleViewModel extends \ArrayObject implements ViewModel
 {
     /**
-     * @param list<self> $children
+     * @param array<string|int, mixed> $context
      */
     public function __construct(
-        public Fluid\Core\Rendering\RenderingContext $renderingContext,
-        public mixed $content = null,
-        public FluidStandalone\Core\ViewHelper\TagBuilder $tag = new FluidStandalone\Core\ViewHelper\TagBuilder(),
-        public array $children = [],
-    ) {}
+        public Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
+        array $context = [],
+    ) {
+        parent::__construct($context);
+    }
+
+    public function getRenderable(): Form\Domain\Model\Renderable\RootRenderableInterface
+    {
+        return $this->renderable;
+    }
 }

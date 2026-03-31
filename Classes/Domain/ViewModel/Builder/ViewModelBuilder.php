@@ -15,8 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\Domain\Renderable\ViewModel;
+namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
+use CPSIT\Typo3HandlebarsForms\Domain;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
@@ -38,7 +39,7 @@ interface ViewModelBuilder
     public function build(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): ViewModel;
+    ): Domain\ViewModel\ViewModel;
 
     public function supports(Form\Domain\Model\Renderable\RootRenderableInterface $renderable): bool;
 }
