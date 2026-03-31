@@ -22,13 +22,13 @@ use DevTheorem\Handlebars;
 use Symfony\Component\DependencyInjection;
 
 /**
- * ContentContentObject
+ * ViewHelperContentContentObject
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_CONTENT'])]
-final class ContentContentObject extends AbstractHandlebarsFormsContentObject
+#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_VH_CONTENT'])]
+final class ViewHelperContentContentObject extends AbstractHandlebarsFormsContentObject
 {
     public function resolve(array $configuration, Context\ValueResolutionContext $context): mixed
     {
