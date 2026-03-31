@@ -40,7 +40,7 @@ final readonly class FluidRenderableRenderer
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Form\Domain\Runtime\FormRuntime $formRuntime,
     ): string {
-        $view = $this->resolveDefaultView($formRuntime);
+        $view = $this->buildView($formRuntime);
         $view->assign('form', $formRuntime);
         $view->assign('element', $renderable);
 
@@ -54,20 +54,25 @@ final readonly class FluidRenderableRenderer
         return $view->render('RenderRenderable');
     }
 
-    private function resolveDefaultView(Form\Domain\Runtime\FormRuntime $formRuntime): Core\View\ViewInterface
+    private function buildView(Form\Domain\Runtime\FormRuntime $formRuntime): Core\View\ViewInterface
     {
         $renderingOptions = $formRuntime->getRenderingOptions();
-        $templateRootPaths = ['EXT:handlebars_forms/Resources/Private/Templates/Fluid'];
+        $templateRootPaths = $renderingOptions['templateRootPaths'] ?? [];
         $partialRootPaths = $renderingOptions['partialRootPaths'] ?? [];
         $layoutRootPaths = $renderingOptions['layoutRootPaths'] ?? [];
 
+        if (!is_array($templateRootPaths)) {
+            $templateRootPaths = [];
+        }
         if (!is_array($partialRootPaths)) {
-            $partialRootPaths = null;
+            $partialRootPaths = [];
+        }
+        if (!is_array($layoutRootPaths)) {
+            $layoutRootPaths = [];
         }
 
-        if (!is_array($layoutRootPaths)) {
-            $layoutRootPaths = null;
-        }
+        // Inject template root path which contains the "bridge" template
+        $templateRootPaths[100] = 'EXT:handlebars_forms/Resources/Private/Templates/Fluid';
 
         $viewFactoryData = new Core\View\ViewFactoryData(
             templateRootPaths: $templateRootPaths,
