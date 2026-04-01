@@ -105,13 +105,17 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                 continue;
             }
 
-            if (!array_key_exists($child->getType() . '.', $configuration)) {
+            if (array_key_exists($child->getType() . '.', $configuration)) {
+                // Use configured type-specific configuration (e.g. "Fieldset." for fieldsets)
+                $childConfiguration = $configuration[$child->getType() . '.'];
+            } elseif (!array_key_exists('default.', $configuration)) {
+                // Pass through rendering to original Fluid partial on missing fallback config
                 $processedRenderables[] = $this->passthroughContentObject->render();
-
                 continue;
+            } else {
+                // Use configured fallback configuration ("default.")
+                $childConfiguration = $configuration['default.'];
             }
-
-            $childConfiguration = $configuration[$child->getType() . '.'];
 
             if (is_array($childConfiguration)) {
                 $childViewModel = $this->buildViewModel($child, $context->renderingContext);
