@@ -24,6 +24,17 @@ parameters:
 			path: Classes/ContentObject/ContextAwareContentObjectFactory.php
 
 		-
+			rawMessage: '''
+				Access to property $register of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: property.deprecatedClass
+			count: 4
+			path: Classes/ContentObject/RenderablesContentObject.php
+
+		-
 			rawMessage: Cannot access offset 'form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1

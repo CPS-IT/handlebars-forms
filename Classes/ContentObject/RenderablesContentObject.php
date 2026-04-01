@@ -31,7 +31,8 @@ use TYPO3\CMS\Form;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_RENDERABLES'])]
 final class RenderablesContentObject extends AbstractHandlebarsFormsContentObject
 {
-    private const RENDERABLE_INDEX_IDENTIFIER = '_currentRenderableIndex';
+    private const IDENTIFIER_COUNT = 'HBS_RENDERABLES_COUNT';
+    private const IDENTIFIER_CURRENT = 'HBS_RENDERABLES_CURRENT';
 
     /**
      * @param iterable<Domain\ViewModel\Builder\ViewModelBuilder<Form\Domain\Model\Renderable\RootRenderableInterface>> $viewModelBuilders
@@ -94,6 +95,11 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
             $renderables = [];
         }
 
+        // Add renderables count to TSFE register
+        // @todo Use $this->request->getAttribute('frontend.register.stack') in TYPO3 v14
+        $tsfe = $this->getTypoScriptFrontendController();
+        $tsfe->register[self::IDENTIFIER_COUNT] = count($renderables);
+
         foreach ($renderables as $index => $child) {
             if (!$this->isEnabled($child)) {
                 continue;
@@ -114,22 +120,21 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                 $childViewModel = new Domain\ViewModel\SimpleViewModel($child);
             }
 
-            if ($this->cObj !== null) {
-                $this->cObj->data[self::RENDERABLE_INDEX_IDENTIFIER] = $index;
-            }
+            // Add current renderable index to TSFE register
+            $tsfe->register[self::IDENTIFIER_CURRENT] = $index;
 
             try {
                 $processedChild = $context->process($childConfiguration, $child, $childViewModel);
             } finally {
-                if ($this->cObj !== null) {
-                    unset($this->cObj->data[self::RENDERABLE_INDEX_IDENTIFIER]);
-                }
+                unset($tsfe->register[self::IDENTIFIER_CURRENT]);
             }
 
             if ($processedChild !== null) {
                 $processedRenderables[] = $processedChild;
             }
         }
+
+        unset($tsfe->register[self::IDENTIFIER_COUNT]);
 
         return $processedRenderables;
     }
