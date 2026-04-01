@@ -29,7 +29,8 @@ use Symfony\Component\DependencyInjection;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_CHILDREN'])]
 final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
 {
-    private const CHILD_INDEX_IDENTIFIER = '_currentChildIndex';
+    private const IDENTIFIER_COUNT = 'HBS_CHILDREN_COUNT';
+    private const IDENTIFIER_CURRENT = 'HBS_CHILDREN_CURRENT';
 
     /**
      * @return list<mixed>|null
@@ -48,19 +49,23 @@ final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
 
         $processedValue = [];
 
+        // Add children count to TSFE register
+        // @todo Use $this->request->getAttribute('frontend.register.stack') in TYPO3 v14
+        $tsfe = $this->getTypoScriptFrontendController();
+        $tsfe->register[self::IDENTIFIER_COUNT] = count($children);
+
         foreach ($children as $index => $childViewModel) {
-            if ($this->cObj !== null) {
-                $this->cObj->data[self::CHILD_INDEX_IDENTIFIER] = $index;
-            }
+            // Add current child index to TSFE register
+            $tsfe->register[self::IDENTIFIER_CURRENT] = $index;
 
             try {
                 $processedValue[] = $context->process($configuration, viewModel: $childViewModel);
             } finally {
-                if ($this->cObj !== null) {
-                    unset($this->cObj->data[self::CHILD_INDEX_IDENTIFIER]);
-                }
+                unset($tsfe->register[self::IDENTIFIER_CURRENT]);
             }
         }
+
+        unset($tsfe->register[self::IDENTIFIER_COUNT]);
 
         return $processedValue;
     }
