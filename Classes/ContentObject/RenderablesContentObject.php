@@ -47,19 +47,46 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
      */
     protected function resolve(array $configuration, Context\ValueResolutionContext $context): array
     {
-        $renderable = $context->renderable;
+        $baseRenderable = $renderable = $context->renderable;
         $processedRenderables = [];
 
         // Use current page as base renderable if we're on root form context
-        if ($renderable instanceof Form\Domain\Runtime\FormRuntime) {
-            $renderable = $renderable->getCurrentPage() ?? $renderable;
+        if ($baseRenderable instanceof Form\Domain\Runtime\FormRuntime) {
+            $renderable = $baseRenderable->getCurrentPage() ?? $baseRenderable;
         }
 
-        // Fetch renderables from base renderable. On default sections (e.g. pages), this reflects
-        // all direct children. On all other composite renderables, this reflects all renderables
-        // recursively (including deeply nested rebderables). If we have a non-composite base
-        // renderable in place, we do nothing since this value resolver only handles composite renderables.
-        if ($renderable instanceof Form\Domain\Model\FormElements\AbstractSection) {
+        // Fetch renderables from base renderable:
+        // - On summary pages, the base renderable defines the selection of renderables:
+        //   + If the incoming renderable is the summary page, we use ALL elements (no sections) of the configured form.
+        //   + If the incoming renderable is the root form, we explicitly render the summary page renderable
+        //     to allow further configuration of this specific page type. In TypoScript, the form renderables may
+        //     still be rendered for summary pages by using a combination of HBS_RENDERABLES objects for form & page:
+        //       formData {
+        //         items = HBS_RENDERABLES
+        //         items {
+        //           # ...
+        //           SummaryPage {
+        //             elements = HBS_RENDERABLES
+        //             elements {
+        //               Text { ... }
+        //               # ...
+        //             }
+        //           }
+        //         }
+        //       }
+        // - On default sections (e.g. non-summary pages), this reflects all direct children.
+        // - On all other composite renderables, this reflects all renderables recursively (including deeply nested
+        //   renderables).
+        // - If we have a non-composite base renderable in place, we do nothing since this value resolver only handles
+        //   composite renderables.
+        if ($baseRenderable instanceof Form\Domain\Model\FormElements\Page && $baseRenderable->getType() === 'SummaryPage') {
+            $renderables = array_filter(
+                $baseRenderable->getRootForm()->getRenderablesRecursively(),
+                $this->isElement(...),
+            );
+        } elseif ($renderable instanceof Form\Domain\Model\FormElements\Page && $renderable->getType() === 'SummaryPage') {
+            $renderables = [$renderable];
+        } elseif ($renderable instanceof Form\Domain\Model\FormElements\AbstractSection) {
             $renderables = $renderable->getElements();
         } elseif ($renderable instanceof Form\Domain\Model\Renderable\CompositeRenderableInterface) {
             $renderables = $renderable->getRenderablesRecursively();
@@ -118,6 +145,13 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
         }
 
         return new Domain\ViewModel\SimpleViewModel($renderable);
+    }
+
+    private function isElement(Form\Domain\Model\Renderable\RenderableInterface $renderable): bool
+    {
+        return $renderable instanceof Form\Domain\Model\FormElements\FormElementInterface
+            && $this->isEnabled($renderable)
+        ;
     }
 
     private function isEnabled(Form\Domain\Model\Renderable\RenderableInterface $renderable): bool
