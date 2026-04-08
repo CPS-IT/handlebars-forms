@@ -40,7 +40,6 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
     public function __construct(
         #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.view_model_builder')]
         private readonly iterable $viewModelBuilders,
-        private readonly PassthroughContentObject $passthroughContentObject,
     ) {}
 
     /**
@@ -58,7 +57,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
 
         // Fetch renderables from base renderable:
         // - On summary pages, the base renderable defines the selection of renderables:
-        //   + If the incoming renderable is the summary page, we use ALL elements (no sections) of the configured form.
+        //   + If the incoming renderable is the summary page, we use ALL ELEMENTS of the configured form.
         //   + If the incoming renderable is the root form, we explicitly render the summary page renderable
         //     to allow further configuration of this specific page type. In TypoScript, the form renderables may
         //     still be rendered for summary pages by using a combination of HBS_RENDERABLES objects for form & page:
@@ -109,8 +108,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                 // Use configured type-specific configuration (e.g. "Fieldset." for fieldsets)
                 $childConfiguration = $configuration[$child->getType() . '.'];
             } elseif (!array_key_exists('default.', $configuration)) {
-                // Pass through rendering to original Fluid partial on missing fallback config
-                $processedRenderables[] = $this->passthroughContentObject->render();
+                // Skip rendering on missing fallback config
                 continue;
             } else {
                 // Use configured fallback configuration ("default.")
