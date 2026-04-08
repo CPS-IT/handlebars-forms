@@ -40,6 +40,7 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): Domain\ViewModel\ViewModelCollection|Domain\ViewModel\ViewHelperContainedViewModel {
+        $resource = null;
         $resourceVariableName = 'resource';
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
@@ -53,8 +54,10 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
                 'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
                 'accept' => $renderable->getProperties()['allowedMimeTypes'] ?? null,
             ],
+            static function () use ($renderingContext, &$resource, $resourceVariableName) {
+                $resource = $renderingContext->getVariableProvider()->get($resourceVariableName);
+            },
         );
-        $resource = $renderingContext->getVariableProvider()->get($resourceVariableName);
         $inputViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
 
         if ($resource instanceof Extbase\Domain\Model\FileReference) {
