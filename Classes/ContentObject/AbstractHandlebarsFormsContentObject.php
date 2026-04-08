@@ -59,15 +59,9 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
             return '';
         }
 
-        $value = $this->resolve($conf, $context);
-
-        // Apply stdWrap to stringables (string, NULL, SafeString)
-        if (Utility\StringUtility::isStringable($value)) {
-            $value = Utility\StringUtility::processStringable(
-                $value,
-                fn(string $string) => $this->applyStdWrap($string, $conf),
-            );
-        }
+        // Resolve value and apply stdWrap (either on stringable value or by using value as currentValue in COR)
+        $resolvedValue = $this->resolve($conf, $context);
+        $value = $this->applyStdWrap($resolvedValue, $conf);
 
         // Strings can be returned without additional caching using ValueCollector,
         // since content objects are already designed to return string values
@@ -86,12 +80,30 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
     /**
      * @param array<string|int, mixed> $configuration
      */
-    private function applyStdWrap(string $value, array $configuration): string
+    private function applyStdWrap(mixed $value, array $configuration): mixed
     {
-        if (!is_array($configuration['stdWrap.'] ?? null)) {
+        if ($this->cObj === null || !is_array($configuration['stdWrap.'] ?? null)) {
             return $value;
         }
 
-        return $this->cObj?->stdWrap($value, $configuration['stdWrap.']) ?? $value;
+        $apply = fn(string $string) => $this->cObj->stdWrap($string, $configuration['stdWrap.']) ?? $value;
+
+        // Backup and override current value
+        $currentValue = $this->cObj->getCurrentVal();
+        $this->cObj->setCurrentVal($value);
+
+        try {
+            // Apply stdWrap directly on stringable value
+            if (Utility\StringUtility::isStringable($value)) {
+                return Utility\StringUtility::processStringable($value, $apply(...));
+            }
+
+            // Apply stdWrap on empty string, but give consumers the chance to perform actions
+            // based on the current value (which reflects the non-stringable resolved value)
+            return $apply('');
+        } finally {
+            // Restore previous current value
+            $this->cObj?->setCurrentVal($currentValue);
+        }
     }
 }
