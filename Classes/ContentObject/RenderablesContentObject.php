@@ -55,6 +55,13 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
             $renderable = $baseRenderable->getCurrentPage() ?? $baseRenderable;
         }
 
+        // Resolve rendering order
+        if (is_string($configuration['order'] ?? null)) {
+            $order = RenderingOrder::from($configuration['order']);
+        } else {
+            $order = RenderingOrder::determineFromRenderable($renderable);
+        }
+
         // Fetch renderables from base renderable:
         // - On summary pages, the base renderable defines the selection of renderables:
         //   + If the incoming renderable is the summary page, we use ALL ELEMENTS of the configured form.
@@ -82,7 +89,10 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
         if ($baseRenderable instanceof Form\Domain\Model\FormElements\Page && $baseRenderable->getType() === 'SummaryPage') {
             $renderables = array_filter(
                 $baseRenderable->getRootForm()->getRenderablesRecursively(),
-                $this->isElement(...),
+                match ($order) {
+                    RenderingOrder::Flat => $this->isElement(...),
+                    RenderingOrder::Hierarchical => $this->isTopLevelElement(...),
+                },
             );
         } elseif ($renderable instanceof Form\Domain\Model\FormElements\Page && $renderable->getType() === 'SummaryPage') {
             $renderables = [$renderable];
@@ -158,6 +168,13 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
     {
         return $renderable instanceof Form\Domain\Model\FormElements\FormElementInterface
             && $this->isEnabled($renderable)
+        ;
+    }
+
+    private function isTopLevelElement(Form\Domain\Model\Renderable\RenderableInterface $renderable): bool
+    {
+        return $this->isElement($renderable)
+            && $renderable->getParentRenderable() instanceof Form\Domain\Model\FormElements\Page
         ;
     }
 
