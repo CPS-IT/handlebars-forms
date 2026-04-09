@@ -86,16 +86,15 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
             return $value;
         }
 
-        $isStringable = Utility\StringUtility::isStringable($value);
         $apply = fn(string $string) => $this->cObj->stdWrap($string, $configuration['stdWrap.']) ?? $value;
 
         // Backup and override current value
         $currentValue = $this->cObj->getCurrentVal();
-        $this->cObj->setCurrentVal($isStringable ? $value : null);
+        $this->cObj->setCurrentVal($this->convertValueToStringableValue($value));
 
         try {
             // Apply stdWrap directly on stringable value
-            if ($isStringable) {
+            if (Utility\StringUtility::isStringable($value)) {
                 return Utility\StringUtility::processStringable($value, $apply(...));
             }
 
@@ -106,5 +105,26 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
             // Restore previous current value
             $this->cObj?->setCurrentVal($currentValue);
         }
+    }
+
+    /**
+     * Build stringable value for usage as current value in COR.
+     * Passes through stringables and tries to convert scalar-arrays to a string list.
+     */
+    private function convertValueToStringableValue(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (Utility\StringUtility::isStringable($value)) {
+            return (string)$value;
+        }
+
+        if (is_array($value)) {
+            return implode(',', array_filter($value, is_scalar(...)));
+        }
+
+        return null;
     }
 }
