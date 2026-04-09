@@ -86,15 +86,16 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
             return $value;
         }
 
+        $isStringable = Utility\StringUtility::isStringable($value);
         $apply = fn(string $string) => $this->cObj->stdWrap($string, $configuration['stdWrap.']) ?? $value;
 
         // Backup and override current value
         $currentValue = $this->cObj->getCurrentVal();
-        $this->cObj->setCurrentVal($value);
+        $this->cObj->setCurrentVal($isStringable ? $value : null);
 
         try {
             // Apply stdWrap directly on stringable value
-            if (Utility\StringUtility::isStringable($value)) {
+            if ($isStringable) {
                 return Utility\StringUtility::processStringable($value, $apply(...));
             }
 
