@@ -60,16 +60,20 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
         );
         $inputViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
 
-        if ($resource instanceof Extbase\Domain\Model\FileReference) {
-            return new Domain\ViewModel\ViewModelCollection(
-                $renderable,
-                [
-                    $inputViewModel,
-                    new Domain\ViewModel\FileResourceViewModel($renderable, $resource),
-                ],
-            );
+        if (!($resource instanceof Extbase\Domain\Model\FileReference)) {
+            return $inputViewModel;
         }
 
-        return $inputViewModel;
+        $hiddenFields = $result->extractChildNodes('input[@type="hidden"]');
+        $viewModels = [
+            'uploadField' => $inputViewModel,
+            'resource' => new Domain\ViewModel\FileResourceViewModel($renderable, $resource),
+        ];
+
+        if ($hiddenFields !== []) {
+            $viewModels['resourcePointerField'] = new Domain\ViewModel\StandaloneTagViewModel($renderable, $hiddenFields[0]);
+        }
+
+        return new Domain\ViewModel\ViewModelCollection($renderable, $viewModels);
     }
 }

@@ -76,7 +76,7 @@ final readonly class ViewHelperInvocationResult
                 continue;
             }
 
-            $tag = new FluidStandalone\Core\ViewHelper\TagBuilder($tagName, trim($node->textContent));
+            $tag = new FluidStandalone\Core\ViewHelper\TagBuilder($node->tagName, trim($node->textContent));
 
             /** @var \DOMAttr $attribute */
             foreach ($node->attributes as $attribute) {
