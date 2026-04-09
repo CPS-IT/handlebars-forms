@@ -41,11 +41,11 @@ final readonly class ViewHelperInvocationResult
      */
     public function extractChildNodes(string $tagName): array
     {
-        $content = $this->tag->getContent();
+        $content = $this->content ?? $this->tag->getContent();
         $children = [];
 
-        // Early return if no content is provided
-        if ($content === null) {
+        // Early return if no suitable content is provided
+        if (!is_scalar($content) || (string)$content === '') {
             return [];
         }
 
