@@ -80,9 +80,11 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
         // - If we have a non-composite base renderable in place, we do nothing since this value resolver only handles
         //   composite renderables.
         if ($baseRenderable instanceof Form\Domain\Model\FormElements\Page && $baseRenderable->getType() === 'SummaryPage') {
-            $renderables = array_filter(
-                $baseRenderable->getRootForm()->getRenderablesRecursively(),
-                $this->isElement(...),
+            $renderables = array_values(
+                array_filter(
+                    $baseRenderable->getRootForm()->getRenderablesRecursively(),
+                    $this->isElement(...),
+                ),
             );
         } elseif ($renderable instanceof Form\Domain\Model\FormElements\Page && $renderable->getType() === 'SummaryPage') {
             $renderables = [$renderable];
