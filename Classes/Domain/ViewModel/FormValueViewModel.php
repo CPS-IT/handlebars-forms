@@ -91,7 +91,7 @@ final class FormValueViewModel extends \ArrayObject implements CompositeViewMode
 
         foreach ($this->processedValue as $key => $processedValue) {
             $value = $this->value[$key] ?? null;
-            $children[] = new self($this->element, $value, $processedValue);
+            $children[$key] = new self($this->element, $value, $processedValue);
         }
 
         return $children;

@@ -26,7 +26,7 @@ namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel;
 interface CompositeViewModel extends ViewModel
 {
     /**
-     * @return list<ViewModel>
+     * @return array<string|int, ViewModel>
      */
     public function getChildren(): array;
 }

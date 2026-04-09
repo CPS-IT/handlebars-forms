@@ -31,7 +31,7 @@ use TYPO3Fluid\Fluid;
 final class ViewModelCollection extends \ArrayObject implements CompositeViewModel, TagAwareViewModel
 {
     /**
-     * @param list<ViewModel> $viewModels
+     * @param array<string|int, ViewModel> $viewModels
      */
     public function __construct(
         public readonly Form\Domain\Model\Renderable\RootRenderableInterface $renderable,

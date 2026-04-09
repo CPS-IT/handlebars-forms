@@ -32,7 +32,7 @@ use TYPO3Fluid\Fluid as FluidStandalone;
 final class ViewHelperContainedViewModel extends \ArrayObject implements CompositeViewModel, TagAwareViewModel
 {
     /**
-     * @param list<ViewModel> $children
+     * @param array<string|int, ViewModel> $children
      */
     public function __construct(
         public Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
