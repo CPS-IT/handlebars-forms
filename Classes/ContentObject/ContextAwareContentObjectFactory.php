@@ -74,7 +74,7 @@ final class ContextAwareContentObjectFactory extends Frontend\ContentObject\Cont
 
                 $resolvedValue = $this->valueCollector->load($value);
 
-                if (!is_scalar($resolvedValue)) {
+                if (!is_scalar($resolvedValue) && $resolvedValue !== null) {
                     return $value;
                 }
 
