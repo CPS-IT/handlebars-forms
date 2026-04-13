@@ -80,6 +80,24 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
     /**
      * @param array<string|int, mixed> $configuration
      */
+    protected function processGenericValue(string $value, array $configuration): string
+    {
+        try {
+            $contentObject = $this->getContentObjectRenderer()->getContentObject($value);
+        } catch (Frontend\ContentObject\Exception\ContentRenderingException) {
+            return $value;
+        }
+
+        if ($contentObject === null) {
+            return $value;
+        }
+
+        return $this->getContentObjectRenderer()->cObjGetSingle($value, $configuration);
+    }
+
+    /**
+     * @param array<string|int, mixed> $configuration
+     */
     private function applyStdWrap(mixed $value, array $configuration): mixed
     {
         if ($this->cObj === null || !is_array($configuration['stdWrap.'] ?? null)) {

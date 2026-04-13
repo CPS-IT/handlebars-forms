@@ -146,7 +146,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
             'ERROR_MESSAGE' => $this->processErrorMessage($context, $result),
             'PROPERTY' => $this->processProperty($context, $configuration),
             'RESULT' => $this->processResult($result, $configuration),
-            default => $value,
+            default => $this->processGenericValue($value, $configuration),
         };
     }
 
