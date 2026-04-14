@@ -143,7 +143,7 @@ final class FormValueContentObject extends AbstractHandlebarsFormsContentObject
             'IS_SECTION' => $viewModel->isSection,
             'PROCESSED_VALUE' => $viewModel->processedValue,
             'VALUE' => $viewModel->value,
-            default => $this->processGenericValue($value, $configuration),
+            default => $this->processGenericValue($value, $configuration, $context),
         };
     }
 
