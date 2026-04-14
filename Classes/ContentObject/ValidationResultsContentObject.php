@@ -144,7 +144,6 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
             'EACH_ERROR' => $this->processErrors($context, $result, $configuration),
             'EACH_RENDERABLE' => $this->processRenderables($context, $result, $configuration),
             'ERROR_MESSAGE' => $this->processErrorMessage($context, $result),
-            'PROPERTY' => $this->processProperty($context, $configuration),
             'RESULT' => $this->processResult($result, $configuration),
             default => $this->processGenericValue($value, $configuration, $context),
         };
@@ -296,20 +295,6 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
         );
 
         return $translationResult->content;
-    }
-
-    /**
-     * @param array<string|int, mixed> $configuration
-     */
-    private function processProperty(Context\ValueResolutionContext $context, array $configuration): mixed
-    {
-        $path = $configuration['path'] ?? null;
-
-        if (!is_string($path)) {
-            return null;
-        }
-
-        return Extbase\Reflection\ObjectAccess::getProperty($context->renderable, $path);
     }
 
     /**
