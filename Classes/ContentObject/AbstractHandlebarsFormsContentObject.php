@@ -80,19 +80,25 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
     /**
      * @param array<string|int, mixed> $configuration
      */
-    protected function processGenericValue(string $value, array $configuration): string
-    {
-        try {
-            $contentObject = $this->getContentObjectRenderer()->getContentObject($value);
-        } catch (Frontend\ContentObject\Exception\ContentRenderingException) {
+    protected function processGenericValue(
+        string $value,
+        array $configuration,
+        Context\ValueResolutionContext $context,
+    ): mixed {
+        $result = $context->process(
+            [
+                'tempKey' => $value,
+                'tempKey.' => $configuration,
+            ],
+            $context->renderable,
+            $context->viewModel,
+        );
+
+        if (!is_array($result) || !array_key_exists('tempKey', $result)) {
             return $value;
         }
 
-        if ($contentObject === null) {
-            return $value;
-        }
-
-        return $this->getContentObjectRenderer()->cObjGetSingle($value, $configuration);
+        return $result['tempKey'];
     }
 
     /**
