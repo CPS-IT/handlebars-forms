@@ -39,16 +39,59 @@ final class PasswordViewModelBuilder extends AbstractViewModelBuilder
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
-    ): Domain\ViewModel\ViewHelperContainedViewModel {
-        $result = $this->viewHelperInvoker->invoke(
+    ): Domain\ViewModel\ViewHelperContainedViewModel|Domain\ViewModel\ViewModelCollection {
+        $passwordResult = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Fluid\ViewHelpers\Form\PasswordViewHelper::class,
             [
-                // @todo add arguments
+                'property' => $renderable->getIdentifier(),
+                'id' => $renderable->getUniqueIdentifier(),
+                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+                'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
                 'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
             ],
         );
+        $passwordViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $passwordResult);
 
-        return new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
+        if ($renderable->getType() === 'AdvancedPassword') {
+            return new Domain\ViewModel\ViewModelCollection(
+                $renderable,
+                [
+                    'passwordField' => $passwordViewModel,
+                    'confirmationField' => $this->buildConfirmationViewModel($renderable, $renderingContext),
+                ],
+            );
+        }
+
+        return $passwordViewModel;
+    }
+
+    private function buildConfirmationViewModel(
+        Form\Domain\Model\FormElements\GenericFormElement $renderable,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+    ): Domain\ViewModel\ViewHelperContainedViewModel|Domain\ViewModel\FormFieldViewModel {
+        $confirmationResult = $this->viewHelperInvoker->invoke(
+            $renderingContext,
+            Fluid\ViewHelpers\Form\PasswordViewHelper::class,
+            [
+                'property' => $renderable->getIdentifier() . '.confirmation',
+                'id' => $renderable->getUniqueIdentifier() . '-confirmation',
+                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+                'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
+                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
+            ],
+        );
+        $confirmationFieldViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $confirmationResult);
+        $labelResult = $this->viewHelperInvoker->translateElementProperty(
+            $renderingContext,
+            $renderable,
+            ['confirmationLabel'],
+        );
+
+        if (is_string($labelResult)) {
+            return Domain\ViewModel\FormFieldViewModel::forLabelAndElement($labelResult, $confirmationFieldViewModel);
+        }
+
+        return $confirmationFieldViewModel;
     }
 }
