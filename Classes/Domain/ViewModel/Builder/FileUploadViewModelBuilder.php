@@ -34,6 +34,7 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
 {
     protected array $supportedTypes = [
         'FileUpload',
+        'ImageUpload',
     ];
 
     public function renderRenderable(
