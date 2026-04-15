@@ -30,6 +30,10 @@ based on the core [EXT:handlebars](https://github.com/CPS-IT/handlebars).
 composer require cpsit/typo3-handlebars-forms
 ```
 
+## 🎢 Architecture
+
+* [Supported renderables](Documentation/SupportedRenderables.md)
+
 ## ⭐ License
 
 This project is licensed under [GNU General Public License 2.0 (or later)](LICENSE.md).
