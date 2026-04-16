@@ -20,6 +20,7 @@ namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 use CPSIT\Typo3HandlebarsForms\Domain;
 use DevTheorem\Handlebars;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 
 /**
  * PassthroughContentObject
@@ -32,11 +33,19 @@ final class PassthroughContentObject extends AbstractHandlebarsFormsContentObjec
 {
     public function __construct(
         private readonly Domain\Renderer\FluidRenderableRenderer $fluidRenderer,
+        private readonly Core\TypoScript\TypoScriptService $typoScriptService,
     ) {}
 
     protected function resolve(array $configuration, Context\ValueResolutionContext $context): Handlebars\SafeString
     {
-        $renderedPartial = $this->fluidRenderer->render($context->renderable, $context->formRuntime);
+        if ($configuration !== []) {
+            /** @var array<string, mixed> $variables */
+            $variables = $this->typoScriptService->convertTypoScriptArrayToPlainArray($configuration);
+        } else {
+            $variables = [];
+        }
+
+        $renderedPartial = $this->fluidRenderer->render($context->renderable, $context->formRuntime, $variables);
 
         return new Handlebars\SafeString($renderedPartial);
     }

@@ -36,9 +36,13 @@ final readonly class FluidRenderableRenderer
         private Core\View\ViewFactoryInterface $viewFactory,
     ) {}
 
+    /**
+     * @param array<string, mixed> $variables
+     */
     public function render(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Form\Domain\Runtime\FormRuntime $formRuntime,
+        array $variables = [],
     ): string {
         // Determine renderable variable name based on the renderable type. This is necessary
         // because the various partials expected different naming for the renderable variable.
@@ -50,6 +54,7 @@ final readonly class FluidRenderableRenderer
 
         $view = $this->buildView($formRuntime);
         $view->assignMultiple([
+            ...$variables,
             'form' => $formRuntime,
             // Add renderable both as "generic" variable (to perform actions within our template)
             // as well as "special" variable (to pass it to the rendered [= external] Fluid partial).
