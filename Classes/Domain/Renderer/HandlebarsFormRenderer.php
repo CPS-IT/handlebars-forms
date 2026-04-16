@@ -45,6 +45,8 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
 
     public function render(): string
     {
+        $this->disableCacheOnSubmit();
+
         $view = $this->resolveViewFromConfiguration() ?? $this->resolveDefaultView();
         $view->assign('form', $this->formRuntime);
 
@@ -143,6 +145,16 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
         );
 
         return $this->viewFactory->create($viewFactoryData);
+    }
+
+    private function disableCacheOnSubmit(): void
+    {
+        $request = $this->formRuntime->getRequest();
+        $cacheInstruction = $request->getAttribute('frontend.cache.instruction');
+
+        if ($cacheInstruction instanceof Frontend\Cache\CacheInstruction && $request->getMethod() === 'POST') {
+            $cacheInstruction->disableCache('EXT:handlebars_forms: Rendering of submitted forms must not be cached.');
+        }
     }
 
     /**
