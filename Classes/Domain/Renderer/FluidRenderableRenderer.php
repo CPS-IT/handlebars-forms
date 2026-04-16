@@ -40,9 +40,22 @@ final readonly class FluidRenderableRenderer
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Form\Domain\Runtime\FormRuntime $formRuntime,
     ): string {
+        // Determine renderable variable name based on the renderable type. This is necessary
+        // because the various partials expected different naming for the renderable variable.
+        $renderableVariableName = match (true) {
+            $renderable instanceof Form\Domain\Runtime\FormRuntime => 'form',
+            $renderable instanceof Form\Domain\Model\FormElements\Page => 'page',
+            default => 'element',
+        };
+
         $view = $this->buildView($formRuntime);
-        $view->assign('form', $formRuntime);
-        $view->assign('element', $renderable);
+        $view->assignMultiple([
+            'form' => $formRuntime,
+            // Add renderable both as "generic" variable (to perform actions within our template)
+            // as well as "special" variable (to pass it to the rendered [= external] Fluid partial).
+            'renderable' => $renderable,
+            $renderableVariableName => $renderable,
+        ]);
 
         if ($view instanceof Fluid\View\FluidViewAdapter) {
             $view->getRenderingContext()
