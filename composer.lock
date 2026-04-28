@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b8a2e5bf0788188f3653a7a071ae77b",
+    "content-hash": "fc3f6ab8180ad214b47e402fa0e71bdb",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -126,16 +126,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/CPS-IT/handlebars.git",
-                "reference": "fe18161d45b6d495d4fda2b41100644f46dc5fb9"
+                "reference": "791576976e432eeef79506cf6813bfc4aa8b3ace"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/fe18161d45b6d495d4fda2b41100644f46dc5fb9",
-                "reference": "fe18161d45b6d495d4fda2b41100644f46dc5fb9",
+                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/791576976e432eeef79506cf6813bfc4aa8b3ace",
+                "reference": "791576976e432eeef79506cf6813bfc4aa8b3ace",
                 "shasum": ""
             },
             "require": {
-                "devtheorem/php-handlebars": "^1.1",
+                "devtheorem/php-handlebars": "^2.0",
                 "ext-json": "*",
                 "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
                 "psr/event-dispatcher": "^1.0",
@@ -209,7 +209,7 @@
                 "issues": "https://github.com/CPS-IT/handlebars/issues",
                 "source": "https://github.com/CPS-IT/handlebars"
             },
-            "time": "2026-04-20T01:36:15+00:00"
+            "time": "2026-04-28T08:17:26+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -263,26 +263,26 @@
         },
         {
             "name": "devtheorem/php-handlebars",
-            "version": "v1.2.3",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/devtheorem/php-handlebars.git",
-                "reference": "cd35774eebb0647b3cc75de245bb2b2d1af9794d"
+                "reference": "093e6c96d39cb5050e866147ff57a05ea1c301cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/devtheorem/php-handlebars/zipball/cd35774eebb0647b3cc75de245bb2b2d1af9794d",
-                "reference": "cd35774eebb0647b3cc75de245bb2b2d1af9794d",
+                "url": "https://api.github.com/repos/devtheorem/php-handlebars/zipball/093e6c96d39cb5050e866147ff57a05ea1c301cc",
+                "reference": "093e6c96d39cb5050e866147ff57a05ea1c301cc",
                 "shasum": ""
             },
             "require": {
-                "devtheorem/php-handlebars-parser": "^2.0",
+                "devtheorem/php-handlebars-parser": "^2.1",
                 "php": ">=8.2"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.94",
+                "friendsofphp/php-cs-fixer": "^3.95",
                 "jbboehr/handlebars-spec": "dev-master",
-                "phpstan/phpstan": "^2.1.46",
+                "phpstan/phpstan": "^2.1.51",
                 "phpunit/phpunit": "^11.5"
             },
             "type": "library",
@@ -312,9 +312,9 @@
             ],
             "support": {
                 "issues": "https://github.com/devtheorem/php-handlebars/issues",
-                "source": "https://github.com/devtheorem/php-handlebars/tree/v1.2.3"
+                "source": "https://github.com/devtheorem/php-handlebars/tree/v2.0.0"
             },
-            "time": "2026-04-11T00:01:25+00:00"
+            "time": "2026-04-28T03:00:32+00:00"
         },
         {
             "name": "devtheorem/php-handlebars-parser",
