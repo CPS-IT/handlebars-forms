@@ -16,7 +16,7 @@
 		"ext-dom": "*",
 		"ext-json": "*",
 		"ext-libxml": "*",
-		"cpsit/typo3-handlebars": "^1.0",
+		"cpsit/typo3-handlebars": "^1.0@alpha",
 		"devtheorem/php-handlebars": "^2.0",
 		"psr/http-message": "^1.0 || ^2.0",
 		"psr/log": "^3.0",
@@ -47,8 +47,6 @@
 		"typo3/coding-standards": "^0.8.0",
 		"typo3/testing-framework": "^9.3.0"
 	},
-	"minimum-stability": "dev",
-	"prefer-stable": true,
 	"autoload": {
 		"psr-4": {
 			"CPSIT\\Typo3HandlebarsForms\\": "Classes/"
