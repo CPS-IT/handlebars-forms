@@ -9,3 +9,6 @@ parameters:
 		- Tests
 	featureToggles:
 		internalTag: false
+	typo3:
+		requestGetAttributeMapping:
+			frontend.register.stack: TYPO3\CMS\Frontend\ContentObject\RegisterStack|null

@@ -8,7 +8,25 @@ parameters:
 				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
 			'''
 			identifier: property.deprecatedClass
-			count: 4
+			count: 2
+			path: Classes/ContentObject/ChildrenContentObject.php
+
+		-
+			rawMessage: 'Call to method current() on an unknown class TYPO3\CMS\Frontend\ContentObject\RegisterStack.'
+			identifier: class.notFound
+			count: 1
+			path: Classes/ContentObject/ChildrenContentObject.php
+
+		-
+			rawMessage: 'Cannot call method set() on mixed.'
+			identifier: method.nonObject
+			count: 1
+			path: Classes/ContentObject/ChildrenContentObject.php
+
+		-
+			rawMessage: Class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
 			path: Classes/ContentObject/ChildrenContentObject.php
 
 		-
@@ -31,7 +49,25 @@ parameters:
 				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
 			'''
 			identifier: property.deprecatedClass
-			count: 4
+			count: 2
+			path: Classes/ContentObject/RenderablesContentObject.php
+
+		-
+			rawMessage: 'Call to method current() on an unknown class TYPO3\CMS\Frontend\ContentObject\RegisterStack.'
+			identifier: class.notFound
+			count: 1
+			path: Classes/ContentObject/RenderablesContentObject.php
+
+		-
+			rawMessage: 'Cannot call method set() on mixed.'
+			identifier: method.nonObject
+			count: 1
+			path: Classes/ContentObject/RenderablesContentObject.php
+
+		-
+			rawMessage: Class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
 			path: Classes/ContentObject/RenderablesContentObject.php
 
 		-
@@ -61,5 +97,11 @@ parameters:
 		-
 			rawMessage: Cannot access offset 'ext/form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent not found.
+			identifier: class.notFound
 			count: 1
 			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php

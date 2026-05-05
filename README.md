@@ -24,7 +24,7 @@ configured using dedicated interface implementations.
 * Ability to define generic form rendering definitions
 * Possibility to override form rendering for specific form definitions
 * Easy to extend and customize for custom form elements
-* Compatible with TYPO3 13.4 LTS
+* Compatible with TYPO3 13.4 LTS and 14.3 LTS
 
 ## 🔥 Installation
 
