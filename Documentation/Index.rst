@@ -2,12 +2,12 @@
 
 ..  _start:
 
-==========
-Handlebars
-==========
+================
+Handlebars Forms
+================
 
 :Extension key:
-    :t3ext:`handlebars_forms`
+    :t3ext:`handlebars_forms <handlebars_forms>`
 
 :Package name:
     :composer:`cpsit/typo3-handlebars-forms`
