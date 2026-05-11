@@ -40,6 +40,8 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
     public function __construct(
         #[DependencyInjection\Attribute\AutowireIterator('handlebars_forms.view_model_builder')]
         private readonly iterable $viewModelBuilders,
+        private readonly Context\ContextStack $contextStack,
+        private readonly Context\ValueCollector $valueCollector,
     ) {}
 
     /**
@@ -106,41 +108,70 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                 continue;
             }
 
-            if (array_key_exists($child->getType() . '.', $configuration)) {
-                // Use configured type-specific configuration (e.g. "Fieldset." for fieldsets)
-                $childConfiguration = $configuration[$child->getType() . '.'];
-            } elseif (!array_key_exists('default.', $configuration)) {
-                // Skip rendering on missing fallback config
-                continue;
-            } else {
-                // Use configured fallback configuration ("default.")
-                $childConfiguration = $configuration['default.'];
-            }
-
-            if (is_array($childConfiguration)) {
-                $childViewModel = $this->buildViewModel($child, $context->renderingContext);
-            } else {
-                $childConfiguration = [];
-                $childViewModel = new Domain\ViewModel\SimpleViewModel($child);
-            }
-
             // Add current renderable index to TSFE register
             $tsfe->register[self::IDENTIFIER_CURRENT] = $index;
 
             try {
+                if (array_key_exists($child->getType() . '.', $configuration)) {
+                    // Use configured type-specific configuration (e.g. "Fieldset." for fieldsets)
+                    $childConfiguration = $configuration[$child->getType() . '.'];
+                } elseif (is_string($configuration[$child->getType()] ?? null)) {
+                    // Render single content object without further configuration (e.g. HBS_PASSTHROUGH)
+                    $processedRenderables[] = $this->renderRenderable(
+                        $context,
+                        $child,
+                        $configuration[$child->getType()],
+                    );
+
+                    continue;
+                } elseif (!array_key_exists('default.', $configuration)) {
+                    // Skip rendering on missing fallback config
+                    continue;
+                } else {
+                    // Use configured fallback configuration ("default.")
+                    $childConfiguration = $configuration['default.'];
+                }
+
+                if (is_array($childConfiguration)) {
+                    $childViewModel = $this->buildViewModel($child, $context->renderingContext);
+                } else {
+                    $childConfiguration = [];
+                    $childViewModel = new Domain\ViewModel\SimpleViewModel($child);
+                }
+
                 $processedChild = $context->process($childConfiguration, $child, $childViewModel);
+
+                if ($processedChild !== null) {
+                    $processedRenderables[] = $processedChild;
+                }
             } finally {
                 unset($tsfe->register[self::IDENTIFIER_CURRENT]);
-            }
-
-            if ($processedChild !== null) {
-                $processedRenderables[] = $processedChild;
             }
         }
 
         unset($tsfe->register[self::IDENTIFIER_COUNT]);
 
         return $processedRenderables;
+    }
+
+    private function renderRenderable(
+        Context\ValueResolutionContext $context,
+        Form\Domain\Model\Renderable\RenderableInterface $renderable,
+        string $contentObject,
+    ): mixed {
+        $this->contextStack->push($context->withRenderable($renderable));
+
+        try {
+            $result = $this->cObj?->cObjGetSingle($contentObject, []);
+        } finally {
+            $this->contextStack->pop();
+        }
+
+        if (is_string($result) && $this->valueCollector->has($result)) {
+            return $this->valueCollector->load($result);
+        }
+
+        return $result;
     }
 
     private function buildViewModel(
