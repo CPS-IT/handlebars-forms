@@ -122,16 +122,16 @@
         },
         {
             "name": "cpsit/typo3-handlebars",
-            "version": "1.0.0-alpha.2",
+            "version": "1.0.0-alpha.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CPS-IT/handlebars.git",
-                "reference": "587ecf6f5d10893a86b2006214b6806463839c3f"
+                "reference": "0616ad3a290460dcc11fda0390fc49ab5ea5be81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/587ecf6f5d10893a86b2006214b6806463839c3f",
-                "reference": "587ecf6f5d10893a86b2006214b6806463839c3f",
+                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/0616ad3a290460dcc11fda0390fc49ab5ea5be81",
+                "reference": "0616ad3a290460dcc11fda0390fc49ab5ea5be81",
                 "shasum": ""
             },
             "require": {
@@ -145,10 +145,10 @@
                 "symfony/dependency-injection": "^7.2 || ^8.0",
                 "symfony/filesystem": "^7.2 || ^8.0",
                 "symfony/finder": "^7.2 || ^8.0",
-                "typo3/cms-core": "~13.4.0 || ~14.3.0",
-                "typo3/cms-extbase": "~13.4.0 || ~14.3.0",
-                "typo3/cms-fluid": "~13.4.0 || ~14.3.0",
-                "typo3/cms-frontend": "~13.4.0 || ~14.3.0",
+                "typo3/cms-core": "~13.4.11 || ~14.3.0",
+                "typo3/cms-extbase": "~13.4.11 || ~14.3.0",
+                "typo3/cms-fluid": "~13.4.11 || ~14.3.0",
+                "typo3/cms-frontend": "~13.4.11 || ~14.3.0",
                 "typo3fluid/fluid": "^4.0 || ^5.0"
             },
             "require-dev": {
@@ -205,7 +205,7 @@
                 "issues": "https://github.com/CPS-IT/handlebars/issues",
                 "source": "https://github.com/CPS-IT/handlebars"
             },
-            "time": "2026-05-04T09:32:06+00:00"
+            "time": "2026-05-11T09:58:25+00:00"
         },
         {
             "name": "dasprid/enum",
