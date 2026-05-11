@@ -1,0 +1,19 @@
+<form id="{{formData.id}}"
+      method="{{formData.method}}"
+      action="{{formData.action}}"
+      {{#if formData.enctype}}enctype="{{formData.enctype}}" {{/if}}
+>
+    {{#each fields}}
+        {{#if template}}
+            {{> (lookup . 'template')}}
+        {{elseif content}}
+            {{this.content}}
+        {{/if}}
+    {{/each}}
+
+    {{#each navItems}}
+        {{> '@button' this}}
+    {{/each}}
+
+    {{hiddenFields}}
+</form>

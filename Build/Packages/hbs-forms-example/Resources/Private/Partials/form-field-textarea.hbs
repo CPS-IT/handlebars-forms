@@ -1,0 +1,8 @@
+<p>
+    {{> '@form-label' id=id label=label}}
+
+    <textarea id="{{id}}"
+              name="{{name}}"
+              {{#if required}}required{{/if}}
+    >{{text}}</textarea>
+</p>

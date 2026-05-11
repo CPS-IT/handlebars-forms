@@ -21,6 +21,7 @@ return [
         '.ddev',
         '.git',
         '.github',
+        'build',
         'tailor-version-upload',
         'tests',
     ],

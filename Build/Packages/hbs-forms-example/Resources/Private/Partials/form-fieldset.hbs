@@ -1,0 +1,5 @@
+<fieldset id="{{id}}">
+    {{#each fields}}
+        {{> (lookup . 'template')}}
+    {{/each}}
+</fieldset>
