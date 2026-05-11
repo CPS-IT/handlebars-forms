@@ -9,5 +9,18 @@
 	],
 	"constraints": {
 		"php": "8.2.*"
-	}
+	},
+	"packageRules": [
+		{
+			"extends": [
+				":disableRenovate"
+			],
+			"matchDatasources": [
+				"packagist"
+			],
+			"matchPackageNames": [
+				"cpsit/hbs-forms-example"
+			]
+		}
+	]
 }

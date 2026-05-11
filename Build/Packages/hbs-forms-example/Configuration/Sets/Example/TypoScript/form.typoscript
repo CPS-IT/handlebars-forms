@@ -1,0 +1,133 @@
+plugin.tx_form {
+  handlebarsForms {
+    default {
+      dataProcessing {
+        10 = process-form
+        10 {
+          formData {
+            id = HBS_TAG
+            id.attribute = id
+
+            method = HBS_TAG
+            method.attribute = method
+
+            action = HBS_TAG
+            action.attribute = action
+          }
+
+          fields = HBS_RENDERABLES
+          fields {
+            default {
+              template = @form-field-generic
+
+              renderableType = HBS_PROPERTY
+              renderableType.path = type
+
+              id = HBS_TAG
+              id.attribute = id
+
+              name = HBS_TAG
+              name.attribute = name
+
+              label = HBS_LABEL
+
+              value = HBS_TAG
+              value.attribute = value
+
+              required = HBS_PROPERTY
+              required.path = required?
+            }
+
+            Fieldset < .default
+            Fieldset {
+              template = @form-fieldset
+
+              id = HBS_PROPERTY
+              id.path = uniqueIdentifier
+
+              fields =< plugin.tx_form.handlebarsForms.default.dataProcessing.10.fields
+            }
+
+            Text < .default
+            Text {
+              template = @form-field-text
+
+              type = HBS_PROPERTY
+              type.path = type
+            }
+
+            Email < .Text
+
+            Hidden < .Text
+            Hidden {
+              type >
+              type = hidden
+            }
+
+            Honeypot {
+              content = HBS_PASSTHROUGH
+            }
+
+            Textarea < .default
+            Textarea {
+              template = @form-field-textarea
+
+              value >
+
+              text = HBS_TAG
+            }
+
+            SummaryPage {
+              template = @form-summary
+
+              values = HBS_RENDERABLES
+              values {
+                default {
+                  label = HBS_PROPERTY
+                  label.path = label
+
+                  value = HBS_FORM_VALUE
+                }
+
+                # Disable fieldsets
+                Fieldset {
+                  if.isTrue = 0
+                }
+              }
+            }
+          }
+
+          navItems = HBS_NAVIGATION
+          navItems {
+            default {
+              name = HBS_TAG
+              name.attribute = name
+
+              label = HBS_LABEL
+
+              value = HBS_TAG
+              value.attribute = value
+            }
+
+            previousPage < .default
+            previousPage {
+              novalidate = 1
+            }
+
+            nextPage < .default
+            nextPage {
+              type = submit
+            }
+
+            submit < .default
+            submit {
+              type = submit
+            }
+          }
+
+          hiddenFields = HBS_TAG
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+name: cpsit/hbs-forms-example
+label: 'Example Handlebars form rendering'
+dependencies:
+  - cpsit/handlebars
+  - cpsit/handlebars-forms

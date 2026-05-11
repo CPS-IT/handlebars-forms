@@ -30,6 +30,7 @@
 	},
 	"require-dev": {
 		"armin/editorconfig-cli": "^2.0",
+		"cpsit/hbs-forms-example": "1.0.0",
 		"eliashaeussler/version-bumper": "^3.1",
 		"ergebnis/composer-normalize": "^2.50",
 		"friendsofphp/php-cs-fixer": "^3.94",
@@ -44,9 +45,17 @@
 		"saschaegerer/phpstan-typo3": "^2.1",
 		"shipmonk/composer-dependency-analyser": "^1.8",
 		"ssch/typo3-rector": "^3.11",
+		"typo3/cms-install": "~13.4.0",
+		"typo3/cms-tstemplate": "~13.4.0",
 		"typo3/coding-standards": "^0.8.0",
 		"typo3/testing-framework": "^9.3.0"
 	},
+	"repositories": [
+		{
+			"type": "path",
+			"url": "Build/Packages/*"
+		}
+	],
 	"autoload": {
 		"psr-4": {
 			"CPSIT\\Typo3HandlebarsForms\\": "Classes/"
@@ -93,7 +102,10 @@
 			"@fix:editorconfig",
 			"@fix:php"
 		],
-		"fix:composer": "@composer normalize",
+		"fix:composer": [
+			"@composer normalize",
+			"@composer normalize Build/Packages/hbs-forms-example/composer.json --no-check-lock --no-update-lock"
+		],
 		"fix:editorconfig": "@lint:editorconfig --fix",
 		"fix:php": "php-cs-fixer fix",
 		"lint": [

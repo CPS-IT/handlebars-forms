@@ -1,0 +1,3 @@
+handlebars_forms.view.templateName: '@form'
+handlebars.view.templateRootPath: 'EXT:hbs_forms_example/Resources/Private/Templates'
+handlebars.view.partialRootPath: 'EXT:hbs_forms_example/Resources/Private/Partials'

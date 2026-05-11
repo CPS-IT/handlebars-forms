@@ -1,0 +1,10 @@
+{{#unless disableContainer}}<p>{{/unless}}
+    {{> '@form-label' id=id label=label}}
+
+    <input type="{{type}}"
+           id="{{id}}"
+           name="{{name}}"
+           value="{{value}}"
+           {{#if required}}required{{/if}}
+    />
+{{#unless disableContainer}}</p>{{/unless}}
