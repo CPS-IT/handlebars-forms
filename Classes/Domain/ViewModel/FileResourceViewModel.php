@@ -34,8 +34,12 @@ final class FileResourceViewModel extends \ArrayObject implements ViewModel
     public function __construct(
         public readonly Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         public readonly Core\Resource\File|Core\Resource\FileReference|Extbase\Domain\Model\File|Extbase\Domain\Model\FileReference $resource,
+        public readonly ?FormFieldViewModel $deleteCheckbox = null,
     ) {
-        parent::__construct(['resource' => $this->resource]);
+        parent::__construct([
+            'resource' => $this->resource,
+            'deleteCheckbox' => $this->deleteCheckbox,
+        ]);
     }
 
     public function getRenderable(): Form\Domain\Model\Renderable\RootRenderableInterface

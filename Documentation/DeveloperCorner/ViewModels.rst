@@ -84,17 +84,20 @@ Supported renderables
 -------------------------------------
 
 \(a) :php:`ViewModelCollection`
-    If uploaded resource can be resolved. Contains two or three view models:
+    If uploaded resource can be resolved. Contains three view models:
 
-    +------------------------+--------------------------------+--------------------------------------------------------------------------------------------------+
-    | **Name**               | **Type**                       | **Description**                                                                                  |
-    +------------------------+--------------------------------+--------------------------------------------------------------------------------------------------+
-    | `uploadField`          | `ViewHelperContainedViewModel` | Contains result from `<formvh:form.uploadedResource>` view helper invocation for password field. |
-    +------------------------+--------------------------------+--------------------------------------------------------------------------------------------------+
-    | `resource`             | `FileResourceViewModel`        | References file upload, which is an instance of `FileReference` or `PseudoFileReference`.        |
-    +------------------------+--------------------------------+--------------------------------------------------------------------------------------------------+
-    | `resourcePointerField` | `StandaloneTagViewModel`       | Optional. References hidden `<input>` field with resource pointer, if available.                 |
-    +------------------------+--------------------------------+--------------------------------------------------------------------------------------------------+
+    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+    | **Name**                | **Type**                                          | **Description**                                                                                                                                                                                                   |
+    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+    | `uploadField`           | `ViewHelperContainedViewModel`                    | Contains result from `<formvh:form.uploadedResource>` view helper invocation for password field.                                                                                                                  |
+    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+    | `resourcePointerFields` | `ViewModelCollection` of `StandaloneTagViewModel` | Optional. References hidden `<input>` fields with resource pointers, if available.                                                                                                                                |
+    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+    | `uploads`               | `ViewModelCollection` of `FileResourceViewModel`  | References file uploads, which contain one or two child view models:                                                                                                                                              |
+    |                         |                                                   |                                                                                                                                                                                                                   |
+    |                         |                                                   | -  `resource`: Instance of `FileReference` or `PseudoFileReference`.                                                                                                                                              |
+    |                         |                                                   | -  `deleteCheckbox`: Optional and TYPO3 >= v14 only. `FormFieldViewModel` with result from `<formvh:form.uploadDeleteCheckbox>` view helper invocation, which allows to delete an existing file upload on submit. |
+    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 \(b) :php:`ViewHelperContainedViewModel`
     If uploaded resource cannot be resolved. Contains result from `<formvh:form.uploadedResource>`
