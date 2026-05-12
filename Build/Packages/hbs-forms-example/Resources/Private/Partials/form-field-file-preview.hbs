@@ -1,0 +1,14 @@
+<p>
+    <strong>{{resource.originalResource.originalFile.name}}</strong>
+    <br>
+
+    {{#if deleteCheckbox}}
+        {{> '@form-field-checkbox'
+            disableContainer=true
+            id=(join ../id "-remove-" index)
+            label="Delete file"
+            name=deleteCheckbox.element.name
+            value=deleteCheckbox.element.value
+        }}
+    {{/if}}
+</p>

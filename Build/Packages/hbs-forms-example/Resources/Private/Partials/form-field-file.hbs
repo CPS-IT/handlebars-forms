@@ -1,0 +1,35 @@
+{{#unless disableContainer}}<p>{{/unless}}
+    {{> '@form-label' id=id label=label}}
+
+    <input type="file"
+           id="{{id}}"
+           name="{{name}}"
+           {{#if required}}required{{/if}}
+           {{#if multiple}}multiple{{/if}}
+           {{#if accept}}accept="{{accept}}"{{/if}}
+    />
+
+    {{#if resourcePointerFields}}
+        {{#each resourcePointerFields}}
+            <input type="hidden" name="{{name}}" value="{{value}}" />
+        {{/each}}
+    {{/if}}
+{{#unless disableContainer}}</p>{{/unless}}
+
+{{#if resource.resource}}
+    {{#each resource.resource}}
+        {{! Multiple file uploads (TYPO3 >= v14)}}
+        {{> '@form-field-file-preview'
+            resource=this
+            deleteCheckbox=(lookup ../deleteCheckboxes.children @index)
+            index=@index
+        }}
+    {{else}}
+        {{! Single file upload}}
+        {{> '@form-field-file-preview'
+            resource=resource.resource
+            deleteCheckbox=(lookup ../deleteCheckboxes.children 0)
+            index=0
+        }}
+    {{/each}}
+{{/if}}
