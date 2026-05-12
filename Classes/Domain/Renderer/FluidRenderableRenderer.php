@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\Domain\Renderer;
 
-use Symfony\Component\DependencyInjection;
+use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
@@ -32,8 +32,8 @@ use TYPO3\CMS\Form;
 final readonly class FluidRenderableRenderer
 {
     public function __construct(
-        #[DependencyInjection\Attribute\Autowire(service: Fluid\View\FluidViewFactory::class)]
         private Core\View\ViewFactoryInterface $viewFactory,
+        private ViewHelperInvoker $viewHelperInvoker,
     ) {}
 
     /**
@@ -62,14 +62,33 @@ final readonly class FluidRenderableRenderer
             $renderableVariableName => $renderable,
         ]);
 
-        if ($view instanceof Fluid\View\FluidViewAdapter) {
-            $view->getRenderingContext()
-                ->getViewHelperVariableContainer()
-                ->addOrUpdate(Form\ViewHelpers\RenderRenderableViewHelper::class, 'formRuntime', $formRuntime)
-            ;
+        // Perform simple rendering for all non-Fluid views
+        if (!($view instanceof Fluid\View\FluidViewAdapter) ||
+            !($view->getRenderingContext() instanceof Fluid\Core\Rendering\RenderingContext)
+        ) {
+            return $view->render('RenderRenderable');
         }
 
-        return $view->render('RenderRenderable');
+        $result = '';
+
+        // Wrap partial rendering in simulated <f:form> rendering, because the underlying partials
+        // may call view helpers which depend on global view helper variable names, which are
+        // populated in the <f:form> view helper. When rendered outside this context, view helpers
+        // may throw exceptions and we won't be able to properly render the requested renderable then.
+        $this->viewHelperInvoker->invoke(
+            $view->getRenderingContext(),
+            Form\ViewHelpers\FormViewHelper::class,
+            [
+                'object' => $formRuntime,
+            ],
+            static function () use (&$result, $view) {
+                $result = $view->render('RenderRenderable');
+
+                return '';
+            },
+        );
+
+        return $result;
     }
 
     private function buildView(Form\Domain\Runtime\FormRuntime $formRuntime): Core\View\ViewInterface
