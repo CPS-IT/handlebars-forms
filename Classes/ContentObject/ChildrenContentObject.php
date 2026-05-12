@@ -19,6 +19,7 @@ namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 
 /**
  * ChildrenContentObject
@@ -29,8 +30,15 @@ use Symfony\Component\DependencyInjection;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_CHILDREN'])]
 final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
 {
+    use CanUpdateRegister;
+
     private const IDENTIFIER_COUNT = 'HBS_CHILDREN_COUNT';
     private const IDENTIFIER_CURRENT = 'HBS_CHILDREN_CURRENT';
+
+    public function __construct()
+    {
+        $this->typo3Version = new Core\Information\Typo3Version();
+    }
 
     /**
      * @return list<mixed>|null
@@ -49,23 +57,21 @@ final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
 
         $processedValue = [];
 
-        // Add children count to TSFE register
-        // @todo Use $this->request->getAttribute('frontend.register.stack') in TYPO3 v14
-        $tsfe = $this->getTypoScriptFrontendController();
-        $tsfe->register[self::IDENTIFIER_COUNT] = count($children);
+        // Add children count to register
+        $this->updateRegister(self::IDENTIFIER_COUNT, count($children));
 
         foreach ($children as $index => $childViewModel) {
             // Add current child index to TSFE register
-            $tsfe->register[self::IDENTIFIER_CURRENT] = $index;
+            $this->updateRegister(self::IDENTIFIER_CURRENT, count($children));
 
             try {
                 $processedValue[] = $context->process($configuration, viewModel: $childViewModel);
             } finally {
-                unset($tsfe->register[self::IDENTIFIER_CURRENT]);
+                $this->updateRegister(self::IDENTIFIER_CURRENT);
             }
         }
 
-        unset($tsfe->register[self::IDENTIFIER_COUNT]);
+        $this->updateRegister(self::IDENTIFIER_COUNT);
 
         return $processedValue;
     }

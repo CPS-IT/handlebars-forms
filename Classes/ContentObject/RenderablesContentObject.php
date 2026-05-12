@@ -19,6 +19,7 @@ namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 
@@ -31,6 +32,8 @@ use TYPO3\CMS\Form;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HBS_RENDERABLES'])]
 final class RenderablesContentObject extends AbstractHandlebarsFormsContentObject
 {
+    use CanUpdateRegister;
+
     private const IDENTIFIER_COUNT = 'HBS_RENDERABLES_COUNT';
     private const IDENTIFIER_CURRENT = 'HBS_RENDERABLES_CURRENT';
 
@@ -42,7 +45,9 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
         private readonly iterable $viewModelBuilders,
         private readonly Context\ContextStack $contextStack,
         private readonly Context\ValueCollector $valueCollector,
-    ) {}
+    ) {
+        $this->typo3Version = new Core\Information\Typo3Version();
+    }
 
     /**
      * @return list<mixed>
@@ -99,9 +104,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
         }
 
         // Add renderables count to TSFE register
-        // @todo Use $this->request->getAttribute('frontend.register.stack') in TYPO3 v14
-        $tsfe = $this->getTypoScriptFrontendController();
-        $tsfe->register[self::IDENTIFIER_COUNT] = count($renderables);
+        $this->updateRegister(self::IDENTIFIER_COUNT, count($renderables));
 
         foreach ($renderables as $index => $child) {
             if (!$this->isEnabled($child)) {
@@ -109,7 +112,7 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
             }
 
             // Add current renderable index to TSFE register
-            $tsfe->register[self::IDENTIFIER_CURRENT] = $index;
+            $this->updateRegister(self::IDENTIFIER_CURRENT, $index);
 
             try {
                 if (array_key_exists($child->getType() . '.', $configuration)) {
@@ -145,11 +148,11 @@ final class RenderablesContentObject extends AbstractHandlebarsFormsContentObjec
                     $processedRenderables[] = $processedChild;
                 }
             } finally {
-                unset($tsfe->register[self::IDENTIFIER_CURRENT]);
+                $this->updateRegister(self::IDENTIFIER_CURRENT);
             }
         }
 
-        unset($tsfe->register[self::IDENTIFIER_COUNT]);
+        $this->updateRegister(self::IDENTIFIER_COUNT);
 
         return $processedRenderables;
     }

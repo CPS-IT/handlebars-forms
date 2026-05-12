@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\Domain\Renderer;
 
 use CPSIT\Typo3Handlebars\View;
+use Psr\EventDispatcher;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
@@ -39,6 +40,7 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
         private readonly Extbase\Configuration\ConfigurationManagerInterface $configurationManager,
         private readonly View\HandlebarsViewFactory $viewFactory,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
+        private readonly EventDispatcher\EventDispatcherInterface $eventDispatcher,
     ) {
         $this->typo3Version = new Core\Information\Typo3Version();
     }
@@ -172,13 +174,10 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
         }
     }
 
-    /**
-     * @todo Enable once support for TYPO3 v14 is added
-     */
     private function triggerBeforeRenderableIsRenderedEvent(): void
     {
-        // $this->eventDispatcher->dispatch(
-        //     new Form\Event\BeforeRenderableIsRenderedEvent($this->formRuntime->getFormDefinition(), $this->formRuntime),
-        // );
+        $this->eventDispatcher->dispatch(
+            new Form\Event\BeforeRenderableIsRenderedEvent($this->formRuntime->getFormDefinition(), $this->formRuntime),
+        );
     }
 }
