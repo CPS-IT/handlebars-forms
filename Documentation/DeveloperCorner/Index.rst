@@ -15,4 +15,4 @@ tba.
 ..  toctree::
     :maxdepth: 3
 
-    SupportedRenderables
+    ViewModels
