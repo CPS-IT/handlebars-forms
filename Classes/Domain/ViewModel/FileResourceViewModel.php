@@ -28,12 +28,17 @@ use TYPO3\CMS\Form;
  * @license GPL-2.0-or-later
  *
  * @extends \ArrayObject<string|int, mixed>
+ *
+ * @phpstan-type FileResource Core\Resource\File|Core\Resource\FileReference|Extbase\Domain\Model\File|Extbase\Domain\Model\FileReference
  */
 final class FileResourceViewModel extends \ArrayObject implements ViewModel
 {
+    /**
+     * @param FileResource|Extbase\Persistence\ObjectStorage<FileResource> $resource
+     */
     public function __construct(
         public readonly Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
-        public readonly Core\Resource\File|Core\Resource\FileReference|Extbase\Domain\Model\File|Extbase\Domain\Model\FileReference $resource,
+        public readonly Core\Resource\File|Core\Resource\FileReference|Extbase\Domain\Model\File|Extbase\Domain\Model\FileReference|Extbase\Persistence\ObjectStorage $resource,
     ) {
         parent::__construct(['resource' => $this->resource]);
     }

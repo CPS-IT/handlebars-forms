@@ -1,0 +1,10 @@
+{{#unless disableContainer}}<p>{{/unless}}
+    <input type="checkbox"
+           id="{{id}}"
+           name="{{name}}"
+           value="{{{value}}}"
+           {{#if required}}required{{/if}}
+    />
+
+    {{> '@form-label' id=id label=label}}
+{{#unless disableContainer}}</p>{{/unless}}

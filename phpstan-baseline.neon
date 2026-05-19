@@ -105,3 +105,21 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
+
+		-
+			rawMessage: Class TYPO3\CMS\Form\ViewHelpers\Form\UploadDeleteCheckboxViewHelper not found.
+			identifier: class.notFound
+			count: 1
+			path: Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php
+
+		-
+			rawMessage: 'Parameter #2 $resource of class CPSIT\Typo3HandlebarsForms\Domain\ViewModel\FileResourceViewModel constructor expects TYPO3\CMS\Core\Resource\File|TYPO3\CMS\Core\Resource\FileReference|TYPO3\CMS\Extbase\Domain\Model\File|TYPO3\CMS\Extbase\Domain\Model\FileReference|TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Core\Resource\File|TYPO3\CMS\Core\Resource\FileReference|TYPO3\CMS\Extbase\Domain\Model\File|TYPO3\CMS\Extbase\Domain\Model\FileReference>, TYPO3\CMS\Extbase\Domain\Model\FileReference|TYPO3\CMS\Extbase\Persistence\ObjectStorage<TYPO3\CMS\Extbase\Domain\Model\FileReference> given.'
+			identifier: argument.type
+			count: 1
+			path: Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php
+
+		-
+			rawMessage: 'Parameter #2 $viewHelperClassName of method CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker::invoke() expects class-string<TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface>, string given.'
+			identifier: argument.type
+			count: 1
+			path: Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php

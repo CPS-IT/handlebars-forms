@@ -18,9 +18,12 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder;
 
 use CPSIT\Typo3HandlebarsForms\Domain;
+use CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
+use TYPO3Fluid\Fluid as FluidStandalone;
 
 /**
  * FileUploadViewModelBuilder
@@ -37,31 +40,47 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
         'ImageUpload',
     ];
 
+    private readonly Core\Information\Typo3Version $typo3Version;
+
+    public function __construct(ViewHelperInvoker $viewHelperInvoker)
+    {
+        parent::__construct($viewHelperInvoker);
+
+        $this->typo3Version = new Core\Information\Typo3Version();
+    }
+
     public function renderRenderable(
         Form\Domain\Model\Renderable\RootRenderableInterface $renderable,
         Fluid\Core\Rendering\RenderingContext $renderingContext,
     ): Domain\ViewModel\ViewModelCollection|Domain\ViewModel\ViewHelperContainedViewModel {
         $resource = null;
         $resourceVariableName = 'resource';
+        $arguments = [
+            'property' => $renderable->getIdentifier(),
+            'as' => $resourceVariableName,
+            'id' => $renderable->getUniqueIdentifier(),
+            'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
+            'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
+            'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
+            'accept' => $renderable->getProperties()['allowedMimeTypes'] ?? null,
+        ];
+
+        // @todo Remove condition once support for TYPO3 v13 is dropped
+        if ($this->typo3Version->getMajorVersion() >= 14) {
+            $arguments['multiple'] = $renderable->getProperties()['multiple'] ?? false;
+        }
+
         $result = $this->viewHelperInvoker->invoke(
             $renderingContext,
             Form\ViewHelpers\Form\UploadedResourceViewHelper::class,
-            [
-                'property' => $renderable->getIdentifier(),
-                'as' => $resourceVariableName,
-                'id' => $renderable->getUniqueIdentifier(),
-                'class' => $renderable->getProperties()['elementClassAttribute'] ?? null,
-                'errorClass' => $renderable->getProperties()['elementErrorClassAttribute'] ?? null,
-                'additionalAttributes' => $this->renderAdditionalAttributes($renderable, $renderingContext),
-                'accept' => $renderable->getProperties()['allowedMimeTypes'] ?? null,
-            ],
+            $arguments,
             static function () use ($renderingContext, &$resource, $resourceVariableName) {
                 $resource = $renderingContext->getVariableProvider()->get($resourceVariableName);
             },
         );
         $inputViewModel = new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result);
 
-        if (!($resource instanceof Extbase\Domain\Model\FileReference)) {
+        if (!$this->isValidResource($resource)) {
             return $inputViewModel;
         }
 
@@ -72,9 +91,86 @@ final class FileUploadViewModelBuilder extends AbstractViewModelBuilder
         ];
 
         if ($hiddenFields !== []) {
-            $viewModels['resourcePointerField'] = new Domain\ViewModel\StandaloneTagViewModel($renderable, $hiddenFields[0]);
+            $viewModels['resourcePointerFields'] = $this->buildResourcePointerFields($renderable, $hiddenFields);
+        }
+
+        // @todo Remove first condition once support for TYPO3 v13 is dropped
+        if ($this->typo3Version->getMajorVersion() >= 14 && (bool)($renderable->getProperties()['allowRemoval'] ?? false)) {
+            $viewModels['deleteCheckboxes'] = $this->buildDeleteCheckboxes($renderable, $renderingContext, $resource);
         }
 
         return new Domain\ViewModel\ViewModelCollection($renderable, $viewModels);
+    }
+
+    /**
+     * @param list<FluidStandalone\Core\ViewHelper\TagBuilder> $hiddenFields
+     */
+    private function buildResourcePointerFields(
+        Form\Domain\Model\FormElements\FileUpload $renderable,
+        array $hiddenFields,
+    ): Domain\ViewModel\ViewModelCollection {
+        $resourcePointerFields = [];
+
+        foreach ($hiddenFields as $hiddenField) {
+            $resourcePointerFields[] = new Domain\ViewModel\StandaloneTagViewModel($renderable, $hiddenField);
+        }
+
+        return new Domain\ViewModel\ViewModelCollection($renderable, $resourcePointerFields);
+    }
+
+    /**
+     * @param Extbase\Domain\Model\FileReference|Extbase\Persistence\ObjectStorage<Extbase\Domain\Model\FileReference> $resource
+     */
+    private function buildDeleteCheckboxes(
+        Form\Domain\Model\FormElements\FileUpload $renderable,
+        Fluid\Core\Rendering\RenderingContext $renderingContext,
+        Extbase\Domain\Model\FileReference|Extbase\Persistence\ObjectStorage $resource,
+    ): Domain\ViewModel\ViewModelCollection {
+        if (!is_iterable($resource)) {
+            $resource = [$resource];
+        }
+
+        $viewModels = [];
+        $index = 0;
+
+        // Map file references to view models
+        foreach ($resource as $fileReference) {
+            $result = $this->viewHelperInvoker->invoke(
+                $renderingContext,
+                Form\ViewHelpers\Form\UploadDeleteCheckboxViewHelper::class,
+                [
+                    'property' => $renderable->getIdentifier(),
+                    'fileReference' => $fileReference,
+                    'fileIndex' => $index++,
+                ],
+            );
+
+            $viewModels[] = Domain\ViewModel\FormFieldViewModel::forLabelAndElement(
+                $fileReference->getOriginalResource()->getOriginalFile()->getName(),
+                new Domain\ViewModel\ViewHelperContainedViewModel($renderable, $result),
+            );
+        }
+
+        return new Domain\ViewModel\ViewModelCollection($renderable, $viewModels);
+    }
+
+    /**
+     * @phpstan-assert-if-true Extbase\Domain\Model\FileReference|Extbase\Persistence\ObjectStorage<Extbase\Domain\Model\FileReference> $resource
+     */
+    private function isValidResource(mixed $resource): bool
+    {
+        if ($resource instanceof Extbase\Domain\Model\FileReference) {
+            return true;
+        }
+
+        // @todo Combine with previous condition once support for TYPO3 v13 is dropped
+        if ($this->typo3Version->getMajorVersion() >= 14
+            && $resource instanceof Extbase\Persistence\ObjectStorage
+            && count($resource) > 0
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
