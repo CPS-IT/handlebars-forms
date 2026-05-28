@@ -13,6 +13,9 @@ plugin.tx_form {
 
             action = HBS_TAG
             action.attribute = action
+
+            enctype = HBS_TAG
+            enctype.attribute = enctype
           }
 
           fields = HBS_RENDERABLES
@@ -64,6 +67,29 @@ plugin.tx_form {
               type = hidden
             }
 
+            FileUpload < .Text
+            FileUpload {
+              template = @form-field-file
+
+              accept = HBS_TAG
+              accept.attribute = accept
+
+              multiple = HBS_TAG
+              multiple.attribute = multiple
+
+              resourcePointerFields = HBS_PROPERTY
+              resourcePointerFields {
+                subject = viewModel
+                path = children?[resourcePointerFields?]
+              }
+
+              uploads = HBS_PROPERTY
+              uploads {
+                subject = viewModel
+                path = children?[uploads?]
+              }
+            }
+
             Honeypot {
               content = HBS_PASSTHROUGH
             }
@@ -87,6 +113,7 @@ plugin.tx_form {
                   label.path = label
 
                   value = HBS_FORM_VALUE
+                  value.output = PROCESSED_VALUE
                 }
 
                 # Disable fieldsets

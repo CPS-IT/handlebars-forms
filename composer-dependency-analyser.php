@@ -27,6 +27,7 @@ $configuration
     ->ignoreUnknownClasses([
         // @todo Remove once support for TYPO3 v13 is dropped
         Form\Event\BeforeRenderableIsRenderedEvent::class,
+        Form\ViewHelpers\Form\UploadDeleteCheckboxViewHelper::class,
         Frontend\ContentObject\RegisterStack::class,
     ])
 ;
