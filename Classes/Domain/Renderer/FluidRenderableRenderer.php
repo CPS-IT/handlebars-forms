@@ -118,6 +118,15 @@ final readonly class FluidRenderableRenderer
             request: $formRuntime->getRequest(),
         );
 
-        return $this->viewFactory->create($viewFactoryData);
+        $view = $this->viewFactory->create($viewFactoryData);
+
+        if ($view instanceof Fluid\View\FluidViewAdapter) {
+            $view->getRenderingContext()
+                ->getViewHelperVariableContainer()
+                ->addOrUpdate(Form\ViewHelpers\RenderRenderableViewHelper::class, 'formRuntime', $formRuntime)
+            ;
+        }
+
+        return $view;
     }
 }
