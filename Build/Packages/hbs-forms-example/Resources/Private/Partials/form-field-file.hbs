@@ -11,7 +11,7 @@
 
     {{#if resourcePointerFields}}
         {{#each resourcePointerFields}}
-            <input type="hidden" name="{{name}}" value="{{value}}" />
+            <input type="hidden" name="{{get this 'name'}}" value="{{get this 'value'}}" />
         {{/each}}
     {{/if}}
 {{#unless disableContainer}}</p>{{/unless}}

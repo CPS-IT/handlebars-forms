@@ -1,5 +1,5 @@
 <p>
-    <strong>{{resource.originalResource.originalFile.name}}</strong>
+    <strong>{{get resource 'originalResource.originalFile.name'}}</strong>
     <br>
 
     {{#if deleteCheckbox}}
@@ -7,8 +7,8 @@
             disableContainer=true
             id=(join ../id "-remove-" index)
             label="Delete file"
-            name=deleteCheckbox.element.name
-            value=deleteCheckbox.element.value
+            name=(get deleteCheckbox 'element.name')
+            value=(get deleteCheckbox 'element.value')
         }}
     {{/if}}
 </p>

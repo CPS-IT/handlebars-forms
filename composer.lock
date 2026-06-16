@@ -122,16 +122,16 @@
         },
         {
             "name": "cpsit/typo3-handlebars",
-            "version": "1.0.0-alpha.5",
+            "version": "1.0.0-alpha.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CPS-IT/handlebars.git",
-                "reference": "39c13cb1ced5f06fea832941f42517ede58ea889"
+                "reference": "50ea68a32e2d2cf0f07f561bb9212311f01af294"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/39c13cb1ced5f06fea832941f42517ede58ea889",
-                "reference": "39c13cb1ced5f06fea832941f42517ede58ea889",
+                "url": "https://api.github.com/repos/CPS-IT/handlebars/zipball/50ea68a32e2d2cf0f07f561bb9212311f01af294",
+                "reference": "50ea68a32e2d2cf0f07f561bb9212311f01af294",
                 "shasum": ""
             },
             "require": {
@@ -156,7 +156,7 @@
                 "cpsit/typo3-handlebars-test-extension": "1.0.0",
                 "eliashaeussler/deep-closure-comparator": "^1.2",
                 "eliashaeussler/typo3-vendor-bundler": "^4.0.2",
-                "eliashaeussler/version-bumper": "^3.3",
+                "eliashaeussler/version-bumper": "^4.0",
                 "ergebnis/composer-normalize": "^2.15",
                 "fig/log-test": "^1.1",
                 "friendsofphp/php-cs-fixer": "^3.57",
@@ -205,7 +205,7 @@
                 "issues": "https://github.com/CPS-IT/handlebars/issues",
                 "source": "https://github.com/CPS-IT/handlebars"
             },
-            "time": "2026-05-13T10:28:25+00:00"
+            "time": "2026-06-16T05:37:34+00:00"
         },
         {
             "name": "dasprid/enum",
