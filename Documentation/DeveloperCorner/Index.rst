@@ -6,13 +6,12 @@
 Developer corner
 ================
 
-..  caution::
-    This page is outdated and does not reflect the current state
-    of the extension. It will be updated soon.
-
-tba.
+This section covers extension points for integrators who need to go beyond what the
+built-in :typoscript:`HBS_*` content objects and view model builders provide.
 
 ..  toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     ViewModels
+    ViewModelBuilders
+    ContentObjects

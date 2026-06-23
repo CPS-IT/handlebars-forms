@@ -27,3 +27,22 @@ Require the extension via Composer (recommended):
 
 Or download it from the
 `TYPO3 extension repository <https://extensions.typo3.org/extension/handlebars_forms>`__.
+
+..  _site-set:
+
+Site set
+========
+
+The extension ships a site set that provides default TypoScript configuration and site
+settings. Include it in your site's :file:`config.yaml`:
+
+..  code-block:: yaml
+    :caption: config/sites/<identifier>/config.yaml
+
+    dependencies:
+      - cpsit/handlebars-forms
+
+The site set requires two other sets as dependencies:
+:ref:`cpsit/handlebars-content-element <t3exthandlebars:site-sets>` (from EXT:handlebars)
+and :ref:`typo3/form <t3extform:quickstartintegrators>` (from EXT:form). Both are declared
+in the extension's own set, so you do not need to list them separately.
