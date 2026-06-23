@@ -42,7 +42,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
     public function __construct(
         private Log\LoggerInterface $logger,
         private Fluid\Core\Rendering\RenderingContextFactory $renderingContextFactory,
-        private Domain\ViewModel\Builder\FormViewModelBuilder $formRenderableProcessor,
+        private Domain\ViewModel\Builder\FormViewModelBuilder $formViewModelBuilder,
         private ContentObject\Context\ValueCollector $valueCollector,
         private ContentObject\Context\ContextStack $contextStack,
     ) {}
@@ -83,7 +83,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         // Since the final rendered form content (which especially contains all relevant hidden fields)
         // is not yet available when processing renderables, we temporarily pass a content placeholder
         // for all configured CONTENT values and replace them with the real content value later.
-        $this->formRenderableProcessor->build(
+        $this->formViewModelBuilder->build(
             $formRuntime,
             $renderingContext,
             function (FluidStandalone\Core\ViewHelper\TagBuilder $tagBuilder) use (
