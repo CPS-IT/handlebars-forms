@@ -17,7 +17,7 @@ generic forms, defined by a comprehensive TypoScript rendering definition.
 This definition can be extended to a specific form to allow customizating the
 output of various forms. In addition, the extension allows to modify the
 build mechanisms of so called *view models*, which makes the whole concept
-very danymic and flexible.
+very dynamic and flexible.
 
 ..  _features:
 
