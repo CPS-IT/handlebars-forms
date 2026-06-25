@@ -22,7 +22,7 @@ $config = CsFixerConfig::create();
 $config->setParallelConfig(ParallelConfigFactory::detect());
 $config->setHeader('This file is part of the TYPO3 CMS extension "handlebars_forms".');
 $config->getFinder()
-    ->in(__DIR__)
+    ->in(dirname(__DIR__, 2))
     ->ignoreVCSIgnored(true)
     ->ignoreDotFiles(false)
 ;

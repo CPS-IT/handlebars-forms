@@ -9,37 +9,37 @@ parameters:
 			'''
 			identifier: property.deprecatedClass
 			count: 2
-			path: Classes/ContentObject/ChildrenContentObject.php
+			path: ../../Classes/ContentObject/ChildrenContentObject.php
 
 		-
 			rawMessage: 'Call to method current() on an unknown class TYPO3\CMS\Frontend\ContentObject\RegisterStack.'
 			identifier: class.notFound
 			count: 1
-			path: Classes/ContentObject/ChildrenContentObject.php
+			path: ../../Classes/ContentObject/ChildrenContentObject.php
 
 		-
 			rawMessage: 'Cannot call method set() on mixed.'
 			identifier: method.nonObject
 			count: 1
-			path: Classes/ContentObject/ChildrenContentObject.php
+			path: ../../Classes/ContentObject/ChildrenContentObject.php
 
 		-
 			rawMessage: Class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
 			identifier: class.notFound
 			count: 1
-			path: Classes/ContentObject/ChildrenContentObject.php
+			path: ../../Classes/ContentObject/ChildrenContentObject.php
 
 		-
 			rawMessage: 'CPSIT\Typo3HandlebarsForms\ContentObject\ContextAwareContentObjectFactory::__construct() does not call parent constructor from TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory.'
 			identifier: constructor.missingParentCall
 			count: 1
-			path: Classes/ContentObject/ContextAwareContentObjectFactory.php
+			path: ../../Classes/ContentObject/ContextAwareContentObjectFactory.php
 
 		-
 			rawMessage: 'Call to function is_string() with string will always evaluate to true.'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: Classes/ContentObject/ContextAwareContentObjectFactory.php
+			path: ../../Classes/ContentObject/ContextAwareContentObjectFactory.php
 
 		-
 			rawMessage: '''
@@ -50,70 +50,70 @@ parameters:
 			'''
 			identifier: property.deprecatedClass
 			count: 2
-			path: Classes/ContentObject/RenderablesContentObject.php
+			path: ../../Classes/ContentObject/RenderablesContentObject.php
 
 		-
 			rawMessage: 'Call to method current() on an unknown class TYPO3\CMS\Frontend\ContentObject\RegisterStack.'
 			identifier: class.notFound
 			count: 1
-			path: Classes/ContentObject/RenderablesContentObject.php
+			path: ../../Classes/ContentObject/RenderablesContentObject.php
 
 		-
 			rawMessage: 'Cannot call method set() on mixed.'
 			identifier: method.nonObject
 			count: 1
-			path: Classes/ContentObject/RenderablesContentObject.php
+			path: ../../Classes/ContentObject/RenderablesContentObject.php
 
 		-
 			rawMessage: Class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
 			identifier: class.notFound
 			count: 1
-			path: Classes/ContentObject/RenderablesContentObject.php
+			path: ../../Classes/ContentObject/RenderablesContentObject.php
 
 		-
 			rawMessage: Cannot access offset 'form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/DataProcessing/ProcessFormProcessor.php
+			path: ../../Classes/DataProcessing/ProcessFormProcessor.php
 
 		-
 			rawMessage: 'Argument of an invalid type mixed supplied for foreach, only iterables are supported.'
 			identifier: foreach.nonIterable
 			count: 1
-			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
+			path: ../../Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
 			rawMessage: Cannot access offset 'SC_OPTIONS' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
+			path: ../../Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
 			rawMessage: Cannot access offset 'beforeRendering' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
+			path: ../../Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
 			rawMessage: Cannot access offset 'ext/form' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
+			path: ../../Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
 			rawMessage: Instantiated class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent not found.
 			identifier: class.notFound
 			count: 1
-			path: Classes/Domain/Renderer/HandlebarsFormRenderer.php
+			path: ../../Classes/Domain/Renderer/HandlebarsFormRenderer.php
 
 		-
 			rawMessage: Class TYPO3\CMS\Form\ViewHelpers\Form\UploadDeleteCheckboxViewHelper not found.
 			identifier: class.notFound
 			count: 1
-			path: Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php
+			path: ../../Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php
 
 		-
 			rawMessage: 'Parameter #2 $viewHelperClassName of method CPSIT\Typo3HandlebarsForms\Fluid\ViewHelperInvoker::invoke() expects class-string<TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface>, string given.'
 			identifier: argument.type
 			count: 1
-			path: Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php
+			path: ../../Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php

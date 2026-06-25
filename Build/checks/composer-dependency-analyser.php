@@ -19,11 +19,12 @@ use ShipMonk\ComposerDependencyAnalyser;
 use TYPO3\CMS\Form;
 use TYPO3\CMS\Frontend;
 
+$rootPath = dirname(__DIR__, 2);
 $configuration = new ComposerDependencyAnalyser\Config\Configuration();
 $configuration
-    ->addPathToScan('Classes', false)
-    ->addPathToScan('Configuration', false)
-    ->addPathToScan('Tests', true)
+    ->addPathToScan($rootPath . '/Classes', false)
+    ->addPathToScan($rootPath . '/Configuration', false)
+    ->addPathToScan($rootPath . '/Tests', true)
     ->ignoreUnknownClasses([
         // @todo Remove once support for TYPO3 v13 is dropped
         Form\Event\BeforeRenderableIsRenderedEvent::class,

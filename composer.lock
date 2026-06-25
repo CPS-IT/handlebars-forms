@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9fc17832e3d78f7403b32ab2bfeecf88",
+    "content-hash": "2d76572e74e973ec710df7a692942e4e",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6510,7 +6510,7 @@
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "Build/Packages/hbs-forms-example",
+                "url": "Build/environment/packages/hbs-forms-example",
                 "reference": "5f9aa9c9dad5e647b7d2e67015838fb9705ee35e"
             },
             "require": {

@@ -14,31 +14,40 @@ All commands run via Composer scripts from the project root. Dependencies must b
 
 **Tests**
 ```bash
-composer test          # run all tests (unit + functional)
-composer test:unit     # unit tests only
-composer test:functional  # functional tests only
+composer test                    # run all tests (unit + functional)
+composer test:unit               # unit tests only
+composer test:functional         # functional tests only
+composer test:coverage           # all tests with coverage (unit + functional + merge)
+composer test:unit:coverage      # unit tests with coverage
+composer test:functional:coverage # functional tests with coverage
 
 # Run a single test file
 composer test:unit -- Tests/Unit/Utility/StringUtilityTest.php
 ```
 
-**Static analysis & linting**
+**Checks (read-only)**
 ```bash
-composer sca           # PHPStan (level max)
-composer lint          # composer normalize + editorconfig + php-cs-fixer + typoscript-lint
-composer lint:php      # php-cs-fixer dry-run only
-composer lint:typoscript
+composer check                   # run all checks (deps + refactor + static + style)
+composer check:static            # PHPStan (level max)
+composer check:deps              # dependency analyser
+composer check:style             # composer normalize + editorconfig + php-cs-fixer + typoscript-lint
+composer check:style:php         # php-cs-fixer dry-run only
+composer check:style:typoscript  # typoscript-lint
+composer check:refactor          # Rector dry-run
 ```
 
 **Auto-fix**
 ```bash
 composer fix           # fix composer + editorconfig + php-cs-fixer
 composer fix:php       # php-cs-fixer only
+composer refactor      # apply Rector refactors
 ```
 
-**Dependency analysis**
+**Documentation**
 ```bash
-composer analyze       # shipmonk/composer-dependency-analyser
+composer docs          # clean, build, and open docs (requires Docker)
+composer docs:build    # build only
+composer docs:open     # open Build/docs/result/Index.html
 ```
 
 ## Architecture
@@ -76,15 +85,19 @@ All `HBS_*` content objects extend `AbstractHandlebarsFormsContentObject` and ar
 
 `ValueCollector` lets content objects return non-string values (arrays, objects) by storing them under a unique placeholder string key; `ProcessFormProcessor` replaces these placeholders with the real values after the TypoScript tree is fully resolved.
 
+`ContextAwareContentObjectFactory` (`Classes/ContentObject/`) is a decorator (`#[AsDecorator]`) around TYPO3's `ContentObjectFactory`. It wraps every resolved content object so that when it returns a scalar string that happens to be a `ValueCollector` placeholder, the decorator transparently loads the real value. This allows `HBS_*` objects nested inside other content objects to propagate non-string values upward.
+
 ### View models (`Classes/Domain/ViewModel/`)
 
-Every renderable gets a `ViewModel` (implements `ArrayAccess`). Concrete models: `SimpleViewModel`, `FormFieldViewModel`, `FormValueViewModel`, `TagAwareViewModel`, `ViewHelperContainedViewModel`, `FileResourceViewModel`, `StandaloneTagViewModel`, `ViewModelCollection`.
+Interface hierarchy: `ViewModel` (base — extends `ArrayAccess`, declares `getRenderable()`) → `CompositeViewModel` (adds `getChildren(): array` for renderables that have child renderables).
 
-`ViewModelBuilder` (service tag `handlebars_forms.view_model_builder`) is the extension point for mapping a renderable type to a custom view model. Built-in builders cover all default EXT:form elements. Custom builders must implement `ViewModelBuilder` — the interface's `#[AutoconfigureTag]` registers them automatically via Symfony DI.
+Concrete models: `SimpleViewModel`, `FormFieldViewModel`, `FormValueViewModel`, `TagAwareViewModel`, `ViewHelperContainedViewModel`, `FileResourceViewModel`, `StandaloneTagViewModel`, `ViewModelCollection`.
+
+`ViewModelBuilder` (`Classes/Domain/ViewModel/Builder/`, service tag `handlebars_forms.view_model_builder`) is the extension point for mapping a renderable type to a custom view model. `AbstractViewModelBuilder` provides a base implementation. Built-in builders for all default EXT:form elements: `CheckboxViewModelBuilder`, `ContentElementViewModelBuilder`, `CountrySelectViewModelBuilder`, `FieldsetViewModelBuilder`, `FileUploadViewModelBuilder`, `FormViewModelBuilder`, `HiddenViewModelBuilder`, `MultiCheckboxViewModelBuilder`, `PasswordViewModelBuilder`, `RadioViewModelBuilder`, `SelectViewModelBuilder`, `StaticTextViewModelBuilder`, `TextareaViewModelBuilder`, `TextfieldViewModelBuilder`. Custom builders must implement `ViewModelBuilder` — the interface's `#[AutoconfigureTag]` registers them automatically via Symfony DI.
 
 ### Fluid bridge (`Classes/Fluid/`)
 
-`ViewHelperInvoker` programmatically invokes Fluid view helpers outside a normal Fluid rendering context — used by `HBS_PASSTHROUGH` and view model builders that need to call EXT:form view helpers (e.g. `TranslateElementPropertyViewHelper`) to resolve labels and HTML attributes.
+`ViewHelperInvoker` programmatically invokes Fluid view helpers outside a normal Fluid rendering context — used by `HBS_PASSTHROUGH` and view model builders that need to call EXT:form view helpers (e.g. `TranslateElementPropertyViewHelper`) to resolve labels and HTML attributes. It returns a `ViewHelperInvocationResult` holding the `viewHelper`, `renderingContext`, `content`, and a `TagBuilder`; the result also exposes `extractChildNodes(tagName)` which parses the rendered HTML and returns matching child elements as `TagBuilder` instances.
 
 `FluidRenderableRenderer` wraps a Fluid template render in a simulated `<f:form>` context so EXT:form's Fluid partials work correctly when called from Handlebars flow.
 
