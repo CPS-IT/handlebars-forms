@@ -63,8 +63,8 @@ final readonly class FluidRenderableRenderer
         ]);
 
         // Perform simple rendering for all non-Fluid views
-        if (!($view instanceof Fluid\View\FluidViewAdapter) ||
-            !($view->getRenderingContext() instanceof Fluid\Core\Rendering\RenderingContext)
+        if (!($view instanceof Fluid\View\FluidViewAdapter)
+            || !($view->getRenderingContext() instanceof Fluid\Core\Rendering\RenderingContext)
         ) {
             return $view->render('RenderRenderable');
         }
