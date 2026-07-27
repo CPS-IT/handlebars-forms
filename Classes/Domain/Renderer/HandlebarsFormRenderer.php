@@ -104,8 +104,8 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
             $this->formRuntime->getFormDefinition()->getPersistenceIdentifier(),
         ];
         foreach ($possibleConfigurationKeys as $possibleConfigurationKey) {
-            if (is_string($possibleConfigurationKey) &&
-                is_array($typoScriptConfiguration[$possibleConfigurationKey . '.'] ?? null)
+            if (is_string($possibleConfigurationKey)
+                && is_array($typoScriptConfiguration[$possibleConfigurationKey . '.'] ?? null)
             ) {
                 Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
                     $resolvedConfiguration,

@@ -40,7 +40,7 @@ final class StringUtilityTest extends TestingFramework\Core\Unit\UnitTestCase
         yield 'SafeString' => [new Handlebars\SafeString('foo'), true];
         yield 'null' => [null, true];
         yield 'Stringable' => [
-            new class () implements \Stringable {
+            new class implements \Stringable {
                 public function __toString(): string
                 {
                     return 'foo';
