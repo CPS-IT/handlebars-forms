@@ -42,7 +42,7 @@ final class TagContentObject extends AbstractHandlebarsFormsContentObject
             return $this->safeString($tag->getContent());
         }
 
-        $attributeName = $configuration['attribute'] ?? null;
+        $attributeName = $configuration['attribute'];
 
         if (!is_string($attributeName)) {
             return null;
