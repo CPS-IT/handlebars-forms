@@ -11,6 +11,13 @@
 			"role": "Maintainer"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/CPS-IT/handlebars-forms/issues",
+		"chat": "https://typo3.slack.com/archives/C0281DBRFCZ",
+		"source": "https://github.com/CPS-IT/handlebars-forms",
+		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars-forms/main/en-us/",
+		"security": "https://github.com/CPS-IT/handlebars-forms/blob/main/SECURITY.md"
+	},
 	"require": {
 		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
 		"ext-dom": "*",
