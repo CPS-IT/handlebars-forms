@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
 use Symfony\Component\DependencyInjection;
-use TYPO3\CMS\Extbase;
+use TYPO3Fluid\Fluid;
 
 /**
  * PropertyContentObject
@@ -42,6 +42,10 @@ final class PropertyContentObject extends AbstractHandlebarsFormsContentObject
             return null;
         }
 
-        return Extbase\Reflection\ObjectAccess::getProperty($subject, $path);
+        $variableProvider = new Fluid\Core\Variables\StandardVariableProvider([
+            'subject' => $subject,
+        ]);
+
+        return $variableProvider->getByPath('subject.' . $path);
     }
 }

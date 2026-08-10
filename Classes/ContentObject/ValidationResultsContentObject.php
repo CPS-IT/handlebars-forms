@@ -22,6 +22,7 @@ use Psr\Http\Message;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Form;
+use TYPO3Fluid\Fluid as FluidStandalone;
 
 /**
  * ValidationResultsContentObject
@@ -308,6 +309,10 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
             return $result;
         }
 
-        return Extbase\Reflection\ObjectAccess::getProperty($result, $propertyPath);
+        $variableProvider = new FluidStandalone\Core\Variables\StandardVariableProvider([
+            'result' => $result,
+        ]);
+
+        return $variableProvider->getByPath('result.' . $propertyPath);
     }
 }
