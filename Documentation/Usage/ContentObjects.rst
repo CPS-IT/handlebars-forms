@@ -82,8 +82,8 @@ HBS\_PROPERTY
 =============
 
 Reads a property from the current renderable, its view model, or the form runtime
-using :php:`Extbase\Reflection\ObjectAccess::getProperty()`. Returns whatever type the
-property holds (string, array, object, …).
+using :php:`TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider::getByPath()`. Returns
+whatever type the property holds (string, array, object, …).
 
 **Configuration**
 
@@ -123,7 +123,7 @@ property holds (string, array, object, …).
     resourcePointerFields = HBS_PROPERTY
     resourcePointerFields {
         subject = viewModel
-        path = children?[resourcePointerFields?]
+        path = children.resourcePointerFields
     }
 
 ..  _co-hbs-tag:
