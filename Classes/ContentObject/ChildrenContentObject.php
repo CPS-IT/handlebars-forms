@@ -60,9 +60,9 @@ final class ChildrenContentObject extends AbstractHandlebarsFormsContentObject
         // Add children count to register
         $this->updateRegister(self::IDENTIFIER_COUNT, count($children));
 
-        foreach ($children as $index => $childViewModel) {
+        foreach (array_values($children) as $index => $childViewModel) {
             // Add current child index to TSFE register
-            $this->updateRegister(self::IDENTIFIER_CURRENT, count($children));
+            $this->updateRegister(self::IDENTIFIER_CURRENT, $index);
 
             try {
                 $processedValue[] = $context->process($configuration, viewModel: $childViewModel);
