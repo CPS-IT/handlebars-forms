@@ -481,6 +481,13 @@ Returns the Extbase validation results for the current renderable. Without an
 
         Returns the translated message for the first error in the result set.
 
+    ..  confval:: HAS_ERRORS
+        :name: hbs-validation-results-has-errors
+        :type: string instruction
+
+        Returns :php:`true` if the result set contains at least one error,
+        :php:`false` otherwise.
+
     ..  confval:: RESULT
         :name: hbs-validation-results-result
         :type: string instruction

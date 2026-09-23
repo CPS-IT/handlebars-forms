@@ -145,6 +145,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
             'EACH_ERROR' => $this->processErrors($context, $result, $configuration),
             'EACH_RENDERABLE' => $this->processRenderables($context, $result, $configuration),
             'ERROR_MESSAGE' => $this->processErrorMessage($context, $result),
+            'HAS_ERRORS' => $result->hasErrors(),
             'RESULT' => $this->processResult($result, $configuration),
             default => $this->processGenericValue($value, $configuration, $context),
         };
