@@ -251,22 +251,27 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $this->mergeTypoScriptReferences($configuration[$keyWithDot], $cObj);
             }
 
-            if (!array_key_exists($keyWithoutDot, $configuration)) {
+            if (!is_string($configuration[$keyWithoutDot] ?? null)) {
                 continue;
             }
 
-            $mergedConfig = $cObj->mergeTSRef(
-                [
-                    $keyWithoutDot => $configuration[$keyWithoutDot] ?? '',
-                    $keyWithDot => $configuration[$keyWithDot] ?? [],
-                ],
-                $keyWithoutDot,
-            );
+            if (str_starts_with($configuration[$keyWithoutDot], '<')) {
+                $mergedConfig = $cObj->mergeTSRef(
+                    [
+                        $keyWithoutDot => $configuration[$keyWithoutDot],
+                        $keyWithDot => $configuration[$keyWithDot] ?? [],
+                    ],
+                    $keyWithoutDot,
+                );
 
-            $configuration[$keyWithoutDot] = $mergedConfig[$keyWithoutDot];
+                // Apply merged config only if a substition was found and applied
+                if (is_string($mergedConfig[$keyWithoutDot]) && '<' . $mergedConfig[$keyWithoutDot] !== $configuration[$keyWithoutDot]) {
+                    $configuration[$keyWithoutDot] = $mergedConfig[$keyWithoutDot];
+                }
 
-            if ($mergedConfig[$keyWithDot] !== []) {
-                $configuration[$keyWithDot] = $mergedConfig[$keyWithDot];
+                if ($mergedConfig[$keyWithDot] !== []) {
+                    $configuration[$keyWithDot] = $mergedConfig[$keyWithDot];
+                }
             }
 
             $processedKeys[] = $keyWithoutDot;
