@@ -46,11 +46,11 @@ final class StringUtilityTest extends TestingFramework\Core\Unit\UnitTestCase
                     return 'foo';
                 }
             },
-            false,
+            true,
         ];
-        yield 'bool' => [true, false];
-        yield 'int' => [1, false];
-        yield 'float' => [1.0, false];
+        yield 'bool' => [true, true];
+        yield 'int' => [1, true];
+        yield 'float' => [1.0, true];
         yield 'object' => [new \stdClass(), false];
     }
 
@@ -86,5 +86,38 @@ final class StringUtilityTest extends TestingFramework\Core\Unit\UnitTestCase
         $processor = static fn(string $value) => 'foo';
 
         self::assertSame('foo', Src\Utility\StringUtility::processStringable(null, $processor));
+    }
+
+    #[Framework\Attributes\Test]
+    public function processStringableReturnsProcessedStringableValue(): void
+    {
+        $processor = static fn(string $value) => $value . $value;
+        $stringable = new class implements \Stringable {
+            public function __toString(): string
+            {
+                return 'foo';
+            }
+        };
+
+        self::assertSame('foofoo', Src\Utility\StringUtility::processStringable($stringable, $processor));
+    }
+
+    /**
+     * @return \Generator<string, array{int|float|bool, string}>
+     */
+    public static function processStringableReturnsProcessedScalarValueDataProvider(): \Generator
+    {
+        yield 'bool' => [true, '11'];
+        yield 'int' => [1, '11'];
+        yield 'float' => [1.0, '11'];
+    }
+
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('processStringableReturnsProcessedScalarValueDataProvider')]
+    public function processStringableReturnsProcessedScalarValue(int|float|bool $value, string $expected): void
+    {
+        $processor = static fn(string $value) => $value . $value;
+
+        self::assertSame($expected, Src\Utility\StringUtility::processStringable($value, $processor));
     }
 }
