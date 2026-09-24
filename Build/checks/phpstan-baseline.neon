@@ -139,3 +139,25 @@ parameters:
 			identifier: new.deprecatedClass
 			count: 1
 			path: ../../Tests/Functional/ContentObject/ChildrenContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/RenderablesContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/RenderablesContentObjectTest.php
