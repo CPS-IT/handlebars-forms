@@ -70,6 +70,10 @@ trait FrontendRequestTrait
             ->withAttribute('frontend.cache.instruction', $cacheInstruction)
             ->withAttribute('frontend.typoscript', $frontendTypoScript)
             ->withAttribute('frontend.user', $frontendUser)
+            ->withAttribute(
+                'language',
+                new Core\Site\Entity\SiteLanguage(0, 'en_US.UTF-8', new Core\Http\Uri('/'), ['typo3Language' => 'default']),
+            )
             ->withAttribute('normalizedParams', new Core\Http\NormalizedParams([], [], 'index.php', '/'))
         ;
 
