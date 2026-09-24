@@ -85,9 +85,11 @@ trait FrontendRequestTrait
     /**
      * @param-out Extbase\Mvc\ExtbaseRequestParameters $extbaseRequestParameters
      */
-    protected function buildExtbaseRequest(?Extbase\Mvc\ExtbaseRequestParameters &$extbaseRequestParameters = null): Extbase\Mvc\Request
-    {
-        $serverRequest = $this->buildServerRequest();
+    protected function buildExtbaseRequest(
+        ?Extbase\Mvc\ExtbaseRequestParameters &$extbaseRequestParameters = null,
+        string $typoScriptSetup = '',
+    ): Extbase\Mvc\Request {
+        $serverRequest = $this->buildServerRequest(typoScriptSetup: $typoScriptSetup);
 
         if ($extbaseRequestParameters === null) {
             $extbaseRequestParameters = new Extbase\Mvc\ExtbaseRequestParameters('Vendor\\Extension\\Controller\\FooController');

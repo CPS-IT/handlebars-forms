@@ -1,0 +1,22 @@
+plugin.tx_form.handlebarsForms {
+  default {
+    templateName = Default
+    templateRootPaths.10 = EXT:handlebars_forms/Tests/Functional/Fixtures/Resources/Private/Templates/Handlebars
+    variables {
+      variant = TEXT
+      variant {
+        value = default
+      }
+    }
+  }
+  test-form {
+    templateName = Custom
+    variables.variant.value = identifier
+  }
+  original-form {
+    variables.variant.value = original identifier
+  }
+  persisted-form {
+    variables.variant.value = persistence identifier
+  }
+}

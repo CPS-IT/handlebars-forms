@@ -234,3 +234,27 @@ parameters:
 			identifier: new.deprecatedClass
 			count: 1
 			path: ../../Tests/Functional/ContentObject/CanUpdateRegisterTest.php
+
+		-
+			rawMessage: 'Access to property $formRuntime on an unknown class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent.'
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: 'Access to property $renderable on an unknown class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent.'
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: Class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent not found.
+			identifier: class.notFound
+			count: 2
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: 'Parameter $event of anonymous function has invalid type TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent.'
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php

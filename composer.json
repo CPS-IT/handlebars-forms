@@ -39,6 +39,7 @@
 	"require-dev": {
 		"armin/editorconfig-cli": "^2.0",
 		"cpsit/hbs-forms-example": "1.0.0",
+		"eliashaeussler/phpunit-attributes": "^2.0",
 		"eliashaeussler/transient-logger": "^2.0",
 		"eliashaeussler/version-bumper": "^4.0",
 		"ergebnis/composer-normalize": "^2.50",
