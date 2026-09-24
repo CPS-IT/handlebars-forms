@@ -80,9 +80,26 @@ trait FrontendRequestTrait
             ->withAttribute('normalizedParams', new Core\Http\NormalizedParams([], [], 'index.php', '/'))
         ;
 
+        // Registers are managed by a register stack within the current request since TYPO3 v14
+        if ((new Core\Information\Typo3Version())->getMajorVersion() >= 14) {
+            $serverRequest = $serverRequest->withAttribute('frontend.register.stack', new Frontend\ContentObject\RegisterStack());
+        }
+
         $GLOBALS['TYPO3_REQUEST'] = $serverRequest;
 
         return $serverRequest;
+    }
+
+    /**
+     * Registers are managed by the TypoScript frontend controller in TYPO3 v13.
+     *
+     * @todo Remove once support for TYPO3 v13 is dropped
+     */
+    protected function initializeTypoScriptFrontendController(): void
+    {
+        if ((new Core\Information\Typo3Version())->getMajorVersion() < 14) {
+            $GLOBALS['TSFE'] = new Frontend\Controller\TypoScriptFrontendController();
+        }
     }
 
     /**

@@ -59,11 +59,11 @@ final class ValidationResultsContentObjectTest extends TestingFramework\Core\Fun
     {
         parent::setUp();
 
+        $this->initializeTypoScriptFrontendController();
+
         // Build and inject Extbase request object
         $request = $this->buildExtbaseRequest($this->extbaseRequestParameters);
         $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
-
-        $GLOBALS['TSFE'] = new Frontend\Controller\TypoScriptFrontendController();
 
         /** @var Form\Domain\Model\FormDefinition $formDefinition */
         $formDefinition = $this->get(Form\Domain\Factory\ArrayFormFactory::class)->build(

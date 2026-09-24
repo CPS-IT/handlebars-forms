@@ -19,6 +19,7 @@ namespace CPSIT\Typo3HandlebarsForms\Tests\Functional\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms as Src;
 use CPSIT\Typo3HandlebarsForms\Tests;
+use EliasHaeussler\PHPUnitAttributes;
 use PHPUnit\Framework;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
@@ -63,7 +64,7 @@ final class ChildrenContentObjectTest extends TestingFramework\Core\Functional\F
 
         $request = $this->buildServerRequest();
 
-        $GLOBALS['TSFE'] = new Frontend\Controller\TypoScriptFrontendController();
+        $this->initializeTypoScriptFrontendController();
 
         $this->cObj = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->cObj->setRequest($request);
@@ -118,7 +119,8 @@ final class ChildrenContentObjectTest extends TestingFramework\Core\Functional\F
     }
 
     #[Framework\Attributes\Test]
-    public function renderResetsRegistersAfterChildViewModelsAreProcessed(): void
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~13.4.0')]
+    public function renderResetsRegistersAfterChildViewModelsAreProcessedOnTypo3V13(): void
     {
         $this->pushContext(
             new Src\Domain\ViewModel\ViewModelCollection(
@@ -131,6 +133,24 @@ final class ChildrenContentObjectTest extends TestingFramework\Core\Functional\F
 
         self::assertNull($this->readRegister('HBS_CHILDREN_COUNT'));
         self::assertNull($this->readRegister('HBS_CHILDREN_CURRENT'));
+    }
+
+    #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~14.3.0')]
+    public function renderKeepsLastRegisterValuesAfterChildViewModelsAreProcessedOnTypo3V14(): void
+    {
+        $this->pushContext(
+            new Src\Domain\ViewModel\ViewModelCollection(
+                $this->renderable,
+                [new Src\Domain\ViewModel\SimpleViewModel($this->renderable)],
+            ),
+        );
+
+        $this->subject->render();
+
+        // Register values cannot be removed from the register stack in TYPO3 v14
+        self::assertSame(1, $this->readRegister('HBS_CHILDREN_COUNT'));
+        self::assertSame(0, $this->readRegister('HBS_CHILDREN_CURRENT'));
     }
 
     private function pushContext(Src\Domain\ViewModel\ViewModel $viewModel): void

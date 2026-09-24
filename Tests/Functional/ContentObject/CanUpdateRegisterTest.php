@@ -19,6 +19,7 @@ namespace CPSIT\Typo3HandlebarsForms\Tests\Functional\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms as Src;
 use CPSIT\Typo3HandlebarsForms\Tests;
+use EliasHaeussler\PHPUnitAttributes;
 use PHPUnit\Framework;
 use Psr\Http\Message;
 use TYPO3\CMS\Core;
@@ -55,13 +56,14 @@ final class CanUpdateRegisterTest extends TestingFramework\Core\Functional\Funct
 
         $this->request = $this->buildServerRequest();
 
-        $GLOBALS['TSFE'] = new Frontend\Controller\TypoScriptFrontendController();
+        $this->initializeTypoScriptFrontendController();
 
         $this->cObj = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->cObj->setRequest($this->request);
     }
 
     #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~13.4.0')]
     public function updateRegisterSetsRegisterValueInTypoScriptFrontendControllerOnTypo3V13(): void
     {
         $subject = $this->createSubject(13);
@@ -72,6 +74,7 @@ final class CanUpdateRegisterTest extends TestingFramework\Core\Functional\Funct
     }
 
     #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~13.4.0')]
     public function updateRegisterRemovesRegisterValueFromTypoScriptFrontendControllerOnTypo3V13(): void
     {
         $subject = $this->createSubject(13);
@@ -83,9 +86,33 @@ final class CanUpdateRegisterTest extends TestingFramework\Core\Functional\Funct
     }
 
     #[Framework\Attributes\Test]
-    public function updateRegisterDoesNothingOnTypo3V14IfRegisterStackIsNotAvailable(): void
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~14.3.0')]
+    public function updateRegisterSetsRegisterValueInRegisterStackOnTypo3V14(): void
     {
         $subject = $this->createSubject(14);
+
+        $subject->callUpdateRegister('FOO', 42);
+
+        self::assertSame(42, $this->readRegister('FOO'));
+    }
+
+    #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~14.3.0')]
+    public function updateRegisterDoesNotRemoveRegisterValueFromRegisterStackOnTypo3V14(): void
+    {
+        $subject = $this->createSubject(14);
+
+        $subject->callUpdateRegister('FOO', 42);
+        $subject->callUpdateRegister('FOO');
+
+        // Register values cannot be removed from the register stack in TYPO3 v14
+        self::assertSame(42, $this->readRegister('FOO'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function updateRegisterDoesNothingOnTypo3V14IfRegisterStackIsNotAvailable(): void
+    {
+        $subject = $this->createSubject(14, $this->request->withoutAttribute('frontend.register.stack'));
 
         $subject->callUpdateRegister('FOO', 42);
 
@@ -102,13 +129,15 @@ final class CanUpdateRegisterTest extends TestingFramework\Core\Functional\Funct
         self::assertNull($this->readRegister('FOO'));
     }
 
-    private function createSubject(int $majorVersion): Tests\Functional\Fixtures\Classes\DummyRegisterContentObject
-    {
+    private function createSubject(
+        int $majorVersion,
+        ?Message\ServerRequestInterface $request = null,
+    ): Tests\Functional\Fixtures\Classes\DummyRegisterContentObject {
         $typo3Version = self::createStub(Core\Information\Typo3Version::class);
         $typo3Version->method('getMajorVersion')->willReturn($majorVersion);
 
         $subject = new Tests\Functional\Fixtures\Classes\DummyRegisterContentObject($typo3Version);
-        $subject->setRequest($this->request);
+        $subject->setRequest($request ?? $this->request);
         $subject->setContentObjectRenderer($this->cObj);
 
         return $subject;

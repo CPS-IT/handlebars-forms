@@ -19,6 +19,7 @@ namespace CPSIT\Typo3HandlebarsForms\Tests\Functional\ContentObject;
 
 use CPSIT\Typo3HandlebarsForms as Src;
 use CPSIT\Typo3HandlebarsForms\Tests;
+use EliasHaeussler\PHPUnitAttributes;
 use PHPUnit\Framework;
 use Psr\Http\Message;
 use TYPO3\CMS\Extbase;
@@ -68,7 +69,7 @@ final class RenderablesContentObjectTest extends TestingFramework\Core\Functiona
         $request = $this->buildExtbaseRequest();
         $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
 
-        $GLOBALS['TSFE'] = new Frontend\Controller\TypoScriptFrontendController();
+        $this->initializeTypoScriptFrontendController();
 
         /** @var Form\Domain\Model\FormDefinition $formDefinition */
         $formDefinition = $this->get(Form\Domain\Factory\ArrayFormFactory::class)->build(
@@ -334,7 +335,7 @@ final class RenderablesContentObjectTest extends TestingFramework\Core\Functiona
     }
 
     #[Framework\Attributes\Test]
-    public function renderProvidesRegistersDuringProcessingAndResetsThemAfterwards(): void
+    public function renderProvidesRegistersDuringProcessing(): void
     {
         $this->pushContext($this->formRuntime);
 
@@ -343,8 +344,31 @@ final class RenderablesContentObjectTest extends TestingFramework\Core\Functiona
         // Disabled elements are skipped, but still counted
         self::assertSame([4, 0], array_slice($this->processorCalls[0], 3));
         self::assertSame([4, 1], array_slice($this->processorCalls[1], 3));
+    }
+
+    #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~13.4.0')]
+    public function renderResetsRegistersAfterProcessingOnTypo3V13(): void
+    {
+        $this->pushContext($this->formRuntime);
+
+        $this->subject->render(['default.' => []]);
+
         self::assertNull($this->readRegister('HBS_RENDERABLES_COUNT'));
         self::assertNull($this->readRegister('HBS_RENDERABLES_CURRENT'));
+    }
+
+    #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~14.3.0')]
+    public function renderKeepsLastRegisterValuesAfterProcessingOnTypo3V14(): void
+    {
+        $this->pushContext($this->formRuntime);
+
+        $this->subject->render(['default.' => []]);
+
+        // Register values cannot be removed from the register stack in TYPO3 v14
+        self::assertSame(4, $this->readRegister('HBS_RENDERABLES_COUNT'));
+        self::assertSame(1, $this->readRegister('HBS_RENDERABLES_CURRENT'));
     }
 
     private function getElement(string $identifier): Form\Domain\Model\FormElements\FormElementInterface
