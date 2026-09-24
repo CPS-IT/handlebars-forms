@@ -304,7 +304,7 @@ final class ValidationResultsContentObject extends AbstractHandlebarsFormsConten
      */
     private function processResult(Extbase\Error\Result $result, array $configuration): mixed
     {
-        $propertyPath = $configuration['propertyPath'];
+        $propertyPath = $configuration['propertyPath'] ?? null;
 
         if (!is_string($propertyPath)) {
             return $result;
