@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="EXT:handlebars_forms/Tests/Functional/Fixtures/Resources/Private/Language/locallang.xlf" date="2026-09-24T12:00:00Z" product-name="handlebars_forms">
+        <header/>
+        <body>
+            <trans-unit id="test-form.element.name.properties.placeholder">
+                <source>Translated placeholder</source>
+            </trans-unit>
+            <trans-unit id="test-form.element.page-1.renderingOptions.nextButtonLabel">
+                <source>Translated next button label</source>
+            </trans-unit>
+            <trans-unit id="test-form.validation.error.name.1221560718">
+                <source>Please enter your name.</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

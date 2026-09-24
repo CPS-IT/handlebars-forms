@@ -117,3 +117,504 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: ../../Classes/Domain/ViewModel/Builder/FileUploadViewModelBuilder.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/ChildrenContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/ChildrenContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/RenderablesContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/RenderablesContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/ValidationResultsContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/ValidationResultsContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Access to property $register of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: property.deprecatedClass
+			count: 2
+			path: ../../Tests/Functional/Fixtures/Classes/DummyRegisterContentObject.php
+
+		-
+			rawMessage: 'Call to method current() on an unknown class TYPO3\CMS\Frontend\ContentObject\RegisterStack.'
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Fixtures/Classes/DummyRegisterContentObject.php
+
+		-
+			rawMessage: 'Cannot call method set() on mixed.'
+			identifier: method.nonObject
+			count: 1
+			path: ../../Tests/Functional/Fixtures/Classes/DummyRegisterContentObject.php
+
+		-
+			rawMessage: Class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Fixtures/Classes/DummyRegisterContentObject.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/CanUpdateRegisterTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/CanUpdateRegisterTest.php
+
+		-
+			rawMessage: 'Access to property $formRuntime on an unknown class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent.'
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: 'Access to property $renderable on an unknown class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent.'
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: Class TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent not found.
+			identifier: class.notFound
+			count: 2
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: 'Parameter $event of anonymous function has invalid type TYPO3\CMS\Form\Event\BeforeRenderableIsRenderedEvent.'
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/AbstractHandlebarsFormsContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/AbstractHandlebarsFormsContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/AbstractHandlebarsFormsContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/CanUpdateRegisterTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/ChildrenContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/Context/ContextAwareContentObjectFactoryTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/Context/ContextAwareContentObjectFactoryTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/Context/ContextAwareContentObjectFactoryTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/FormValueContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/FormValueContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/FormValueContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/NavigationContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/NavigationContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/NavigationContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/PassthroughContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/PassthroughContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/PassthroughContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/RenderablesContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/TranslateErrorContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/TranslateErrorContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/TranslateErrorContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/TranslatePropertyContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/TranslatePropertyContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/ContentObject/TranslatePropertyContentObjectTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/ContentObject/ValidationResultsContentObjectTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/DataProcessing/ProcessFormProcessorTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/DataProcessing/ProcessFormProcessorTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/DataProcessing/ProcessFormProcessorTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/FluidRenderableRendererTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/FluidRenderableRendererTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/FluidRenderableRendererTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Domain/Renderer/HandlebarsFormRendererTest.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Domain/ViewModel/Builder/ViewModelBuilderTestCase.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Domain/ViewModel/Builder/ViewModelBuilderTestCase.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Domain/ViewModel/Builder/ViewModelBuilderTestCase.php
+
+		-
+			rawMessage: '''
+				Call to method __construct() of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: method.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Fluid/ViewHelperInvokerTest.php
+
+		-
+			rawMessage: Instantiated class TYPO3\CMS\Frontend\ContentObject\RegisterStack not found.
+			identifier: class.notFound
+			count: 1
+			path: ../../Tests/Functional/Fluid/ViewHelperInvokerTest.php
+
+		-
+			rawMessage: '''
+				Instantiation of deprecated class TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController:
+				since TYPO3 v13, will vanish during v14 development. There are some
+				            remaining internal usages that can be adapted without further .rst
+				            files. The class should vanish together with $GLOBALS['TSFE'] in v14.
+			'''
+			identifier: new.deprecatedClass
+			count: 1
+			path: ../../Tests/Functional/Fluid/ViewHelperInvokerTest.php
