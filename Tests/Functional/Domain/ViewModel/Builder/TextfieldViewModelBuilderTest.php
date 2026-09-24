@@ -63,6 +63,32 @@ final class TextfieldViewModelBuilderTest extends ViewModelBuilderTestCase
     }
 
     /**
+     * @return \Generator<string, array{string}>
+     */
+    public static function supportsReturnsTrueForSupportedTypeDataProvider(): \Generator
+    {
+        yield 'Date' => ['date'];
+        yield 'Email' => ['email'];
+        yield 'Number' => ['number'];
+        yield 'Telephone' => ['telephone'];
+        yield 'Text' => ['text'];
+        yield 'Url' => ['url'];
+    }
+
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('supportsReturnsTrueForSupportedTypeDataProvider')]
+    public function supportsReturnsTrueForSupportedType(string $identifier): void
+    {
+        self::assertTrue($this->subject->supports($this->getElement($identifier, Form\Domain\Model\FormElements\FormElementInterface::class)));
+    }
+
+    #[Framework\Attributes\Test]
+    public function supportsReturnsFalseForUnsupportedType(): void
+    {
+        self::assertFalse($this->subject->supports($this->getElement('message')));
+    }
+
+    /**
      * @return \Generator<string, array{string, string}>
      */
     public static function buildReturnsViewModelWithRenderedTextfieldOfMatchingTypeDataProvider(): \Generator
@@ -73,19 +99,6 @@ final class TextfieldViewModelBuilderTest extends ViewModelBuilderTestCase
         yield 'Telephone' => ['telephone', 'tel'];
         yield 'Text' => ['text', 'text'];
         yield 'Url' => ['url', 'url'];
-    }
-
-    #[Framework\Attributes\Test]
-    #[Framework\Attributes\DataProvider('buildReturnsViewModelWithRenderedTextfieldOfMatchingTypeDataProvider')]
-    public function supportsReturnsTrueForSupportedType(string $identifier): void
-    {
-        self::assertTrue($this->subject->supports($this->getElement($identifier, Form\Domain\Model\FormElements\FormElementInterface::class)));
-    }
-
-    #[Framework\Attributes\Test]
-    public function supportsReturnsFalseForUnsupportedType(): void
-    {
-        self::assertFalse($this->subject->supports($this->getElement('message')));
     }
 
     #[Framework\Attributes\Test]
