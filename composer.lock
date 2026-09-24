@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c021ab7ccd2f7c659bc838083d347963",
+    "content-hash": "6d1575d90f8bd6c236a333d8c7c9d1b5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -7173,6 +7173,62 @@
                 "source": "https://github.com/eliashaeussler/task-runner/tree/1.2.3"
             },
             "time": "2026-06-18T18:59:00+00:00"
+        },
+        {
+            "name": "eliashaeussler/transient-logger",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eliashaeussler/transient-logger.git",
+                "reference": "703ef63159f503d832b2dc593b8c276310547056"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eliashaeussler/transient-logger/zipball/703ef63159f503d832b2dc593b8c276310547056",
+                "reference": "703ef63159f503d832b2dc593b8c276310547056",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "psr/log": "^1.0 || ^2.0 || ^3.0"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0 || 2.0 || 3.0"
+            },
+            "require-dev": {
+                "armin/editorconfig-cli": "^2.0",
+                "eliashaeussler/php-cs-fixer-config": "^2.0",
+                "eliashaeussler/phpstan-config": "^2.4",
+                "eliashaeussler/rector-config": "^3.0",
+                "ergebnis/composer-normalize": "^2.39",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^11.0 || ^12.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EliasHaeussler\\TransientLogger\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Elias Häußler",
+                    "email": "elias@haeussler.dev",
+                    "homepage": "https://haeussler.dev",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "PSR-3 compliant logger to store logs in memory, especially useful for testing",
+            "support": {
+                "issues": "https://github.com/eliashaeussler/transient-logger/issues",
+                "source": "https://github.com/eliashaeussler/transient-logger/tree/2.0.0"
+            },
+            "time": "2025-11-18T15:08:14+00:00"
         },
         {
             "name": "eliashaeussler/version-bumper",
