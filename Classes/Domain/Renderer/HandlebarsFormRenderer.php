@@ -22,6 +22,7 @@ use Psr\EventDispatcher;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Form;
 use TYPO3\CMS\Frontend;
 
@@ -99,7 +100,7 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
             // Unique form identifier
             $this->formRuntime->getIdentifier(),
             // Original form identifier
-            $this->formRuntime->getRenderingOptions()['_originalIdentifier'],
+            $this->formRuntime->getRenderingOptions()['_originalIdentifier'] ?? null,
             // Form persistence identifier
             $this->formRuntime->getFormDefinition()->getPersistenceIdentifier(),
         ];
@@ -146,7 +147,17 @@ final class HandlebarsFormRenderer extends Form\Domain\Renderer\AbstractElementR
             request: $this->formRuntime->getRequest(),
         );
 
-        return $this->viewFactory->create($viewFactoryData);
+        $view = $this->viewFactory->create($viewFactoryData);
+
+        // Provide form runtime to form view helpers (e.g. <formvh:renderRenderable>), same as in EXT:form's FluidFormRenderer
+        if ($view instanceof Fluid\View\FluidViewAdapter) {
+            $view->getRenderingContext()
+                ->getViewHelperVariableContainer()
+                ->addOrUpdate(Form\ViewHelpers\RenderRenderableViewHelper::class, 'formRuntime', $this->formRuntime)
+            ;
+        }
+
+        return $view;
     }
 
     private function disableCacheOnSubmit(): void
