@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3HandlebarsForms\ContentObject;
+namespace CPSIT\Typo3HandlebarsForms\ContentObject\Context;
 
 use Psr\Http\Message;
 use Symfony\Component\DependencyInjection;
@@ -35,7 +35,7 @@ final class ContextAwareContentObjectFactory extends Frontend\ContentObject\Cont
     public function __construct(
         #[DependencyInjection\Attribute\AutowireDecorated]
         private readonly Frontend\ContentObject\ContentObjectFactory $inner,
-        private readonly Context\ValueCollector $valueCollector,
+        private readonly ValueCollector $valueCollector,
     ) {
         // Missing constructor call is intended.
     }
@@ -51,35 +51,6 @@ final class ContextAwareContentObjectFactory extends Frontend\ContentObject\Cont
             return null;
         }
 
-        return new class ($contentObject, $this->valueCollector) extends Frontend\ContentObject\AbstractContentObject {
-            public function __construct(
-                private readonly Frontend\ContentObject\AbstractContentObject $contentObject,
-                private readonly Context\ValueCollector $valueCollector,
-            ) {}
-
-            /**
-             * @param array<string|int, mixed> $conf
-             */
-            public function render($conf = [])
-            {
-                $value = $this->contentObject->render($conf);
-
-                if (!is_string($value)) {
-                    return $value;
-                }
-
-                if (!$this->valueCollector->has($value)) {
-                    return $value;
-                }
-
-                $resolvedValue = $this->valueCollector->load($value);
-
-                if (!is_scalar($resolvedValue) && $resolvedValue !== null) {
-                    return $value;
-                }
-
-                return (string)$resolvedValue;
-            }
-        };
+        return new ContextAwareContentObject($contentObject, $this->valueCollector);
     }
 }
