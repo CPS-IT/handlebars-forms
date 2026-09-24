@@ -49,11 +49,14 @@ trait FrontendRequestTrait
                 new DependencyInjection\Container(),
                 new Core\TypoScript\Tokenizer\LossyTokenizer(),
             );
-            $rootNode = $factory->parseFromString(
-                'plugin.tx_form.settings.yamlConfigurations.10 = EXT:form/Configuration/Yaml/FormSetup.yaml'
-                . PHP_EOL . $typoScriptSetup,
-                $astBuilder,
-            );
+            // Form setup must be registered via TypoScript in TYPO3 v13 (it's auto-discovered since TYPO3 v14.2)
+            // @todo Remove once support for TYPO3 v13 is dropped
+            if ((new Core\Information\Typo3Version())->getMajorVersion() < 14) {
+                $typoScriptSetup = 'plugin.tx_form.settings.yamlConfigurations.10 = EXT:form/Configuration/Yaml/FormSetup.yaml'
+                    . PHP_EOL . $typoScriptSetup;
+            }
+
+            $rootNode = $factory->parseFromString($typoScriptSetup, $astBuilder);
 
             $frontendTypoScript = new Core\TypoScript\FrontendTypoScript($rootNode, [], [], []);
             $frontendTypoScript->setSetupTree($rootNode);
