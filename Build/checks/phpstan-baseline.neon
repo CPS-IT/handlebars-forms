@@ -30,16 +30,16 @@ parameters:
 			path: ../../Classes/ContentObject/ChildrenContentObject.php
 
 		-
-			rawMessage: 'CPSIT\Typo3HandlebarsForms\ContentObject\ContextAwareContentObjectFactory::__construct() does not call parent constructor from TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory.'
+			rawMessage: 'CPSIT\Typo3HandlebarsForms\ContentObject\Context\ContextAwareContentObjectFactory::__construct() does not call parent constructor from TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory.'
 			identifier: constructor.missingParentCall
 			count: 1
-			path: ../../Classes/ContentObject/ContextAwareContentObjectFactory.php
+			path: ../../Classes/ContentObject/Context/ContextAwareContentObjectFactory.php
 
 		-
 			rawMessage: 'Call to function is_string() with string will always evaluate to true.'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: ../../Classes/ContentObject/ContextAwareContentObjectFactory.php
+			path: ../../Classes/ContentObject/Context/ContextAwareContentObject.php
 
 		-
 			rawMessage: '''

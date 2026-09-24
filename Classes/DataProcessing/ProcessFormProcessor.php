@@ -169,6 +169,11 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             $valueConfiguration = $configuration[$keyWithDot] ?? [];
             $contentObject = $cObj->getContentObject($value);
 
+            // Unwrap context-aware content object to avoid conversion of collected scalar values to strings
+            if ($contentObject instanceof ContentObject\Context\ContextAwareContentObject) {
+                $contentObject = $contentObject->contentObject;
+            }
+
             if (!is_array($valueConfiguration)) {
                 $valueConfiguration = [];
             }

@@ -85,7 +85,7 @@ All `HBS_*` content objects extend `AbstractHandlebarsFormsContentObject` and ar
 
 `ValueCollector` lets content objects return non-string values (arrays, objects) by storing them under a unique placeholder string key; `ProcessFormProcessor` replaces these placeholders with the real values after the TypoScript tree is fully resolved.
 
-`ContextAwareContentObjectFactory` (`Classes/ContentObject/`) is a decorator (`#[AsDecorator]`) around TYPO3's `ContentObjectFactory`. It wraps every resolved content object so that when it returns a scalar string that happens to be a `ValueCollector` placeholder, the decorator transparently loads the real value. This allows `HBS_*` objects nested inside other content objects to propagate non-string values upward.
+`ContextAwareContentObjectFactory` (`Classes/ContentObject/Context/`) is a decorator (`#[AsDecorator]`) around TYPO3's `ContentObjectFactory`. It wraps every resolved content object so that when it returns a scalar string that happens to be a `ValueCollector` placeholder, the decorator transparently loads the real value. This allows `HBS_*` objects nested inside other content objects to propagate non-string values upward. The wrapper (`ContextAwareContentObject`) casts collected scalar values to strings, so `ProcessFormProcessor` unwraps it for top-level content objects — top-level `HBS_*` scalars (e.g. `HAS_ERRORS` booleans) keep their type, only nested ones are stringified.
 
 ### View models (`Classes/Domain/ViewModel/`)
 
