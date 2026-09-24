@@ -163,7 +163,15 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 }
             }
 
+            // Arrays are already processed above
+            if (is_array($value)) {
+                continue;
+            }
+
+            // Pass through already resolved non-string values (e.g. when re-processing
+            // resolved values within HBS_VALIDATION_RESULTS with EACH_RENDERABLE instruction)
             if (!is_string($value)) {
+                $processedData[$keyWithoutDot] = $value;
                 continue;
             }
 
