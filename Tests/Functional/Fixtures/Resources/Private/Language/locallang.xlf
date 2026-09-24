@@ -9,6 +9,9 @@
             <trans-unit id="test-form.element.page-1.renderingOptions.nextButtonLabel">
                 <source>Translated next button label</source>
             </trans-unit>
+            <trans-unit id="test-form.validation.error.name.1221560718">
+                <source>Please enter your name.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
