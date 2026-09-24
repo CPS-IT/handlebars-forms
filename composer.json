@@ -23,7 +23,7 @@
 		"ext-dom": "*",
 		"ext-json": "*",
 		"ext-libxml": "*",
-		"cpsit/typo3-handlebars": "^1.0@alpha",
+		"cpsit/typo3-handlebars": "^1.0.0-alpha.13",
 		"devtheorem/php-handlebars": "^2.0",
 		"psr/event-dispatcher": "^1.0",
 		"psr/http-message": "^1.0 || ^2.0",
