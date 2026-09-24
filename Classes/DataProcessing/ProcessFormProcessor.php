@@ -116,7 +116,8 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
         // Replace content placeholder with final rendered form content
         if ($formContent !== null) {
             array_walk_recursive($processedData, static function (&$value) use ($formContent) {
-                if (Utility\StringUtility::isStringable($value)) {
+                // Only strings may contain the content placeholder, other scalars must not be converted to strings
+                if (is_string($value) || $value instanceof \Stringable) {
                     $value = Utility\StringUtility::processStringable(
                         $value,
                         static fn(string $string) => str_replace(self::CONTENT_PLACEHOLDER, $formContent, $string),
