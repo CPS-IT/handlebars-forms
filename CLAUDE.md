@@ -1,16 +1,23 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository.
 
 ## Overview
 
-`handlebars_forms` is a TYPO3 CMS extension (PHP, extension key `handlebars_forms`) that bridges EXT:form's form rendering pipeline with Handlebars templates. It depends on [`cpsit/typo3-handlebars`](https://github.com/CPS-IT/handlebars) for the Handlebars rendering layer.
+`handlebars_forms` is a TYPO3 CMS extension (PHP, extension key
+`handlebars_forms`) that bridges EXT:form's form rendering pipeline with
+Handlebars templates. It depends on
+[`cpsit/typo3-handlebars`](https://github.com/CPS-IT/handlebars) for the
+Handlebars rendering layer.
 
-Build artifacts go to `.Build/` (Composer `vendor-dir` and `bin-dir`). The local development example extension lives in `Build/Packages/hbs-forms-example/`.
+Build artifacts go to `.Build/` (Composer `vendor-dir` and `bin-dir`). The local
+development example extension lives in `Build/Packages/hbs-forms-example/`.
 
 ## Commands
 
-All commands run via Composer scripts from the project root. Dependencies must be installed first (`composer install`).
+All commands run via Composer scripts from the project root. Dependencies must
+be installed first (`composer install`).
 
 **Tests**
 ```bash
@@ -56,13 +63,22 @@ composer docs:open     # open Build/docs/result/Index.html
 
 The extension hooks into EXT:form's rendering at two points:
 
-1. **`HandlebarsFormRenderer`** (`Classes/Domain/Renderer/`) — registered as EXT:form renderer. Resolves a `HandlebarsView` from TypoScript configuration under `plugin.tx_form.handlebarsForms.<formIdentifier|default>`, falls back to a standard Fluid view if no Handlebars configuration is found.
+1.  **`HandlebarsFormRenderer`** (`Classes/Domain/Renderer/`) — registered as
+   EXT:form renderer. Resolves a `HandlebarsView` from TypoScript configuration
+   under `plugin.tx_form.handlebarsForms.<formIdentifier|default>`, falls back
+   to a standard Fluid view if no Handlebars configuration is found.
 
-2. **`ProcessFormProcessor`** (`Classes/DataProcessing/`) — a TYPO3 data processor (`identifier: process-form`). The Handlebars template calls this processor which walks the EXT:form renderable tree and resolves each property through custom `HBS_*` content objects.
+2.  **`ProcessFormProcessor`** (`Classes/DataProcessing/`) — a TYPO3 data
+   processor (`identifier: process-form`). The Handlebars template calls this
+   processor which walks the EXT:form renderable tree and resolves each property
+   through custom `HBS_*` content objects.
 
 ### Custom content objects (`Classes/ContentObject/`)
 
-All `HBS_*` content objects extend `AbstractHandlebarsFormsContentObject` and are only valid inside a `process-form` data processor context. They read context from `ContextStack` and write resolved (non-string) values back via `ValueCollector` using a string placeholder key.
+All `HBS_*` content objects extend `AbstractHandlebarsFormsContentObject` and
+are only valid inside a `process-form` data processor context. They read context
+from `ContextStack` and write resolved (non-string) values back via
+`ValueCollector` using a string placeholder key.
 
 | Content object | Identifier | Purpose |
 |---|---|---|
@@ -81,29 +97,69 @@ All `HBS_*` content objects extend `AbstractHandlebarsFormsContentObject` and ar
 
 ### Context system (`Classes/ContentObject/Context/`)
 
-`ContextStack` (shared singleton) holds a stack of `ValueResolutionContext` objects. A context is pushed before each `HBS_*` content object render call and popped immediately after. Each `ValueResolutionContext` carries the current `renderable`, `viewModel`, `renderingContext`, and `formRuntime`, plus a closure back into `ProcessFormProcessor::processRenderable()` so content objects can recurse.
+`ContextStack` (shared singleton) holds a stack of `ValueResolutionContext`
+objects. A context is pushed before each `HBS_*` content object render call and
+popped immediately after. Each `ValueResolutionContext` carries the current
+`renderable`, `viewModel`, `renderingContext`, and `formRuntime`, plus a closure
+back into `ProcessFormProcessor::processRenderable()` so content objects can
+recurse.
 
-`ValueCollector` lets content objects return non-string values (arrays, objects) by storing them under a unique placeholder string key; `ProcessFormProcessor` replaces these placeholders with the real values after the TypoScript tree is fully resolved.
+`ValueCollector` lets content objects return non-string values (arrays, objects)
+by storing them under a unique placeholder string key; `ProcessFormProcessor`
+replaces these placeholders with the real values after the TypoScript tree is
+fully resolved.
 
-`ContextAwareContentObjectFactory` (`Classes/ContentObject/Context/`) is a decorator (`#[AsDecorator]`) around TYPO3's `ContentObjectFactory`. It wraps every resolved content object so that when it returns a scalar string that happens to be a `ValueCollector` placeholder, the decorator transparently loads the real value. This allows `HBS_*` objects nested inside other content objects to propagate non-string values upward. The wrapper (`ContextAwareContentObject`) casts collected scalar values to strings, so `ProcessFormProcessor` unwraps it for top-level content objects — top-level `HBS_*` scalars (e.g. `HAS_ERRORS` booleans) keep their type, only nested ones are stringified.
+`ContextAwareContentObjectFactory` (`Classes/ContentObject/Context/`) is a
+decorator (`#[AsDecorator]`) around TYPO3's `ContentObjectFactory`. It wraps
+every resolved content object so that when it returns a scalar string that
+happens to be a `ValueCollector` placeholder, the decorator transparently loads
+the real value. This allows `HBS_*` objects nested inside other content objects
+to propagate non-string values upward. The wrapper (`ContextAwareContentObject`)
+casts collected scalar values to strings, so `ProcessFormProcessor` unwraps it
+for top-level content objects — top-level `HBS_*` scalars (e.g. `HAS_ERRORS`
+booleans) keep their type, only nested ones are stringified.
 
 ### View models (`Classes/Domain/ViewModel/`)
 
-Interface hierarchy: `ViewModel` (base — extends `ArrayAccess`, declares `getRenderable()`) → `CompositeViewModel` (adds `getChildren(): array` for renderables that have child renderables).
+Interface hierarchy: `ViewModel` (base — extends `ArrayAccess`, declares
+`getRenderable()`) → `CompositeViewModel` (adds `getChildren(): array` for
+renderables that have child renderables).
 
-Concrete models: `SimpleViewModel`, `FormFieldViewModel`, `FormValueViewModel`, `TagAwareViewModel`, `ViewHelperContainedViewModel`, `FileResourceViewModel`, `StandaloneTagViewModel`, `ViewModelCollection`.
+Concrete models: `SimpleViewModel`, `FormFieldViewModel`, `FormValueViewModel`,
+`TagAwareViewModel`, `ViewHelperContainedViewModel`, `FileResourceViewModel`,
+`StandaloneTagViewModel`, `ViewModelCollection`.
 
-`ViewModelBuilder` (`Classes/Domain/ViewModel/Builder/`, service tag `handlebars_forms.view_model_builder`) is the extension point for mapping a renderable type to a custom view model. `AbstractViewModelBuilder` provides a base implementation. Built-in builders for all default EXT:form elements: `CheckboxViewModelBuilder`, `ContentElementViewModelBuilder`, `CountrySelectViewModelBuilder`, `FieldsetViewModelBuilder`, `FileUploadViewModelBuilder`, `FormViewModelBuilder`, `HiddenViewModelBuilder`, `MultiCheckboxViewModelBuilder`, `PasswordViewModelBuilder`, `RadioViewModelBuilder`, `SelectViewModelBuilder`, `StaticTextViewModelBuilder`, `TextareaViewModelBuilder`, `TextfieldViewModelBuilder`. Custom builders must implement `ViewModelBuilder` — the interface's `#[AutoconfigureTag]` registers them automatically via Symfony DI.
+`ViewModelBuilder` (`Classes/Domain/ViewModel/Builder/`, service tag
+`handlebars_forms.view_model_builder`) is the extension point for mapping a
+renderable type to a custom view model. `AbstractViewModelBuilder` provides a
+base implementation. Built-in builders for all default EXT:form elements:
+`CheckboxViewModelBuilder`, `ContentElementViewModelBuilder`,
+`CountrySelectViewModelBuilder`, `FieldsetViewModelBuilder`,
+`FileUploadViewModelBuilder`, `FormViewModelBuilder`, `HiddenViewModelBuilder`,
+`MultiCheckboxViewModelBuilder`, `PasswordViewModelBuilder`,
+`RadioViewModelBuilder`, `SelectViewModelBuilder`, `StaticTextViewModelBuilder`,
+`TextareaViewModelBuilder`, `TextfieldViewModelBuilder`. Custom builders must
+implement `ViewModelBuilder` — the interface's `#[AutoconfigureTag]` registers
+them automatically via Symfony DI.
 
 ### Fluid bridge (`Classes/Fluid/`)
 
-`ViewHelperInvoker` programmatically invokes Fluid view helpers outside a normal Fluid rendering context — used by `HBS_PASSTHROUGH` and view model builders that need to call EXT:form view helpers (e.g. `TranslateElementPropertyViewHelper`) to resolve labels and HTML attributes. It returns a `ViewHelperInvocationResult` holding the `viewHelper`, `renderingContext`, `content`, and a `TagBuilder`; the result also exposes `extractChildNodes(tagName)` which parses the rendered HTML and returns matching child elements as `TagBuilder` instances.
+`ViewHelperInvoker` programmatically invokes Fluid view helpers outside a normal
+Fluid rendering context — used by `HBS_PASSTHROUGH` and view model builders that
+need to call EXT:form view helpers (e.g. `TranslateElementPropertyViewHelper`)
+to resolve labels and HTML attributes. It returns a `ViewHelperInvocationResult`
+holding the `viewHelper`, `renderingContext`, `content`, and a `TagBuilder`; the
+result also exposes `extractChildNodes(tagName)` which parses the rendered HTML
+and returns matching child elements as `TagBuilder` instances.
 
-`FluidRenderableRenderer` wraps a Fluid template render in a simulated `<f:form>` context so EXT:form's Fluid partials work correctly when called from Handlebars flow.
+`FluidRenderableRenderer` wraps a Fluid template render in a simulated
+`<f:form>` context so EXT:form's Fluid partials work correctly when called from
+Handlebars flow.
 
 ### TypoScript configuration
 
-The extension ships a TYPO3 Site Set at `Configuration/Sets/Form/`. The key configuration namespace is:
+The extension ships a TYPO3 Site Set at `Configuration/Sets/Form/`. The key
+configuration namespace is:
 
 ```
 plugin.tx_form.handlebarsForms {
@@ -112,11 +168,17 @@ plugin.tx_form.handlebarsForms {
 }
 ```
 
-Each section can have a `dataProcessing.10 = process-form` block that maps renderable types to `HBS_*` content objects. See `Build/Packages/hbs-forms-example/Configuration/Sets/Example/TypoScript/form.typoscript` for a complete real-world example.
+Each section can have a `dataProcessing.10 = process-form` block that maps
+renderable types to `HBS_*` content objects. See
+`Build/Packages/hbs-forms-example/Configuration/Sets/Example/TypoScript/form.typoscript`
+for a complete real-world example.
 
 ## Coding conventions
 
 - PHP 8.2+, strict types everywhere
-- Symfony DI attributes (`#[Autoconfigure]`, `#[AutoconfigureTag]`, `#[AutowireIterator]`) are used instead of YAML service configuration for individual classes
-- `readonly` classes/properties preferred for value objects and services that don't mutate state
+-  Symfony DI attributes (`#[Autoconfigure]`, `#[AutoconfigureTag]`,
+  `#[AutowireIterator]`) are used instead of YAML service configuration for
+  individual classes
+-  `readonly` classes/properties preferred for value objects and services that
+  don't mutate state
 - PHPStan at level max; baseline is `phpstan-baseline.neon`
