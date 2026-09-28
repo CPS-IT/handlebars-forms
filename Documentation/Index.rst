@@ -71,18 +71,19 @@ custom form elements can be easily configured using dedicated interface implemen
         ..  card-footer:: :ref:`Learn how to use this extension <usage>`
             :button-style: btn btn-secondary stretched-link
 
-    ..  card::  Developer corner
-
-        A quick overview about all relevant classes provided by this extension.
-
-        ..  card-footer:: :ref:`Deep dive into classes & concepts <developer-corner>`
-            :button-style: btn btn-secondary stretched-link
-
     ..  card::  Migration
 
         Required migration steps when upgrading the extension to a new major version.
 
         ..  card-footer:: :ref:`View upgrade guide <migration>`
+            :button-style: btn btn-secondary stretched-link
+
+    ..  card::  Developer corner
+
+        Advanced extension points for custom view models and content objects. Most
+        integrators won't need this.
+
+        ..  card-footer:: :ref:`Deep dive into classes & concepts <developer-corner>`
             :button-style: btn btn-secondary stretched-link
 
 ..  toctree::
@@ -92,8 +93,8 @@ custom form elements can be easily configured using dedicated interface implemen
     Installation/Index
     Configuration/Index
     Usage/Index
-    DeveloperCorner/Index
     Migration/Index
+    DeveloperCorner/Index
     Contributing/Index
 
 ..  toctree::
