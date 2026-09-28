@@ -1,10 +1,14 @@
 ..  include:: /Includes.rst.txt
 
-..  _process-form-processor:
+..  _data-processor:
 
-====================================
-:typoscript:`process-form` processor
-====================================
+==============
+Data processor
+==============
+
+..  note::
+    This is the full reference for the data processor. If you just want to get a form
+    rendering, start with :ref:`quick-start` instead.
 
 The :typoscript:`process-form` data processor is the core of the extension. It resolves
 each key in its TypoScript configuration through content objects in the context of the

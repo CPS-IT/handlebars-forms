@@ -25,5 +25,5 @@ The extension works in two phases:
     :maxdepth: 2
 
     QuickStart
-    ProcessFormProcessor
-    ContentObjects
+    DataProcessor
+    ContentObjects/Index

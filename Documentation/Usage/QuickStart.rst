@@ -130,16 +130,17 @@ This page walks through the minimum steps required to render a form with Handleb
 
     ..  tip::
 
-        The :typoscript:`hiddenFields` value is an HTML string (e.g. CSRF token, page
-        index). It is emitted by EXT:form's :fluid:`<f:form>` view helper and must be output
-        without escaping. In Handlebars this is done automatically when the value is a
-        :php:`SafeString` – which is exactly what :typoscript:`HBS_TAG` (used without
-        :typoscript:`attribute`) returns when wrapping tag content.
+        The :typoscript:`hiddenFields` value is an HTML string (e.g. page index,
+        :html:`trustedProperties`, object identity). It is emitted by EXT:form's
+        :fluid:`<f:form>` view helper and must be output without escaping. In Handlebars
+        this is done automatically when the value is a :php:`SafeString` – which is
+        exactly what :typoscript:`HBS_TAG` (used without :typoscript:`attribute`)
+        returns when wrapping tag content.
 
 ..  seealso::
 
-    -   :ref:`process-form-processor` – full reference for the data processor, including
-        key resolution rules, conditions and TypoScript references
+    -   :ref:`data-processor` – full reference for the data processor, including key
+        resolution rules, conditions and TypoScript references
     -   :ref:`content-objects` – reference for all available :typoscript:`HBS_*` content
         objects with their configuration options
 

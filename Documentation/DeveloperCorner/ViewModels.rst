@@ -15,10 +15,67 @@ based on specific aspects outlined below.
     You can also create custom view model builders by implementing the
     :php:`CPSIT\Typo3HandlebarsForms\Domain\ViewModel\Builder\ViewModelBuilder` interface.
 
-The following renderables are currently supported by this extension:
+Where a renderable can resolve to more than one view model, each possible outcome is listed as
+its own sub-section below, named after the condition under which it applies.
+
+..  seealso::
+    :ref:`Choosing a view model type <custom-vmb-view-model-types>` explains what each
+    view model type below is for and when to use it in a custom builder.
+
+The following renderables are currently supported by this extension. The table below
+gives a quick overview; each renderable is covered in detail further down, including
+the exact conditions for each outcome.
 
 ..  contents::
     :local:
+
+..  _view-models-overview:
+
+Overview
+========
+
+..  list-table::
+    :header-rows: 1
+    :widths: 30 70
+
+    *   -   Renderable
+        -   View model
+    *   -   :php:`AdvancedPassword`
+        -   :php:`ViewModelCollection`
+    *   -   :php:`Checkbox`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`ContentElement`
+        -   :php:`ViewHelperContainedViewModel` (valid UID) or :php:`SimpleViewModel`
+            (invalid UID)
+    *   -   :php:`CountrySelect`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`Fieldset`
+        -   :php:`StandaloneTagViewModel`
+    *   -   :php:`FileUpload`, :php:`ImageUpload`
+        -   :php:`ViewModelCollection` (resolved) or :php:`ViewHelperContainedViewModel`
+            (unresolved)
+    *   -   :php:`Form`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`Hidden`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`MultiCheckbox`
+        -   :php:`FormFieldViewModel` or :php:`ViewHelperContainedViewModel` (per option)
+    *   -   :php:`Password`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`RadioButton`
+        -   :php:`FormFieldViewModel` or :php:`ViewHelperContainedViewModel` (per option)
+    *   -   :php:`SingleSelect`, :php:`MultiSelect`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`StaticText`
+        -   :php:`FormFieldViewModel` (label available) or :php:`StandaloneTagViewModel`
+            (no label)
+    *   -   :php:`Textarea`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`Text`, :php:`Date`, :php:`Email`, :php:`Number`, :php:`Telephone`,
+            :php:`Url`
+        -   :php:`ViewHelperContainedViewModel`
+    *   -   :php:`DatePicker`
+        -   *not supported*
 
 ..  _supported-renderables:
 
@@ -30,175 +87,187 @@ Supported renderables
 :php:`AdvancedPassword`
 -----------------------
 
-\(a) :php:`ViewModelCollection`
-    Contains view models, reflecting both password fields:
+Represented by :php:`ViewModelCollection`, containing two child view models:
 
-    +---------------------+------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
-    | **Name**            | **Type**                                 | **Description**                                                                                                                    |
-    +---------------------+------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
-    | `passwordField`     | :php:`ViewHelperContainedViewModel`      | Contains result from `<formvh:form.password>` view helper invocation for password field.                                           |
-    +---------------------+------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
-    | `confirmationField` | \(a) :php:`ViewHelperContainedViewModel` | Result from `<formvh:form.password>` view helper invocation for password confirmation field.                                       |
-    +                     +------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
-    |                     | \(b) :php:`FormFieldViewModel`           | Combination of confirmation label and result from `<formvh:form.password>` view helper invocation for password confirmation field. |
-    +---------------------+------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------+
+`passwordField`
+    :php:`ViewHelperContainedViewModel` — result from `<formvh:form.password>` view helper
+    invocation for the password field.
+
+`confirmationField`
+    :php:`FormFieldViewModel` or :php:`ViewHelperContainedViewModel` — result from
+    `<formvh:form.password>` view helper invocation for the confirmation field, combined
+    with the confirmation label when available; otherwise returned standalone.
 
 ..  _checkbox:
 
 :php:`Checkbox`
 ---------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form.checkbox>` view helper invocation.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.checkbox>` view helper invocation.
 
 ..  _content-element:
 
 :php:`ContentElement`
 ---------------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<f:cObject>` view helper invocation.
+..  rubric:: Configured content element UID is valid
 
-\(b) :php:`SimpleViewModel`
-    If configured content element UID is invalid.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<f:cObject>` view helper invocation.
+
+..  rubric:: Configured content element UID is invalid
+
+Represented by :php:`SimpleViewModel` as fallback, used when the configured UID cannot
+be resolved.
 
 ..  _country-select:
 
 :php:`CountrySelect`
 --------------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form.countrySelect>` view helper invocation.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.countrySelect>` view helper invocation.
 
 ..  _fieldset:
 
 :php:`Fieldset`
 ---------------
 
-\(a) :php:`StandaloneTagViewModel`
-    Contains the `<fieldset>` tag with class name(s) and additional attributes.
+Represented by :php:`StandaloneTagViewModel`, containing the `<fieldset>` tag with class
+name(s) and additional attributes.
 
 ..  _file-upload:
 
 :php:`FileUpload`, :php:`ImageUpload`
 -------------------------------------
 
-\(a) :php:`ViewModelCollection`
-    If uploaded resource can be resolved. Contains three view models:
+..  rubric:: Uploaded resource can be resolved
 
-    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-    | **Name**                | **Type**                                          | **Description**                                                                                                                                                                                                   |
-    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-    | `uploadField`           | `ViewHelperContainedViewModel`                    | Contains result from `<formvh:form.uploadedResource>` view helper invocation for password field.                                                                                                                  |
-    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-    | `resourcePointerFields` | `ViewModelCollection` of `StandaloneTagViewModel` | Optional. References hidden `<input>` fields with resource pointers, if available.                                                                                                                                |
-    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-    | `uploads`               | `ViewModelCollection` of `FileResourceViewModel`  | References file uploads, which contain one or two child view models:                                                                                                                                              |
-    |                         |                                                   |                                                                                                                                                                                                                   |
-    |                         |                                                   | -  `resource`: Instance of `FileReference` or `PseudoFileReference`.                                                                                                                                              |
-    |                         |                                                   | -  `deleteCheckbox`: Optional and TYPO3 >= v14 only. `FormFieldViewModel` with result from `<formvh:form.uploadDeleteCheckbox>` view helper invocation, which allows to delete an existing file upload on submit. |
-    +-------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Represented by :php:`ViewModelCollection`, containing three child view models:
 
-\(b) :php:`ViewHelperContainedViewModel`
-    If uploaded resource cannot be resolved. Contains result from `<formvh:form.uploadedResource>`
-    view helper invocation.
+`uploadField`
+    :php:`ViewHelperContainedViewModel` — result from `<formvh:form.uploadedResource>`
+    view helper invocation for the upload field.
+
+`resourcePointerFields`
+    :php:`ViewModelCollection` of :php:`StandaloneTagViewModel` — optional; references
+    hidden `<input>` fields with resource pointers, if available.
+
+`uploads`
+    :php:`ViewModelCollection` of :php:`FileResourceViewModel` — references file uploads.
+    Each contains a `resource` (:php:`FileReference` or :php:`PseudoFileReference`) and,
+    optionally (TYPO3 >= v14), a `deleteCheckbox` (:php:`FormFieldViewModel`) to delete
+    the upload on submit.
+
+..  rubric:: Uploaded resource cannot be resolved
+
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.uploadedResource>` view helper invocation.
 
 ..  _form:
 
 :php:`Form`
 -----------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form>` view helper invocation.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form>` view helper invocation.
 
 ..  _hidden:
 
 :php:`Hidden`
 -------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form.hidden>` view helper invocation.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.hidden>` view helper invocation.
 
 ..  _multi-checkbox:
 
 :php:`MultiCheckbox`
 --------------------
 
-\(a) :php:`ViewModelCollection`
-    Contains view models which reflect all available options, each as one of:
+Contains one view model per available option, each as one of:
 
-    +--------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | **Type**                       | **Description**                                                                                                         |
-    +--------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | `FormFieldViewModel`           | If label is available. Contains a combination of label and result from `<formvh:form.checkbox>` view helper invocation. |
-    +--------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-    | `ViewHelperContainedViewModel` | If associated label is invalid or missing. Contains result from `<formvh:form.checkbox>` view helper invocation.        |
-    +--------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+..  rubric:: Label is available
+
+Represented by :php:`FormFieldViewModel`, combining the label and result from
+`<formvh:form.checkbox>` view helper invocation.
+
+..  rubric:: Associated label is invalid or missing
+
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.checkbox>` view helper invocation.
 
 ..  _password:
 
 :php:`Password`
 ---------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form.password>` view helper invocation.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.password>` view helper invocation.
 
 ..  _radio-button:
 
 :php:`RadioButton`
 ------------------
 
-\(a) :php:`ViewModelCollection`
-    Contains view models which reflect all available options, each as one of:
+Contains one view model per available option, each as one of:
 
-    +--------------------------------+----------------------------------------------------------------------------------------------------------------------+
-    | **Type**                       | **Description**                                                                                                      |
-    +--------------------------------+----------------------------------------------------------------------------------------------------------------------+
-    | `FormFieldViewModel`           | If label is available. Contains a combination of label and result from `<formvh:form.radio>` view helper invocation. |
-    +--------------------------------+----------------------------------------------------------------------------------------------------------------------+
-    | `ViewHelperContainedViewModel` | If associated label is invalid or missing. Contains result from `<formvh:form.radio>` view helper invocation.        |
-    +--------------------------------+----------------------------------------------------------------------------------------------------------------------+
+..  rubric:: Label is available
+
+Represented by :php:`FormFieldViewModel`, combining the label and result from
+`<formvh:form.radio>` view helper invocation.
+
+..  rubric:: Associated label is invalid or missing
+
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.radio>` view helper invocation.
 
 ..  _select:
 
 :php:`SingleSelect`, :php:`MultiSelect`
 ---------------------------------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form.select>` view helper invocation. Includes available
-    `<option>` tags as children of type `StandaloneTagViewModel`.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.select>` view helper invocation. Includes available `<option>` tags as children
+of type :php:`StandaloneTagViewModel`.
 
 ..  _static-text:
 
 :php:`StaticText`
 -----------------
 
-\(a) :php:`FormFieldViewModel`
-    If label is available. Contains a combination of label and `<p>` tag.
+..  rubric:: Label is available
 
-\(b) :php:`StandaloneTagViewModel`
-    If label is invalid or missing. Contains `<p>` tag with class and text.
+Represented by :php:`FormFieldViewModel`, combining the label and a `<p>` tag.
+
+..  rubric:: Label is invalid or missing
+
+Represented by :php:`StandaloneTagViewModel`, containing a `<p>` tag with class and text.
 
 ..  _textarea:
 
 :php:`Textarea`
 ---------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form.textarea>` view helper invocation.
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.textarea>` view helper invocation.
 
 ..  _text:
 
-:php:`Text`, :php:`Date`, :php:`Email`, :php:`Number`, :php:`Telephone`, :php:`Url`
------------------------------------------------------------------------------------
+Text and other text-based fields
+---------------------------------
 
-\(a) :php:`ViewHelperContainedViewModel`
-    Contains result from `<formvh:form.textfield>` view helper invocation.
+Applies to :php:`Text`, :php:`Date`, :php:`Email`, :php:`Number`, :php:`Telephone`, and
+:php:`Url`.
+
+Represented by :php:`ViewHelperContainedViewModel`, containing the result from
+`<formvh:form.textfield>` view helper invocation.
 
 ..  _unsupported-renderables:
 
 Unsupported renderables
-=======================
+========================
 
 ..  _date-picker:
 

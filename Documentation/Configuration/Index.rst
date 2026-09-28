@@ -73,15 +73,14 @@ order. All matching blocks are merged, with later entries winning:
     :typoscript:`EXT:my_extension/Resources/Private/Forms/ContactForm.form.yaml`)
 
 The :typoscript:`templateName` key names the Handlebars template file (without extension)
-that receives the data produced by the :ref:`process-form <process-form-processor>` processor
-as its template context.
+that receives the data produced by the :ref:`process-form <data-processor>` processor as its
+template context.
 
 ..  note::
 
     The :typoscript:`dataProcessing` block follows the same TypoScript data-processor syntax
     used elsewhere in TYPO3 (e.g. inside :typoscript:`FLUIDTEMPLATE`). The
-    :ref:`process-form <process-form-processor>` processor identifier is provided by this
-    extension.
+    :ref:`process-form <data-processor>` processor identifier is provided by this extension.
 
 See :ref:`Conditions <process-form-conditions>` in the processor reference for details on
 using :typoscript:`if` to conditionally omit keys from the output.
