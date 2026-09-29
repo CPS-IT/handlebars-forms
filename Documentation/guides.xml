@@ -14,7 +14,7 @@
                typo3-core-preferred="main"
                interlink-shortcode="cpsit/typo3-handlebars-forms"
     />
-    <project title="Handlebars" release="1.0.0" copyright="since 2026 by coding. powerful. systems. CPS GmbH" />
+    <project title="Handlebars" release="1.0.1" copyright="since 2026 by coding. powerful. systems. CPS GmbH" />
     <inventory id="t3coreapi" url="https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/" />
     <inventory id="t3tsref" url="https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/" />
     <inventory id="t3extform" url="https://docs.typo3.org/c/typo3/cms-form/main/en-us/" />
