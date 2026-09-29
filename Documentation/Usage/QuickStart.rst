@@ -6,14 +6,42 @@
 Quick start
 ===========
 
-This page walks through the minimum steps required to render a form with Handlebars.
+This page walks through a minimal working example: rendering a form built with
+the TYPO3 Form Framework using a single Handlebars template. It assumes the
+extension is already :ref:`installed <installation>`.
 
-..  rst-class:: bignums-xxl
+..  rst-class:: bignums
 
-#.  Include the site set
+#.  Include the site sets
 
-    Follow the :ref:`site set instructions <site-set>` in the installation guide to add
-    :typoscript:`cpsit/handlebars-forms` to your site's dependencies.
+    Add the :yaml:`cpsit/handlebars-forms` site set to your site configuration
+    (see :ref:`site-set`), together with a site set providing
+    :ref:`content element rendering <site-set-content-rendering>`, e.g.
+    :yaml:`cpsit/handlebars-content-element`:
+
+    ..  code-block:: yaml
+        :caption: config/sites/<my-site>/config.yaml
+
+        dependencies:
+          - cpsit/handlebars-content-element
+          - cpsit/handlebars-forms
+
+#.  Configure template paths
+
+    Declare where your :file:`.hbs` files are located using the site settings
+    provided by the :yaml:`cpsit/handlebars` site set (from EXT:handlebars), which is
+    included automatically by the :yaml:`cpsit/handlebars-forms` site set:
+
+    ..  code-block:: yaml
+        :caption: config/sites/<my-site>/settings.yaml
+
+        handlebars.view.templateRootPath: 'EXT:my_sitepackage/Resources/Private/Templates/Handlebars'
+        handlebars.view.partialRootPath: 'EXT:my_sitepackage/Resources/Private/Partials/Handlebars'
+
+    ..  seealso::
+
+        :ref:`Template paths <t3exthandlebars:template-paths>` in the EXT:handlebars
+        documentation – all configuration methods and their priority order.
 
 #.  Configure TypoScript
 
@@ -98,16 +126,16 @@ This page walks through the minimum steps required to render a form with Handleb
 
 #.  Create a Handlebars template
 
-    Create a :file:`.hbs` file in the Handlebars template root path configured by your
-    EXT:handlebars installation. The default template name is :typoscript:`Form`
-    (configurable via the
+    Create the template file at the template root path declared above. The default
+    template name is :typoscript:`Form` (configurable via the
     :ref:`handlebars_forms.view.templateName <confval-handlebars-forms-view-templatename>`
-    site setting), so the file should be named :file:`Form.hbs`.
+    site setting), so the file must be named :file:`Form.hbs`.
 
     The template receives the data built by the :typoscript:`process-form` processor
     directly as its context:
 
     ..  code-block:: handlebars
+        :caption: EXT:my_sitepackage/Resources/Private/Templates/Handlebars/Form.hbs
 
         <form id="{{formData.id}}"
               method="{{formData.method}}"
@@ -116,7 +144,7 @@ This page walks through the minimum steps required to render a form with Handleb
             {{#each fields}}
                 {{#if template}}
                     {{> (lookup . 'template')}}
-                {{elseif content}}
+                {{else if content}}
                     {{this.content}}
                 {{/if}}
             {{/each}}
@@ -137,41 +165,25 @@ This page walks through the minimum steps required to render a form with Handleb
         exactly what :typoscript:`HBS_TAG` (used without :typoscript:`attribute`)
         returns when wrapping tag content.
 
-..  seealso::
+    ..  note::
 
-    -   :ref:`data-processor` – full reference for the data processor, including key
-        resolution rules, conditions and TypoScript references
-    -   :ref:`content-objects` – reference for all available :typoscript:`HBS_*` content
-        objects with their configuration options
+        The partials referenced in this example (:file:`@form-field-generic`,
+        :file:`@form-field-text` and :file:`@button`) must be created in the partial
+        root path as well. The ``@`` prefix looks up a partial by its bare
+        filename, see :ref:`Referencing templates and partials <t3exthandlebars:templates-names>`.
 
-..  _quick-start-per-form:
+#.  Flush caches
 
-Per-form overrides
-==================
+    After editing TypoScript or site settings, flush the TYPO3 caches.
 
-To use a different template or a different data structure for a specific form, add a
-block keyed by the form identifier. It is merged on top of :typoscript:`default`:
+..  _quick-start-next-steps:
 
-..  code-block:: typoscript
+Next steps
+==========
 
-    plugin.tx_form.handlebarsForms {
-        my_contact_form {
-            templateName = ContactForm
-
-            dataProcessing {
-                10 = process-form
-                10 {
-                    fields =< plugin.tx_form.handlebarsForms.default.dataProcessing.10.fields
-                    fields {
-                        # Extra field type only present in this form
-                        Rating {
-                            template = @form-field-rating
-
-                            value = HBS_TAG
-                            value.attribute = value
-                        }
-                    }
-                }
-            }
-        }
-    }
+-   :ref:`data-processor` – full reference for the data processor, including key
+    resolution rules, conditions and TypoScript references
+-   :ref:`content-objects` – reference for all available :typoscript:`HBS_*` content
+    objects with their configuration options
+-   :ref:`configuration-per-form` – use a different template or data structure for
+    a specific form

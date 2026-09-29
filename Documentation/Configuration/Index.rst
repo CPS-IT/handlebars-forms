@@ -63,6 +63,17 @@ where integrators define how each form is rendered. The structure is:
         }
     }
 
+..  tip::
+
+    New to the extension? The :ref:`quick-start` shows a complete, working
+    :typoscript:`dataProcessing` block together with a matching Handlebars template.
+
+Each block is passed to a :ref:`HANDLEBARSTEMPLATE <t3exthandlebars:content-object>`
+content object provided by EXT:handlebars. This means all of its properties can be used,
+e.g. :typoscript:`templateRootPaths` and :typoscript:`partialRootPaths` to configure
+form-specific template paths, or :typoscript:`variables` to pass additional values to
+the template.
+
 When a form is rendered, the extension looks up configuration blocks in the following
 order. All matching blocks are merged, with later entries winning:
 
@@ -71,6 +82,42 @@ order. All matching blocks are merged, with later entries winning:
 3.  Original form identifier before suffixes are appended (e.g. :typoscript:`my-contact-form`)
 4.  Form persistence identifier (the YAML file path, e.g.
     :typoscript:`EXT:my_extension/Resources/Private/Forms/ContactForm.form.yaml`)
+
+..  _configuration-per-form:
+
+Per-form overrides
+------------------
+
+To use a different template or a different data structure for a specific form, add a
+block keyed by one of the identifiers listed above. It is merged on top of
+:typoscript:`default`:
+
+..  code-block:: typoscript
+
+    plugin.tx_form.handlebarsForms {
+        my_contact_form {
+            templateName = ContactForm
+
+            dataProcessing {
+                10 = process-form
+                10 {
+                    fields =< plugin.tx_form.handlebarsForms.default.dataProcessing.10.fields
+                    fields {
+                        # Extra field type only present in this form
+                        Rating {
+                            template = @form-field-rating
+
+                            value = HBS_TAG
+                            value.attribute = value
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+Template context
+----------------
 
 The :typoscript:`templateName` key names the Handlebars template file (without extension)
 that receives the data produced by the :ref:`process-form <data-processor>` processor as its

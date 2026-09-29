@@ -89,8 +89,8 @@ Registration
 The :php:`ViewModelBuilder` interface carries a
 :php:`#[AutoconfigureTag('handlebars_forms.view_model_builder')]` attribute. Any class that
 implements the interface is therefore **registered automatically** via Symfony DI when
-autowiring is enabled (the default for extensions that include a :file:`Configuration/Services.yaml`
-with `autowire: true`).
+autoconfiguration is enabled (the default for extensions that include a
+:file:`Configuration/Services.yaml` with `autoconfigure: true`).
 
 No explicit YAML service definition is needed.
 
@@ -104,15 +104,32 @@ one in the service iterator wins. The iterator order is determined by the Symfon
 `priority <https://symfony.com/doc/current/service_container/tags.html#tagged-services-with-priority>`__
 tag attribute. Built-in builders are registered without an explicit priority (i.e. priority 0).
 
-To ensure your builder runs before a built-in one, set a higher priority:
+To ensure your builder runs before a built-in one, set a higher priority using the
+:php:`#[AsTaggedItem]` attribute:
+
+..  code-block:: php
+
+    use CPSIT\Typo3HandlebarsForms;
+    use Symfony\Component\DependencyInjection;
+
+    #[DependencyInjection\Attribute\AsTaggedItem(priority: 10)]
+    final class RatingViewModelBuilder extends Typo3HandlebarsForms\Domain\ViewModel\Builder\AbstractViewModelBuilder
+    {
+        // ...
+    }
+
+Like :php:`#[AutoconfigureTag]`, the attribute is only evaluated when autoconfiguration
+is enabled. Alternatively, e.g. if autoconfiguration is disabled or you cannot modify
+the builder class, set the priority in your :file:`Configuration/Services.yaml`:
 
 ..  code-block:: yaml
+    :caption: EXT:my_extension/Configuration/Services.yaml
 
-    # Configuration/Services.yaml
-    Vendor\MyExtension\Domain\ViewModel\Builder\RatingViewModelBuilder:
+    services:
+      Vendor\MyExtension\Domain\ViewModel\Builder\RatingViewModelBuilder:
         tags:
-            - name: handlebars_forms.view_model_builder
-              priority: 10
+          - name: handlebars_forms.view_model_builder
+            priority: 10
 
 ..  _custom-vmb-view-model-types:
 
