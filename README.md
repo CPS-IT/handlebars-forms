@@ -20,11 +20,14 @@ configured using dedicated interface implementations.
 
 ## 🚀 Features
 
-* Support for all default form elements
-* Ability to define generic form rendering definitions
-* Possibility to override form rendering for specific form definitions
-* Easy to extend and customize for custom form elements
-* Compatible with TYPO3 13.4 LTS and 14.3 LTS
+* **Form elements:** Support for all default form elements of EXT:form
+* **Generic rendering:** One TypoScript rendering definition for all forms
+* **Per-form overrides:** Dedicated templates and data structures for specific forms
+* **Extensibility:** Custom view model builders and content objects for custom
+    form elements
+* **Fluid fallback:** Elements without a Handlebars template can be rendered with
+    EXT:form's default Fluid partials
+* **Compatibility:** Compatible with TYPO3 13.4 LTS and 14.3 LTS
 
 ## 🔥 Installation
 
