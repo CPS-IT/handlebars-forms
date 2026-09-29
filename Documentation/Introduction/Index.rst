@@ -24,11 +24,35 @@ very dynamic and flexible.
 Features
 ========
 
--   Support for all default form elements
--   Ability to define generic form rendering definitions
--   Possibility to override form rendering for specific form definitions
--   Easy to extend and customize for custom form elements
--   Compatible with TYPO3 13.4 LTS and 14.3 LTS
+-   **Form elements:** Support for all default form elements of EXT:form
+-   **Generic rendering:** One TypoScript rendering definition for all forms
+-   **Per-form overrides:** Dedicated templates and data structures for specific forms
+-   **Extensibility:** Custom view model builders and content objects for custom
+    form elements
+-   **Fluid fallback:** Elements without a Handlebars template can be rendered with
+    EXT:form's default Fluid partials
+-   **Compatibility:** Compatible with TYPO3 13.4 LTS and 14.3 LTS
+
+..  _how-it-works:
+
+How does it work?
+=================
+
+The extension hooks into EXT:form at two points:
+
+1.  **Form renderer** – When a form is rendered on the frontend, EXT:form hands it over
+    to this extension. Based on the TypoScript configuration at
+    :typoscript:`plugin.tx_form.handlebarsForms`, a Handlebars template is selected
+    for the form and rendered by EXT:handlebars.
+
+2.  **Data processor** – Before the template is rendered, the :ref:`process-form <data-processor>`
+    data processor walks through all form elements and collects the data the template
+    needs (IDs, names, labels, values, validation errors, …). *What* is collected is
+    defined in TypoScript using dedicated :typoscript:`HBS_*` content objects. The
+    result is a plain array that becomes the template's context.
+
+In short: EXT:form keeps handling the form logic (validation, finishers, multi-step
+navigation), TypoScript describes the data, and Handlebars takes care of the markup.
 
 ..  _support:
 

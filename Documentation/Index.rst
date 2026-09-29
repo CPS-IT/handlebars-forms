@@ -56,19 +56,20 @@ custom form elements can be easily configured using dedicated interface implemen
         ..  card-footer:: :ref:`Getting started <installation>`
             :button-style: btn btn-secondary stretched-link
 
+    ..  card::  Usage
+
+        Start with a quick start example, then dive into the data processor and all
+        available ``HBS_*`` content objects.
+
+        ..  card-footer:: :ref:`Learn how to use this extension <usage>`
+            :button-style: btn btn-secondary stretched-link
+
     ..  card::  Configuration
 
         Learn how to configure the extension in various ways. This includes site
-        configuration and TypoScript configuration.
+        settings and per-form TypoScript configuration.
 
         ..  card-footer:: :ref:`View configuration options <configuration>`
-            :button-style: btn btn-secondary stretched-link
-
-    ..  card::  Usage
-
-        This section describes how to use this extension in various ways.
-
-        ..  card-footer:: :ref:`Learn how to use this extension <usage>`
             :button-style: btn btn-secondary stretched-link
 
     ..  card::  Migration
@@ -86,13 +87,21 @@ custom form elements can be easily configured using dedicated interface implemen
         ..  card-footer:: :ref:`Deep dive into classes & concepts <developer-corner>`
             :button-style: btn btn-secondary stretched-link
 
+    ..  card::  Contributing
+
+        How to set up a local development environment, run checks and tests, and
+        submit a pull request.
+
+        ..  card-footer:: :ref:`Contribute to this extension <contributing>`
+            :button-style: btn btn-secondary stretched-link
+
 ..  toctree::
     :hidden:
 
     Introduction/Index
     Installation/Index
-    Configuration/Index
     Usage/Index
+    Configuration/Index
     Migration/Index
     DeveloperCorner/Index
     Contributing/Index
