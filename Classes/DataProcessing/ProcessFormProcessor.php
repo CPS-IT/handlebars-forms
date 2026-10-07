@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\DataProcessing;
 
+use CPSIT\Typo3Handlebars;
 use CPSIT\Typo3HandlebarsForms\ContentObject;
 use CPSIT\Typo3HandlebarsForms\Domain;
 use CPSIT\Typo3HandlebarsForms\Utility;
@@ -224,7 +225,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
             }
 
             // Skip further processing if processed value is not a string (all COR related methods require a string value)
-            if (!Utility\StringUtility::isStringable($resolvedValue)) {
+            if (!Typo3Handlebars\Utility\StringUtility::isStringable($resolvedValue)) {
                 $processedData[$keyWithoutDot] = $resolvedValue;
                 continue;
             }
@@ -323,7 +324,7 @@ final readonly class ProcessFormProcessor implements Frontend\ContentObject\Data
                 $viewModel,
             );
 
-            $cObjTemp->setCurrentVal($processedValue['currentValue'] ?? null);
+            $cObjTemp->setCurrentVal(Typo3Handlebars\DataProcessing\DataSource\CurrentValue::wrap($processedValue['currentValue'] ?? null));
 
             unset($configuration['if.']['currentValue'], $configuration['if.']['currentValue.']);
         }

@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\Tests\Functional\ContentObject;
 
+use CPSIT\Typo3Handlebars;
 use CPSIT\Typo3HandlebarsForms as Src;
 use CPSIT\Typo3HandlebarsForms\Tests;
 use DevTheorem\Handlebars;
@@ -236,15 +237,15 @@ final class AbstractHandlebarsFormsContentObjectTest extends TestingFramework\Co
     /**
      * @return \Generator<string, array{\stdClass|null}>
      */
-    public static function renderProvidesNoCurrentValueForStdWrapIfResolvedValueIsNullOrNotStringableDataProvider(): \Generator
+    public static function renderProvidesEmptyCurrentValueForStdWrapIfResolvedValueIsNullOrNotStringableDataProvider(): \Generator
     {
         yield 'null' => [null];
         yield 'object' => [new \stdClass()];
     }
 
     #[Framework\Attributes\Test]
-    #[Framework\Attributes\DataProvider('renderProvidesNoCurrentValueForStdWrapIfResolvedValueIsNullOrNotStringableDataProvider')]
-    public function renderProvidesNoCurrentValueForStdWrapIfResolvedValueIsNullOrNotStringable(?\stdClass $value): void
+    #[Framework\Attributes\DataProvider('renderProvidesEmptyCurrentValueForStdWrapIfResolvedValueIsNullOrNotStringableDataProvider')]
+    public function renderProvidesEmptyCurrentValueForStdWrapIfResolvedValueIsNullOrNotStringable(?\stdClass $value): void
     {
         $this->resolvedValue = $value;
         $this->contextStack->push($this->context);
@@ -257,6 +258,39 @@ final class AbstractHandlebarsFormsContentObjectTest extends TestingFramework\Co
         ]);
 
         self::assertSame('empty', $actual);
+    }
+
+    /**
+     * @return \Generator<string, array{array<mixed>|\stdClass}>
+     */
+    public static function renderProvidesWrappedNonStringableValueAsCurrentValueForStdWrapDataProvider(): \Generator
+    {
+        yield 'array' => [['foo', 'bar']];
+        yield 'object' => [new \stdClass()];
+    }
+
+    /**
+     * @param array<mixed>|\stdClass $value
+     */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('renderProvidesWrappedNonStringableValueAsCurrentValueForStdWrapDataProvider')]
+    public function renderProvidesWrappedNonStringableValueAsCurrentValueForStdWrap(array|\stdClass $value): void
+    {
+        Tests\Functional\Fixtures\Classes\CurrentValueExposingUserFunction::reset();
+
+        $this->resolvedValue = $value;
+        $this->contextStack->push($this->context);
+
+        $this->subject->render([
+            'stdWrap.' => [
+                'postUserFunc' => Tests\Functional\Fixtures\Classes\CurrentValueExposingUserFunction::class . '->expose',
+            ],
+        ]);
+
+        $currentValue = Tests\Functional\Fixtures\Classes\CurrentValueExposingUserFunction::getCurrentValue();
+
+        self::assertInstanceOf(Typo3Handlebars\DataProcessing\DataSource\CurrentValue::class, $currentValue);
+        self::assertSame($value, $currentValue->value);
     }
 
     #[Framework\Attributes\Test]
