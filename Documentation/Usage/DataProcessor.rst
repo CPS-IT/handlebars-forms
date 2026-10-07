@@ -142,7 +142,10 @@ When the condition evaluates to :typoscript:`false`, the entire block is skipped
 The :typoscript:`currentValue` extension in :typoscript:`if` allows the condition to
 be evaluated against a value resolved by the processor itself rather than a static
 TypoScript value. It accepts a content object expression using the same syntax as the
-main configuration:
+main configuration. Non-stringable values are provided the same way as for
+:ref:`stdWrap <custom-co-stdwrap>` (arrays resolve to a comma-separated list of
+their scalar values and stringable objects, other non-stringable values resolve to
+an empty string):
 
 ..  code-block:: typoscript
 

@@ -73,9 +73,33 @@ stdWrap support
 :typoscript:`stdWrap` is handled automatically by the base class for every
 :typoscript:`HBS_*` and custom content object. If :php:`resolve()` returns a stringable
 value, :typoscript:`stdWrap` is applied directly to it. If the value is non-stringable,
-:typoscript:`stdWrap` receives an empty string but the original value is set as the
-:typoscript:`currentValue` so TypoScript conditions inside :typoscript:`stdWrap` can
-still read it.
+:typoscript:`stdWrap` receives an empty string, but the value is set as current
+value so TypoScript conditions inside :typoscript:`stdWrap` can still read it (e.g.
+using :typoscript:`current = 1`). Non-stringable values are wrapped in a
+:php:`CurrentValue` object provided by EXT:handlebars: arrays resolve to a
+comma-separated list of their scalar values and stringable objects, all other
+non-stringable values resolve to an empty string (see
+:ref:`Wrapped current values <t3exthandlebars:usage-data-sources-current-wrapped>`).
+Custom code, such as user functions, can access the original value via the
+:php:`value` property of the wrapper:
+
+..  code-block:: php
+
+    use CPSIT\Typo3Handlebars\DataProcessing\DataSource\CurrentValue;
+
+    $currentValue = $contentObjectRenderer->getCurrentVal();
+
+    if ($currentValue instanceof CurrentValue) {
+        $currentValue = $currentValue->value;
+    }
+
+..  important::
+
+    Since non-stringable objects are provided as wrapped value, the current
+    value is never :php:`null` for them. Use checks for empty values (e.g.
+    :typoscript:`ifEmpty` or :typoscript:`if.isTrue.current = 1`) instead of
+    checks for :php:`null` values (e.g. :typoscript:`ifNull` or
+    :typoscript:`if.isNull.current = 1`).
 
 ..  _custom-co-registration:
 

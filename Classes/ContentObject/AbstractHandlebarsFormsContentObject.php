@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3HandlebarsForms\ContentObject;
 
+use CPSIT\Typo3Handlebars;
 use CPSIT\Typo3HandlebarsForms\Utility;
 use Psr\Log;
 use TYPO3\CMS\Frontend;
@@ -114,41 +115,20 @@ abstract class AbstractHandlebarsFormsContentObject extends Frontend\ContentObje
 
         // Backup and override current value
         $currentValue = $this->cObj->getCurrentVal();
-        $this->cObj->setCurrentVal($this->convertValueToStringableValue($value));
+        $this->cObj->setCurrentVal(Typo3Handlebars\DataProcessing\DataSource\CurrentValue::wrap($value));
 
         try {
             // Apply stdWrap directly on stringable value
-            if (Utility\StringUtility::isStringable($value)) {
+            if (Typo3Handlebars\Utility\StringUtility::isStringable($value)) {
                 return Utility\StringUtility::processStringable($value, $apply(...));
             }
 
             // Apply stdWrap on empty string, but give consumers the chance to perform actions
-            // based on the current value (which reflects the non-stringable resolved value)
+            // based on the current value (which wraps the non-stringable resolved value)
             return $apply('');
         } finally {
             // Restore previous current value
             $this->cObj?->setCurrentVal($currentValue);
         }
-    }
-
-    /**
-     * Build stringable value for usage as current value in COR.
-     * Passes through stringables and tries to convert scalar-arrays to a string list.
-     */
-    private function convertValueToStringableValue(mixed $value): ?string
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        if (Utility\StringUtility::isStringable($value)) {
-            return (string)$value;
-        }
-
-        if (is_array($value)) {
-            return implode(',', array_filter($value, is_scalar(...)));
-        }
-
-        return null;
     }
 }

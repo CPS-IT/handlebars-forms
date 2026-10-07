@@ -425,6 +425,72 @@ final class ProcessFormProcessorTest extends TestingFramework\Core\Functional\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function processProvidesEmptyCurrentValueForConditionsIfResolvedValueIsNotStringable(): void
+    {
+        self::assertInstanceOf(Extbase\Mvc\ExtbaseRequestParameters::class, $this->extbaseRequestParameters);
+
+        $this->extbaseRequestParameters->setOriginalRequestMappingResults(new Extbase\Error\Result());
+
+        $processedData = $this->subject->process(
+            $this->cObj,
+            ['variables.' => ['form' => $this->formRuntime]],
+            [
+                'foo.' => [
+                    'if.' => [
+                        'currentValue' => 'HBS_VALIDATION_RESULTS',
+                        'isFalse.' => [
+                            'current' => 1,
+                        ],
+                    ],
+                    'hello' => 'world',
+                ],
+            ],
+            [],
+        );
+
+        self::assertSame(['foo' => ['hello' => 'world']], $processedData);
+    }
+
+    #[Framework\Attributes\Test]
+    public function processProvidesScalarArrayValuesAsCurrentValueForConditions(): void
+    {
+        self::assertInstanceOf(Extbase\Mvc\ExtbaseRequestParameters::class, $this->extbaseRequestParameters);
+
+        $validationResults = new Extbase\Error\Result();
+        $validationResults->forProperty($this->formRuntime->getIdentifier())->addError(
+            new Extbase\Error\Error('Something went wrong.', 1234567890),
+        );
+
+        $this->extbaseRequestParameters->setOriginalRequestMappingResults($validationResults);
+
+        $processedData = $this->subject->process(
+            $this->cObj,
+            ['variables.' => ['form' => $this->formRuntime]],
+            [
+                'foo.' => [
+                    'if.' => [
+                        'currentValue' => 'HBS_VALIDATION_RESULTS',
+                        'currentValue.' => [
+                            'output.' => [
+                                'hasErrors' => 'HAS_ERRORS',
+                                'hasFormErrors' => 'HAS_ERRORS',
+                            ],
+                        ],
+                        'value.' => [
+                            'current' => 1,
+                        ],
+                        'equals' => '1,1',
+                    ],
+                    'hello' => 'world',
+                ],
+            ],
+            [],
+        );
+
+        self::assertSame(['foo' => ['hello' => 'world']], $processedData);
+    }
+
+    #[Framework\Attributes\Test]
     public function processMergesTypoScriptReferences(): void
     {
         $this->cObj->setRequest(

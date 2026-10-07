@@ -28,14 +28,6 @@ use DevTheorem\Handlebars;
 final readonly class StringUtility
 {
     /**
-     * @phpstan-assert-if-true int|float|string|bool|null|\Stringable $value
-     */
-    public static function isStringable(mixed $value): bool
-    {
-        return is_scalar($value) || $value === null || $value instanceof \Stringable;
-    }
-
-    /**
      * @param \Closure(string): mixed $processor
      */
     public static function processStringable(int|float|string|bool|\Stringable|null $value, \Closure $processor): mixed

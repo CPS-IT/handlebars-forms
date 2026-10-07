@@ -31,36 +31,6 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Utility\StringUtility::class)]
 final class StringUtilityTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @return \Generator<string, array{mixed, bool}>
-     */
-    public static function isStringableReturnsTrueForSupportedTypeDataProvider(): \Generator
-    {
-        yield 'string' => ['foo', true];
-        yield 'SafeString' => [new Handlebars\SafeString('foo'), true];
-        yield 'null' => [null, true];
-        yield 'Stringable' => [
-            new class implements \Stringable {
-                public function __toString(): string
-                {
-                    return 'foo';
-                }
-            },
-            true,
-        ];
-        yield 'bool' => [true, true];
-        yield 'int' => [1, true];
-        yield 'float' => [1.0, true];
-        yield 'object' => [new \stdClass(), false];
-    }
-
-    #[Framework\Attributes\Test]
-    #[Framework\Attributes\DataProvider('isStringableReturnsTrueForSupportedTypeDataProvider')]
-    public function isStringableReturnsTrueForSupportedType(mixed $value, bool $expected): void
-    {
-        self::assertSame($expected, Src\Utility\StringUtility::isStringable($value));
-    }
-
     #[Framework\Attributes\Test]
     public function processStringableReturnsProcessedString(): void
     {
