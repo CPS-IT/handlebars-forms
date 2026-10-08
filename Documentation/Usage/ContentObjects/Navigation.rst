@@ -14,7 +14,10 @@ keyed by button role.
 
 -   :typoscript:`previousPage` – previous-page button (only present when not on the first page)
 -   :typoscript:`nextPage` – next-page button (only present when not on the last page)
--   :typoscript:`submit` – submit button (only present on the last page)
+-   :typoscript:`submit` – submit button (only present on the last page or if explicitly enabled)
+
+The submit button is rendered on all pages if :typoscript:`submit.renderOnAllPages`
+is enabled (see below).
 
 Within each role block, :typoscript:`HBS_TAG` and :typoscript:`HBS_LABEL` operate on
 the rendered :html:`<button>` tag and the translated button label respectively.
@@ -38,3 +41,24 @@ the rendered :html:`<button>` tag and the translated button label respectively.
         nextPage < .previousPage
         submit < .previousPage
     }
+
+**Options**
+
+..  confval:: renderOnAllPages
+    :name: co-hbs-navigation-renderOnAllPages
+    :type: boolean
+    :Default: 0
+
+    Only valid within the :typoscript:`submit` block. If enabled, the submit button
+    is added on every form page, in addition to the next-page and previous-page
+    buttons. By default, it is only added on the last page.
+
+    ..  code-block:: typoscript
+
+        navItems = HBS_NAVIGATION
+        navItems {
+            submit {
+                renderOnAllPages = 1
+                label = HBS_LABEL
+            }
+        }
