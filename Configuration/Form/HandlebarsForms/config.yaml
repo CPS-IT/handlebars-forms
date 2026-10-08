@@ -1,0 +1,6 @@
+name: cpsit/handlebars-forms
+label: 'Handlebars form rendering'
+
+imports:
+  # @todo Inline once support for TYPO3 v13 is dropped
+  - { resource: 'EXT:handlebars_forms/Configuration/Yaml/FormSetup.yaml' }

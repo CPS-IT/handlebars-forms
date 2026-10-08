@@ -66,7 +66,7 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
         }
 
         // Add submit button
-        if (!$hasNextPage || $this->shouldRenderSubmitButton($configuration)) {
+        if (!$hasNextPage || $this->shouldRenderSubmitButton($renderable, $configuration)) {
             $elements[self::SUBMIT] = $renderable;
         }
 
@@ -154,11 +154,12 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
     /**
      * @param array<string|int, mixed> $configuration
      */
-    private function shouldRenderSubmitButton(array $configuration): bool
+    private function shouldRenderSubmitButton(Form\Domain\Runtime\FormRuntime $formRuntime, array $configuration): bool
     {
+        $allowFastForwardSubmit = (bool)($formRuntime->getFormDefinition()->getRenderingOptions()['allowFastForwardSubmit'] ?? false);
         $stepConfiguration = $configuration[self::SUBMIT . '.'] ?? null;
 
-        if (!is_array($stepConfiguration)) {
+        if (!$allowFastForwardSubmit || !is_array($stepConfiguration)) {
             return false;
         }
 
