@@ -191,6 +191,39 @@ final class NavigationContentObjectTest extends TestingFramework\Core\Functional
     }
 
     #[Framework\Attributes\Test]
+    public function renderProcessesSubmitOnFirstPageIfRenderOnAllPagesIsEnabled(): void
+    {
+        $this->pushContext($this->formRuntime);
+
+        $actual = $this->valueCollector->load(
+            $this->subject->render([
+                'submit.' => [
+                    'renderOnAllPages' => '1',
+                ],
+            ]),
+        );
+
+        self::assertSame(['page-2', 'test-form'], $actual);
+        self::assertCount(2, $this->processorCalls);
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderDoesNotProcessSubmitOnFirstPageIfRenderOnAllPagesIsDisabled(): void
+    {
+        $this->pushContext($this->formRuntime);
+
+        $actual = $this->valueCollector->load(
+            $this->subject->render([
+                'submit.' => [
+                    'renderOnAllPages' => '0',
+                ],
+            ]),
+        );
+
+        self::assertSame(['page-2'], $actual);
+    }
+
+    #[Framework\Attributes\Test]
     public function renderSkipsElementsWhichAreProcessedToNull(): void
     {
         $this->formRuntime->overrideCurrentPage(1);
