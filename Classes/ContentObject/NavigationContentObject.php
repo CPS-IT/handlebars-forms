@@ -58,10 +58,15 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
             $elements[self::PREVIOUS_PAGE] = $renderable->getPreviousEnabledPage();
         }
 
-        // Add next page OR submit button
-        if ($renderable->getNextEnabledPage() !== null) {
+        $hasNextPage = $renderable->getNextEnabledPage() !== null;
+
+        // Add next page
+        if ($hasNextPage) {
             $elements[self::NEXT_PAGE] = $renderable->getNextEnabledPage();
-        } else {
+        }
+
+        // Add submit button
+        if (!$hasNextPage || $this->shouldRenderSubmitButton($renderable, $configuration)) {
             $elements[self::SUBMIT] = $renderable;
         }
 
@@ -144,5 +149,20 @@ final class NavigationContentObject extends AbstractHandlebarsFormsContentObject
         }
 
         return Domain\ViewModel\FormFieldViewModel::forLabelAndElement($labelResult, $buttonViewModel);
+    }
+
+    /**
+     * @param array<string|int, mixed> $configuration
+     */
+    private function shouldRenderSubmitButton(Form\Domain\Runtime\FormRuntime $formRuntime, array $configuration): bool
+    {
+        $allowFastForwardSubmit = (bool)($formRuntime->getFormDefinition()->getRenderingOptions()['allowFastForwardSubmit'] ?? false);
+        $stepConfiguration = $configuration[self::SUBMIT . '.'] ?? null;
+
+        if (!$allowFastForwardSubmit || !is_array($stepConfiguration)) {
+            return false;
+        }
+
+        return (bool)($stepConfiguration['renderOnAllPages'] ?? false);
     }
 }
