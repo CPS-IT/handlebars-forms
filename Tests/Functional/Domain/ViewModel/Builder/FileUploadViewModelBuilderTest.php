@@ -201,10 +201,10 @@ final class FileUploadViewModelBuilderTest extends ViewModelBuilderTestCase
 
         $resourcePointerFields = $children['resourcePointerFields']->getChildren();
 
-        // Resource pointer fields are suffixed by the (1-based) position within the object storage
+        // Resource pointer fields are suffixed by the (0-based) position within the object storage
         self::assertCount(2, $resourcePointerFields);
-        self::assertResourcePointerField('test-form-multiple-upload-file-reference-1', 1, $resourcePointerFields[0]);
-        self::assertResourcePointerField('test-form-multiple-upload-file-reference-2', 2, $resourcePointerFields[1]);
+        self::assertResourcePointerField('test-form-multiple-upload-file-reference-0', 1, $resourcePointerFields[0]);
+        self::assertResourcePointerField('test-form-multiple-upload-file-reference-1', 2, $resourcePointerFields[1]);
 
         // Uploads
         $uploads = $this->getUploads($actual);

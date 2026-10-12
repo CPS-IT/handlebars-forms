@@ -64,6 +64,7 @@ trait FrontendRequestTrait
             $frontendTypoScript->setConfigArray([]);
         }
 
+        $contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $frontendUser = new Frontend\Authentication\FrontendUserAuthentication();
         $frontendUser->initializeUserSessionManager();
 
@@ -78,9 +79,11 @@ trait FrontendRequestTrait
                 new Core\Site\Entity\SiteLanguage(0, 'en_US.UTF-8', new Core\Http\Uri('/'), ['typo3Language' => 'default']),
             )
             ->withAttribute('normalizedParams', new Core\Http\NormalizedParams([], [], 'index.php', '/'))
+            ->withAttribute('currentContentObject', $contentObjectRenderer)
         ;
 
         // Registers are managed by a register stack within the current request since TYPO3 v14
+        // @todo Remove condition once support for TYPO3 v13 is dropped
         if ((new Core\Information\Typo3Version())->getMajorVersion() >= 14) {
             $serverRequest = $serverRequest->withAttribute('frontend.register.stack', new Frontend\ContentObject\RegisterStack());
         }
