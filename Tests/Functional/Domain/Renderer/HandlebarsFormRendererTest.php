@@ -63,12 +63,25 @@ final class HandlebarsFormRendererTest extends TestingFramework\Core\Functional\
     }
 
     #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '>= 13.4.0 < 14.3.8')]
     public function renderUsesFluidViewOutsideOfContentObjectRendering(): void
     {
         $actual = $this->renderForm(typoScriptSetup: $this->typoScriptSetup, withContentObject: false);
 
         self::assertStringContainsString('<form', $actual);
         self::assertStringContainsString('id="test-form"', $actual);
+    }
+
+    #[Framework\Attributes\Test]
+    #[PHPUnitAttributes\Attribute\RequiresPackage('typo3/cms-core', '~14.3.8')]
+    public function renderUsesFluidViewOutsideOfContentObjectRenderingAndThrowsExceptionDueToMissingContentObjectRenderer(): void
+    {
+        // Exception is thrown by UriBuilder, which is triggered by <f:form> view helper,
+        //  which shows that Fluid rendering was invoked instead of Handlebars rendering
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(1779442754);
+
+        $this->renderForm(typoScriptSetup: $this->typoScriptSetup, withContentObject: false);
     }
 
     #[Framework\Attributes\Test]
@@ -234,6 +247,8 @@ TYPOSCRIPT;
             $contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
             $request = $request->withAttribute('currentContentObject', $contentObjectRenderer);
             $contentObjectRenderer->setRequest($request);
+        } else {
+            $request = $request->withoutAttribute('currentContentObject');
         }
 
         $configurationManager = $this->get(Extbase\Configuration\ConfigurationManagerInterface::class);
