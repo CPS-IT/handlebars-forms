@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="messages" date="2026-10-08T11:27:47Z">
+    <header/>
+    <body>
+      <trans-unit id="formEditor.elements.Form.editor.allowFastForwardSubmit.label">
+        <source>Allow fast-forward submit</source>
+      </trans-unit>
+      <trans-unit id="formEditor.elements.Form.editor.allowFastForwardSubmit.fieldExplanationText">
+        <source>Once enabled, multi-page forms can be submitted from any page. Note: All form elements will still be validated.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

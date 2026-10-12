@@ -1,0 +1,10 @@
+# @todo Remove once support for TYPO3 v13 is dropped
+[typo3.branch == "13.4"]
+  plugin.tx_form {
+    settings {
+      yamlConfigurations {
+        1791451248 = EXT:handlebars_forms/Configuration/Yaml/FormSetup.yaml
+      }
+    }
+  }
+[end]
